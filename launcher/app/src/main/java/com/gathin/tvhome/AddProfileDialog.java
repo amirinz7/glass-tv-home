@@ -38,13 +38,13 @@ public class AddProfileDialog {
         tvTitle.setText("+ Add New Profile");
         tvTitle.setTextSize(21);
         tvTitle.setTextColor(0xFFFFFFFF);
-        tvTitle.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvTitle.setTypeface(context.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
         tvSub.setText("Create a profile for a family member or child mode");
         tvSub.setTextSize(13);
-        tvSub.setTextColor(0xFF94A3B8);
+        tvSub.setTextColor(0xFFA89F91);
         tvSub.setPadding(0, (int) (3 * density), 0, (int) (18 * density));
         root.addView(tvSub);
 
@@ -52,13 +52,13 @@ public class AddProfileDialog {
         TextView tvNameLabel = new TextView(context);
         tvNameLabel.setText("PROFILE NAME");
         tvNameLabel.setTextSize(11.5f);
-        tvNameLabel.setTextColor(0xFF38BDF8);
-        tvNameLabel.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvNameLabel.setTextColor(0xFFFFB347);
+        tvNameLabel.setTypeface(context.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
         root.addView(tvNameLabel);
 
         EditText etName = new EditText(context);
         etName.setHint("Enter profile name...");
-        etName.setHintTextColor(0xFF64748B);
+        etName.setHintTextColor(0xFF8A7E6E);
         etName.setTextColor(0xFFFFFFFF);
         etName.setTextSize(15);
         etName.setSingleLine(true);
@@ -78,7 +78,7 @@ public class AddProfileDialog {
         // Child mode checkbox
         CheckBox cbChild = new CheckBox(context);
         cbChild.setText("Make this a Child profile (blocks adult apps)");
-        cbChild.setTextColor(0xFFE2E8F0);
+        cbChild.setTextColor(0xFFF1E7D3);
         cbChild.setTextSize(13.5f);
         cbChild.setPadding((int) (6 * density), 0, 0, (int) (18 * density));
         root.addView(cbChild);
@@ -90,11 +90,11 @@ public class AddProfileDialog {
 
         Button btnCancel = new Button(context, null, android.R.attr.borderlessButtonStyle);
         btnCancel.setText("Cancel");
-        btnCancel.setTextColor(0xFF94A3B8);
+        btnCancel.setTextColor(0xFFA89F91);
         actionsRow.addView(btnCancel);
 
         Button btnAdd = new Button(context);
-        btnAdd.setText("Tambah Profil");
+        btnAdd.setText("Add Profile");
         btnAdd.setTextColor(0xFFFFFFFF);
         btnAdd.setTextSize(13.5f);
         btnAdd.setBackgroundResource(R.drawable.bg_dialog_btn);

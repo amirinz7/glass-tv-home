@@ -597,7 +597,7 @@ final class AppLanguage {
     // --- Azan Settings Dialog ---
     public static String strAzanSettingsHeaderTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Adhan Settings & Options";
+            case LANG_EN: return "Azan Setup";
             case LANG_ID: return "Pengaturan & Pilihan Adzan";
             case LANG_MS: default: return "Tetapan & Pilihan Azan";
         }
@@ -605,7 +605,7 @@ final class AppLanguage {
 
     public static String strAzanSettingsHeaderSub(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Floating glass popup card over all apps & adhan audio settings";
+            case LANG_EN: return "Choose the voice, the length and which prayers call the azan";
             case LANG_ID: return "Notifikasi popup kartu kaca melayang di atas semua aplikasi & pengaturan audio";
             case LANG_MS: default: return "Notifikasi popup kad kaca terapung di atas semua aplikasi & tetapan audio azan";
         }
@@ -613,7 +613,7 @@ final class AppLanguage {
 
     public static String strAzanSectionMaster(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "A. ADHAN POPUP MASTER SWITCH";
+            case LANG_EN: return "AZAN ON OR OFF";
             case LANG_ID: return "A. STATUS UTAMA POPUP ADZAN";
             case LANG_MS: default: return "A. STATUS UTAMA POPUP AZAN";
         }
@@ -621,7 +621,7 @@ final class AppLanguage {
 
     public static String strAzanMasterTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "TV Adhan Popup Notification";
+            case LANG_EN: return "Azan card on screen";
             case LANG_ID: return "Notifikasi Popup Adzan TV";
             case LANG_MS: default: return "Notifikasi Popup Azan TV";
         }
@@ -629,7 +629,7 @@ final class AppLanguage {
 
     public static String strAzanMasterDesc(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Show floating prayer card over Netflix, YouTube & all apps";
+            case LANG_EN: return "A prayer card slides up over whatever you are watching";
             case LANG_ID: return "Tampilkan kartu waktu sholat melayang di atas Netflix, YouTube & semua app";
             case LANG_MS: default: return "Papar kad waktu solat terapung di atas Netflix, YouTube & semua app";
         }
@@ -637,7 +637,7 @@ final class AppLanguage {
 
     public static String strAzanSectionPrayers(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "B. PRAYER TIME SELECTION (ON / OFF)";
+            case LANG_EN: return "WHICH PRAYERS";
             case LANG_ID: return "B. PILIHAN WAKTU SHOLAT (ON / OFF)";
             case LANG_MS: default: return "B. PILIHAN WAKTU SOLAT (ON / OFF)";
         }
@@ -645,7 +645,7 @@ final class AppLanguage {
 
     public static String strAzanSectionAudio(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "C. ADHAN AUDIO SELECTION";
+            case LANG_EN: return "VOICE AND LENGTH";
             case LANG_ID: return "C. PILIHAN SUARA ADZAN";
             case LANG_MS: default: return "C. PILIHAN BUNYI AZAN";
         }
@@ -653,7 +653,7 @@ final class AppLanguage {
 
     public static String strAzanAudioCurrent(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Current Adhan Audio";
+            case LANG_EN: return "Azan voice";
             case LANG_ID: return "Suara Adzan Saat Ini";
             case LANG_MS: default: return "Bunyi Azan Semasa";
         }
@@ -661,7 +661,7 @@ final class AppLanguage {
 
     public static String strAzanAudioChangeBtn(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "CHANGE ";
+            case LANG_EN: return "PICK";
             case LANG_ID: return "UBAH ";
             case LANG_MS: default: return "TUKAR ";
         }
@@ -669,7 +669,7 @@ final class AppLanguage {
 
     public static String strAzanSectionTest(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "D. TEST ADHAN POPUP";
+            case LANG_EN: return "TRY IT";
             case LANG_ID: return "D. UJI POPUP ADZAN";
             case LANG_MS: default: return "D. UJI POPUP AZAN";
         }
@@ -677,7 +677,7 @@ final class AppLanguage {
 
     public static String strAzanTestTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Test Adhan Popup Now";
+            case LANG_EN: return "Play the azan now";
             case LANG_ID: return "Uji Popup Adzan Sekarang";
             case LANG_MS: default: return "Uji Popup Azan Sekarang";
         }
@@ -685,7 +685,7 @@ final class AppLanguage {
 
     public static String strAzanTestDesc(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Trigger floating card & play selected audio";
+            case LANG_EN: return "Shows the card and plays your chosen voice";
             case LANG_ID: return "Tampilkan kartu melayang & putar audio pilihan";
             case LANG_MS: default: return "Mencetuskan kad terapung & main audio pilihan";
         }
@@ -693,7 +693,7 @@ final class AppLanguage {
 
     public static String strAzanTestBtn(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "TEST";
+            case LANG_EN: return "PLAY";
             case LANG_ID: return "UJI";
             case LANG_MS: default: return "UJI";
         }
@@ -701,7 +701,7 @@ final class AppLanguage {
 
     public static String strAzanInfoText(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Prayer times are automatically synchronized based on official schedules. The adhan card appears over Netflix, YouTube & streaming apps.";
+            case LANG_EN: return "Times come from the official schedule for your zone. The card appears over any app, and video or music pauses while the azan plays.";
             case LANG_ID: return "Waktu sholat disinkronkan secara otomatis sesuai jadwal resmi. Kartu adzan tetap muncul di atas Netflix, YouTube & aplikasi streaming.";
             case LANG_MS: default: return "Waktu solat diselaraskan secara automatik mengikut zon JAKIM. Kad azan tetap muncul di atas Netflix, YouTube & Perfect TV.";
         }
@@ -709,7 +709,7 @@ final class AppLanguage {
 
     public static String strAzanCloseBtn(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return " Close Settings";
+            case LANG_EN: return "Done";
             case LANG_ID: return " Tutup Pengaturan";
             case LANG_MS: default: return " Tutup Tetapan";
         }
@@ -717,7 +717,7 @@ final class AppLanguage {
 
     public static String strAzanChooseAudioTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Choose Adhan Audio";
+            case LANG_EN: return "Pick a voice";
             case LANG_ID: return "Pilih Suara Adzan";
             case LANG_MS: default: return "Pilih Audio Azan";
         }
@@ -817,7 +817,7 @@ final class AppLanguage {
     // --- Azan Popup Card Strings ---
     public static String strAzanPopupTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "ADHAN";
+            case LANG_EN: return "PRAYER TIME";
             case LANG_ID: return "ADZAN";
             case LANG_MS: default: return "AZAN";
         }
@@ -825,7 +825,7 @@ final class AppLanguage {
 
     public static String strAzanPopupHint(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Press Back / OK to dismiss";
+            case LANG_EN: return "Press OK or Back to close";
             case LANG_ID: return "Tekan Kembali / OK untuk menutup";
             case LANG_MS: default: return "Tekan Back / OK untuk tutup";
         }
@@ -833,7 +833,7 @@ final class AppLanguage {
 
     public static String strAzanPopupSilentHint(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Silent Mode • Press Back to dismiss";
+            case LANG_EN: return "Silent • card only";
             case LANG_ID: return "Mode Hening • Tekan Kembali untuk menutup";
             case LANG_MS: default: return "Mod Senyap • Tekan Back untuk tutup";
         }
@@ -841,7 +841,7 @@ final class AppLanguage {
 
     public static String strAzanPopupChimeHint(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Short Chime Tone • Press Back to dismiss";
+            case LANG_EN: return "Soft chime • press OK to close";
             case LANG_ID: return "Nada Dering Singkat • Tekan Kembali untuk menutup";
             case LANG_MS: default: return "Nada Peringatan Ringkas • Tekan Back untuk tutup";
         }

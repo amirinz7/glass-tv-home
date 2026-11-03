@@ -35,7 +35,7 @@ public class MoonPhaseView extends View {
         moonPaint.setColor(0xFFF1F5F9);
 
         craterPaint.setStyle(Paint.Style.FILL);
-        craterPaint.setColor(0x2894A3B8);
+        craterPaint.setColor(0x28A89F91);
 
         shadowPaint.setStyle(Paint.Style.FILL);
         shadowPaint.setColor(0x880B1220);

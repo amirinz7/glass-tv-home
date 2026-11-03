@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.File;
@@ -25,23 +26,42 @@ import java.text.DateFormat;
 import java.util.Date;
 
 /**
- * The azan, as a floating glass card at the top of the screen over whatever was on (the app or Home stays
- * in view behind it, blurred through the card where the TV can blur). Video and music pause because the
- * azan takes the sound (audio focus). When it ends, or on Back, it closes and the app
- * underneath is where it was.
+ * The azan card: a wide panel along the bottom of the screen over whatever was on, with the prayer's
+ * name large on the left, the two answers (prayed / remind me) on the right and a thin line underneath
+ * that fills as the azan plays. The chosen azan plays whole or, if the owner picked the short version,
+ * fades out after a minute. Video and music pause because the azan takes the sound (audio focus).
+ * Back or OK closes it and the app underneath is where it was.
  */
 public class AzanActivity extends Activity {
+    private static final int AMBER = 0xFFFFC66B;
+    private static final int CREAM = 0xFFF5E1BC;
+
     private final Handler handler = new Handler(Looper.getMainLooper());
     private MediaPlayer player;
     private AudioManager audio;
     private AudioFocusRequest focus;
     private float density;
     private TextView hint;
-    /** The card stays up this long after the sound ends, so "Already prayed" / "Remind me" can be pressed. */
+    private ProgressBar progress;
+    /** The card stays up this long after the sound ends, so "Prayed" / "Remind me" can be pressed. */
     private static final long AFTER_MS = 90_000L;
     private int prayerIdx;
     /** True once the card has been on screen: until then a stop is the screensaver going, not the owner. */
     private boolean shown;
+    private int startAt;
+    private int playLength;
+
+    private final Runnable tickProgress = new Runnable() {
+        @Override
+        public void run() {
+            if (player == null || progress == null) return;
+            try {
+                int pos = player.getCurrentPosition() - startAt;
+                progress.setProgress(Math.max(0, Math.min(playLength, pos)));
+                handler.postDelayed(this, 400);
+            } catch (Exception ignored) { }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,113 +71,107 @@ public class AzanActivity extends Activity {
         setTurnScreenOn(true);
         density = getResources().getDisplayMetrics().density;
         int prayer = getIntent().getIntExtra("prayer", 4);
-        Typeface outfit = getResources().getFont(R.font.inter);
-        Typeface amiri = getResources().getFont(R.font.amiri_quran);
+        Typeface body = getResources().getFont(R.font.instrument_sans);
+        Typeface display = getResources().getFont(R.font.outfit);
 
-        // A floating card at the top of the screen; the app or Home behind it stays in view.
+        // A panel along the bottom; the app or Home behind it stays in view.
         Window w = getWindow();
         w.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        w.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+        w.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
         WindowManager.LayoutParams lp = w.getAttributes();
-        lp.y = dp(40);
+        lp.y = dp(36);
         w.setAttributes(lp);
 
-        LinearLayout card = new LinearLayout(this);
-        card.setOrientation(LinearLayout.HORIZONTAL);
-        card.setGravity(Gravity.CENTER_VERTICAL);
-        card.setPadding(dp(30), dp(20), dp(34), dp(20));
-        GradientDrawable glass = new GradientDrawable();
-        // Safe default dark glass background tint: readable over bright content even without window blur
-        glass.setColor(0xE0141C2C);
-        glass.setCornerRadius(dp(28));
-        glass.setStroke(Math.max(1, dp(1.5f)), 0x59FFFFFF);
-        card.setBackground(glass);
-        card.setClipToOutline(true);
-        card.setMinimumWidth(dp(640));
-        card.setElevation(dp(16));
+        LinearLayout panel = new LinearLayout(this);
+        panel.setOrientation(LinearLayout.VERTICAL);
+        GradientDrawable bg = new GradientDrawable();
+        bg.setColor(0xF01A1410);
+        bg.setCornerRadius(dp(10));
+        bg.setStroke(Math.max(1, dp(1)), 0x55FFC66B);
+        panel.setBackground(bg);
+        panel.setClipToOutline(true);
+        panel.setElevation(dp(14));
+        panel.setMinimumWidth(dp(760));
 
-        TextView takbir = text("ٱللَّهُ أَكْبَرُ", amiri, 40, 0xFFF5D489, 400);
-        card.addView(takbir);
-        View line = new View(this);
-        line.setBackgroundColor(0x33FFFFFF);
-        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(Math.max(1, dp(1)), dp(70));
-        llp.leftMargin = dp(26);
-        llp.rightMargin = dp(26);
-        card.addView(line, llp);
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(dp(28), dp(20), dp(24), dp(16));
 
-        LinearLayout words = new LinearLayout(this);
-        words.setOrientation(LinearLayout.VERTICAL);
+        // Left: what time it is for.
+        LinearLayout left = new LinearLayout(this);
+        left.setOrientation(LinearLayout.VERTICAL);
         String town = Location.prefs(this).getString("now_town", "");
-        String azanWord = AppLanguage.strAzanPopupTitle(this);
-        TextView label = text(town.isEmpty() ? azanWord : azanWord + "  ·  " + town.toUpperCase(java.util.Locale.ROOT), outfit, 12, 0xB3FFFFFF, 600);
-        label.setLetterSpacing(0.22f);
-        label.setGravity(Gravity.START);
-        words.addView(label);
-        String when = DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date());
-        LinearLayout nameRow = new LinearLayout(this);
-        nameRow.setOrientation(LinearLayout.HORIZONTAL);
-        nameRow.setGravity(Gravity.BOTTOM);
-        nameRow.setPadding(0, dp(2), 0, dp(2));
+        String head = AppLanguage.strAzanPopupTitle(this);
+        TextView label = text(town.isEmpty() ? head : head + "  ·  " + town.toUpperCase(java.util.Locale.ROOT), body, 12, AMBER);
+        label.setLetterSpacing(0.24f);
+        left.addView(label);
 
         String[] pNames = AppLanguage.getPrayerNames(this);
         int validPrayerIdx = Math.max(0, Math.min(prayer, pNames.length - 1));
-        TextView name = text(pNames[validPrayerIdx], outfit, 28, 0xFFFFFFFF, 500);
-        name.setSingleLine(true);
-        nameRow.addView(name);
-        TextView time = text(when, outfit, 20, 0xCCFFFFFF, 300);
-        time.setSingleLine(true);
-        time.setPadding(dp(14), 0, 0, dp(3));
-        nameRow.addView(time);
-        words.addView(nameRow);
-        hint = text(AppLanguage.strAzanPopupHint(this), outfit, 12, 0x99FFFFFF, 400);
-        hint.setGravity(Gravity.START);
-        words.addView(hint);
         prayerIdx = validPrayerIdx;
+        TextView name = text(pNames[validPrayerIdx], display, 46, CREAM);
+        name.setSingleLine(true);
+        left.addView(name);
+
+        String when = DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date());
+        TextView time = text(when, body, 18, 0xB3F5E1BC);
+        left.addView(time);
+        row.addView(left, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        // Right: the two answers, stacked.
         final boolean reminder = getIntent().getBooleanExtra("reminder", false);
-        if (reminder) {
-            label.setText("REMINDER");
-            hint.setText("Have you prayed " + pNames[validPrayerIdx] + "?");
-        }
-        LinearLayout buttons = new LinearLayout(this);
-        buttons.setOrientation(LinearLayout.HORIZONTAL);
-        buttons.setPadding(0, dp(12), 0, 0);
-        TextView done = button("Already prayed", outfit, true);
+        LinearLayout answers = new LinearLayout(this);
+        answers.setOrientation(LinearLayout.VERTICAL);
+        TextView done = button("I have prayed", body, true);
         done.setOnClickListener(v -> {
             Azan.cancelReminder(this);
             finish();
         });
-        TextView later = button("Remind in 10 minutes", outfit, false);
+        TextView later = button("Remind me in 10 min", body, false);
         later.setOnClickListener(v -> {
             Azan.remindLater(this, prayerIdx, 10);
             android.widget.Toast.makeText(this, "I will remind you in 10 minutes", android.widget.Toast.LENGTH_SHORT).show();
             finish();
         });
-        done.setGravity(Gravity.CENTER);
-        later.setGravity(Gravity.CENTER);
-        buttons.addView(done, new LinearLayout.LayoutParams(0, -2, 1f));
-        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(0, -2, 1.3f);
-        blp.leftMargin = dp(10);
-        buttons.addView(later, blp);
-        words.addView(buttons);
-        card.addView(words, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        card.setFocusable(false);
+        answers.addView(done, new LinearLayout.LayoutParams(dp(210), ViewGroup.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(dp(210), ViewGroup.LayoutParams.WRAP_CONTENT);
+        llp.topMargin = dp(8);
+        answers.addView(later, llp);
+        row.addView(answers);
+        panel.addView(row);
+
+        // Under it: the line that fills as the azan plays, and a short hint.
+        progress = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+        progress.setMax(1);
+        progress.setProgress(0);
+        progress.setProgressDrawable(progressLook());
+        panel.addView(progress, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(4)));
+
+        hint = text(AppLanguage.strAzanPopupHint(this), body, 12, 0x99F5E1BC);
+        hint.setPadding(dp(28), dp(8), dp(28), dp(10));
+        hint.setGravity(Gravity.START);
+        panel.addView(hint);
+
+        if (reminder) {
+            label.setText("REMINDER");
+            hint.setText("Have you prayed " + pNames[validPrayerIdx] + "?");
+        }
+        panel.setFocusable(false);
         done.post(done::requestFocus);
 
-        // CRITICAL FIX FOR ISSUE #5:
-        // Must call setContentView(card) FIRST so the Window creates and attaches its DecorView.
-        // On Android 14 (Chromecast Sabrina, etc.), calling setBackgroundBlurRadius before
-        // setContentView dereferences a null DecorView inside PhoneWindow and throws NullPointerException.
-        setContentView(card);
+        // setContentView first, so the window has its decor view before any blur is asked for
+        // (on some Android 14 boxes the other order throws a NullPointerException).
+        setContentView(panel);
 
         if (Build.VERSION.SDK_INT >= 31) {
             try {
                 WindowManager wm = getSystemService(WindowManager.class);
                 if (wm != null && wm.isCrossWindowBlurEnabled() && w.getDecorView() != null) {
-                    w.setBackgroundBlurRadius(dp(30));
-                    glass.setColor(0xB3101826);
+                    w.setBackgroundBlurRadius(dp(26));
+                    bg.setColor(0xCC1A1410);
                 }
             } catch (Throwable t) {
-                // Graceful fallback: keep solid frosted glass tint without crashing
                 android.util.Log.w("TvHome.Azan", "Window blur unavailable or failed: " + t.getMessage());
             }
         }
@@ -186,11 +200,26 @@ public class AzanActivity extends Activity {
         }
     }
 
-    /** A pill button: white when it is the one to press first, glass otherwise; lights up when selected. */
+    private android.graphics.drawable.Drawable progressLook() {
+        GradientDrawable track = new GradientDrawable();
+        track.setColor(0x22FFC66B);
+        GradientDrawable fill = new GradientDrawable();
+        fill.setColor(AMBER);
+        android.graphics.drawable.ClipDrawable clip = new android.graphics.drawable.ClipDrawable(
+                fill, Gravity.START, android.graphics.drawable.ClipDrawable.HORIZONTAL);
+        android.graphics.drawable.LayerDrawable layers = new android.graphics.drawable.LayerDrawable(
+                new android.graphics.drawable.Drawable[]{track, clip});
+        layers.setId(0, android.R.id.background);
+        layers.setId(1, android.R.id.progress);
+        return layers;
+    }
+
+    /** A squared button: amber outline, filled amber when it has focus. */
     private TextView button(String label, Typeface font, boolean primary) {
-        final TextView b = text(label, font, 14, primary ? 0xFF000000 : 0xFFFFFFFF, 600);
+        final TextView b = text(label, font, 14, CREAM);
         b.setSingleLine(true);
-        b.setPadding(dp(18), dp(8), dp(18), dp(8));
+        b.setGravity(Gravity.CENTER);
+        b.setPadding(dp(16), dp(10), dp(16), dp(10));
         b.setFocusable(true);
         b.setClickable(true);
         setButtonLook(b, primary, false);
@@ -200,26 +229,30 @@ public class AzanActivity extends Activity {
 
     private void setButtonLook(TextView b, boolean primary, boolean focused) {
         GradientDrawable g = new GradientDrawable();
-        g.setCornerRadius(dp(20));
-        g.setColor(focused ? 0xFFFFFFFF : primary ? 0xE6FFFFFF : 0x33FFFFFF);
-        g.setStroke(Math.max(1, dp(1)), focused ? 0xFFFFFFFF : 0x66FFFFFF);
-        b.setTextColor(focused || primary ? 0xFF000000 : 0xFFFFFFFF);
+        g.setCornerRadius(dp(6));
+        g.setColor(focused ? AMBER : primary ? 0x33FFC66B : 0x00000000);
+        g.setStroke(Math.max(1, dp(1)), focused ? AMBER : 0x88FFC66B);
+        b.setTextColor(focused ? 0xFF1A1410 : CREAM);
         b.setBackground(g);
     }
 
-    private void playChime() {
+    private void takeFocus(int contentType, int gain) {
         audio = getSystemService(AudioManager.class);
         AudioAttributes attrs = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setContentType(contentType)
                 .build();
-        focus = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+        focus = new AudioFocusRequest.Builder(gain)
                 .setAudioAttributes(attrs)
                 .setOnAudioFocusChangeListener(change -> { })
                 .build();
         audio.requestAudioFocus(focus);
+    }
+
+    private void playChime() {
+        takeFocus(AudioAttributes.CONTENT_TYPE_SONIFICATION, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
         try {
-            player = MediaPlayer.create(this, R.raw.ps5_select);
+            player = MediaPlayer.create(this, R.raw.azan_chime);
             if (player != null) {
                 player.setOnCompletionListener(mp -> handler.postDelayed(this::finish, AFTER_MS));
                 player.start();
@@ -232,20 +265,13 @@ public class AzanActivity extends Activity {
     }
 
     private void play(File file, String soundChoice) {
-        audio = getSystemService(AudioManager.class);
-        AudioAttributes attrs = new AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                .build();
         // Transient focus: Spotify and video players pause now and carry on when the azan is over.
-        focus = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
-                .setAudioAttributes(attrs)
-                .setOnAudioFocusChangeListener(change -> { })
-                .build();
-        audio.requestAudioFocus(focus);
+        takeFocus(AudioAttributes.CONTENT_TYPE_SPEECH, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
         try {
             player = new MediaPlayer();
-            player.setAudioAttributes(attrs);
+            player.setAudioAttributes(new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH).build());
             player.setDataSource(file.getPath());
             player.setOnCompletionListener(mp -> handler.postDelayed(this::finish, AFTER_MS));
             player.setOnErrorListener((mp, what, extra) -> {
@@ -253,19 +279,48 @@ public class AzanActivity extends Activity {
                 return true;
             });
             player.prepare();
-            if (Azan.SOUND_KLCC.equals(soundChoice) && file.getName().contains("klcc")) {
-                player.seekTo(Azan.KLCC_START_MS);
-            }
+            startAt = (Azan.SOUND_KLCC.equals(soundChoice) && file.getName().contains("klcc")) ? Azan.KLCC_START_MS : 0;
+            if (startAt > 0) player.seekTo(startAt);
+            int whole = Math.max(1, player.getDuration() - startAt);
+            final boolean shortVersion = Azan.isShort(this);
+            playLength = shortVersion ? Math.min(whole, Azan.SHORT_MS) : whole;
+            progress.setMax(playLength);
             player.start();
+            handler.post(tickProgress);
+            if (shortVersion && whole > Azan.SHORT_MS) {
+                handler.postDelayed(this::fadeOut, Azan.SHORT_MS - 3000);
+            }
         } catch (Exception e) {
             finish();
         }
     }
 
+    /** The short version: three seconds of fading, then the card waits for an answer as usual. */
+    private void fadeOut() {
+        final int steps = 12;
+        for (int i = 1; i <= steps; i++) {
+            final float vol = 1f - i / (float) steps;
+            handler.postDelayed(() -> {
+                if (player != null) {
+                    try { player.setVolume(vol, vol); } catch (Exception ignored) { }
+                }
+            }, i * 250L);
+        }
+        handler.postDelayed(() -> {
+            if (player != null) {
+                try { player.stop(); } catch (Exception ignored) { }
+                player.release();
+                player = null;
+            }
+            if (progress != null) progress.setProgress(progress.getMax());
+            if (audio != null && focus != null) audio.abandonAudioFocusRequest(focus);
+            handler.postDelayed(this::finish, AFTER_MS);
+        }, steps * 250L + 100);
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE
-                || keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+        if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE) {
             finish();
             return true;
         }
@@ -299,14 +354,13 @@ public class AzanActivity extends Activity {
         if (audio != null && focus != null) audio.abandonAudioFocusRequest(focus);
     }
 
-    private TextView text(String s, Typeface font, float sp, int color, int weight) {
+    private TextView text(String s, Typeface font, float sp, int color) {
         TextView t = new TextView(this);
         t.setText(s);
-        t.setTypeface(font);
+        if (font != null) t.setTypeface(font);
         t.setTextSize(sp);
         t.setTextColor(color);
-        t.setGravity(Gravity.CENTER);
-        if (font != null) t.setFontVariationSettings("'wght' " + weight);
+        t.setGravity(Gravity.START);
         return t;
     }
 

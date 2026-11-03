@@ -33,7 +33,7 @@
                 android:text="Kemas Kini Sistem &amp; Sokongan"
                 android:textColor="#FFFFFFFF"
                 android:textSize="18sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold" />
 
             <TextView
@@ -43,7 +43,7 @@
                 android:text="Glass TV Home v3.1.4 • Enjin Auto-Update (OTA)"
                 android:textColor="#B3FFFFFF"
                 android:textSize="12sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:layout_marginTop="2dp" />
         </LinearLayout>
     </LinearLayout>
@@ -79,7 +79,7 @@
                     android:text="Auto-Update: Aktif (03:30 AM)"
                     android:textColor="#FFFFFFFF"
                     android:textSize="13sp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/instrument_sans"
                     android:textStyle="bold" />
 
                 <TextView
@@ -88,7 +88,7 @@
                     android:text="Kemas kini dimuat turun dan dipasang di latar belakang tanpa mengganggu tontonan."
                     android:textColor="#99FFFFFF"
                     android:textSize="11sp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/instrument_sans"
                     android:layout_marginTop="3dp" />
             </LinearLayout>
 
@@ -101,7 +101,7 @@
                 android:text="Semak Kemas Kini Sekarang"
                 android:textColor="#FFFFFFFF"
                 android:textSize="12.5sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:focusable="true"
@@ -118,7 +118,7 @@
                 android:text="Tukar Waktu Auto-Update"
                 android:textColor="#FFFFFFFF"
                 android:textSize="12.5sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:focusable="true"
@@ -136,7 +136,7 @@
                 android:text="⚡ Matikan Auto-Update"
                 android:textColor="#FFFFFFFF"
                 android:textSize="12.5sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:focusable="true"
@@ -182,7 +182,7 @@
                     android:text="Belanja Kopi"
                     android:textColor="#FFFFFFFF"
                     android:textSize="14sp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/instrument_sans"
                     android:textStyle="bold" />
 
                 <TextView
@@ -191,7 +191,7 @@
                     android:text=" @imsomangge"
                     android:textColor="#FF90B8"
                     android:textSize="13sp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/instrument_sans"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -201,7 +201,7 @@
                 android:text="DuitNow QR • GXBank"
                 android:textColor="#80FFFFFF"
                 android:textSize="11sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:layout_marginBottom="8dp" />
 
             <!-- QR Code Card -->
@@ -219,7 +219,7 @@
                 android:text="Imbas guna kamera fon / perbankan"
                 android:textColor="#B3FFFFFF"
                 android:textSize="10.5sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:layout_marginTop="6dp" />
 
             <TextView
@@ -228,7 +228,7 @@
                 android:text="Cadangan: ahmad.anammat@me.com"
                 android:textColor="#80FFFFFF"
                 android:textSize="10sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:layout_marginTop="3dp" />
         </LinearLayout>
     </LinearLayout>
@@ -248,7 +248,7 @@
             android:text="Tutup"
             android:textColor="#FFFFFFFF"
             android:textSize="13sp"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/instrument_sans"
             android:textStyle="bold"
             android:gravity="center"
             android:focusable="true"

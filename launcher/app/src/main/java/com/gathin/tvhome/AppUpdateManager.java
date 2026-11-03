@@ -176,7 +176,7 @@ public final class AppUpdateManager {
                 int remoteVersionCode = json.optInt("versionCode", 0);
                 String remoteVersionName = json.optString("versionName", "");
                 String apkUrl = json.optString("apkUrl", "");
-                String changelog = json.optString("changelog", "Penambahbaikan prestasi dan kestabilan.");
+                String changelog = json.optString("changelog", "Faster and steadier.");
 
                 PackageManager pm = activity.getPackageManager();
                 PackageInfo pInfo = pm.getPackageInfo(activity.getPackageName(), 0);
@@ -234,8 +234,8 @@ public final class AppUpdateManager {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.Theme_TvHome_GlassDialog);
         builder.setTitle("New Update Available (v" + newVersionName + ")");
 
-        String message = "Versi Semasa: v" + currentVersionName + "\n"
-                + "Versi Terkini: v" + newVersionName + "\n\n"
+        String message = "Installed: v" + currentVersionName + "\n"
+                + "Newest: v" + newVersionName + "\n\n"
                 + "Nota Pembaharuan:\n" + changelog + "\n\n"
                 + "Would you like to update now?";
         builder.setMessage(message);

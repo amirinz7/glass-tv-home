@@ -19,9 +19,9 @@
         android:id="@+id/dailyDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#CBD5E1"
+        android:textColor="#D9CDB8"
         android:textSize="12sp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:fontVariationSettings="'wght' 500"
         android:singleLine="true" />
 
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:textColor="#FFFFFFFF"
         android:textSize="14sp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:fontVariationSettings="'wght' 600"
         android:singleLine="true" />
 
@@ -48,9 +48,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textColor="#38BDF8"
+        android:textColor="#FFB347"
         android:textSize="11sp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:fontVariationSettings="'wght' 600"
         android:singleLine="true" />
 </LinearLayout>

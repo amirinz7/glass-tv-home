@@ -6,10 +6,10 @@
     <!-- Back Cloud (Slate Gray) -->
     <path
         android:pathData="M24,30 L36,30 A5,5 0 0,0 41,25 A5,5 0 0,0 36,20 L24,20 A5,5 0 0,0 19,25 A5,5 0 0,0 24,30 Z"
-        android:fillColor="#94A3B8" />
+        android:fillColor="#A89F91" />
     <path
         android:pathData="M30,19m-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0"
-        android:fillColor="#94A3B8" />
+        android:fillColor="#A89F91" />
 
     <!-- Front Cloud (Pure White) -->
     <path

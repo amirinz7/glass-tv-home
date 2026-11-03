@@ -62,7 +62,7 @@ public class HourlyWeatherGraphView extends View {
 
     private void init(Context context) {
         try {
-            interTypeface = ResourcesCompat.getFont(context, R.font.inter);
+            interTypeface = ResourcesCompat.getFont(context, R.font.instrument_sans);
         } catch (Exception ignored) {
             interTypeface = Typeface.DEFAULT;
         }
@@ -87,7 +87,7 @@ public class HourlyWeatherGraphView extends View {
         tempTextPaint.setTypeface(interTypeface != null ? Typeface.create(interTypeface, Typeface.BOLD) : Typeface.DEFAULT_BOLD);
         tempTextPaint.setShadowLayer(3.0f * density, 0, 1.0f * density, 0x80000000);
 
-        timeTextPaint.setColor(0xFF94A3B8); // Slate 400
+        timeTextPaint.setColor(0xFFA89F91); // Slate 400
         timeTextPaint.setTextSize(11.5f * density);
         timeTextPaint.setTextAlign(Paint.Align.CENTER);
         timeTextPaint.setTypeface(interTypeface != null ? interTypeface : Typeface.DEFAULT);

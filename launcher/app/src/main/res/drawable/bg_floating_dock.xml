@@ -9,8 +9,8 @@
                 android:startColor="#400A101D"
                 android:centerColor="#26121B2A"
                 android:endColor="#400A101D" />
-            <corners android:radius="28dp" />
-            <stroke android:width="1.2dp" android:color="#4067E8F9" />
+            <corners android:radius="17dp" />
+            <stroke android:width="1.2dp" android:color="#40FFC66B" />
         </shape>
     </item>
     <item android:bottom="80dp">
@@ -20,7 +20,7 @@
                 android:angle="270"
                 android:startColor="#26FFFFFF"
                 android:endColor="#00000000" />
-            <corners android:topLeftRadius="28dp" android:topRightRadius="28dp" />
+            <corners android:topLeftRadius="17dp" android:topRightRadius="17dp" />
         </shape>
     </item>
 </layer-list>

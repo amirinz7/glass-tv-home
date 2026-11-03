@@ -75,14 +75,33 @@ final class Azan {
         prefs(ctx).edit().putString("sound_choice", choice).apply();
     }
 
+    /** How long a short azan plays before it fades out. */
+    static final int SHORT_MS = 50_000;
+
+    static boolean isShort(Context ctx) {
+        return prefs(ctx).getBoolean("short", false);
+    }
+
+    static void setShort(Context ctx, boolean on) {
+        prefs(ctx).edit().putBoolean("short", on).apply();
+    }
+
     static String soundLabel(String choice) {
-        if (SOUND_MADINAH.equals(choice)) return "Azan Masjid Nabawi Madinah";
-        if (SOUND_KLCC.equals(choice)) return "Azan Masjid As-Syakirin KLCC";
-        if (SOUND_SINGAPORE.equals(choice)) return "Azan Singapura (Masjid Sultan)";
-        if (SOUND_INDONESIA.equals(choice)) return "Adzan Indonesia (Masjid Istiqlal / Nasional)";
-        if (SOUND_CHIME.equals(choice)) return "Nada Chime Lembut (Ringkas)";
-        if (SOUND_SILENT.equals(choice)) return "Silent (Visual only)";
-        return "Azan Masjidil Haram Makkah";
+        if (SOUND_MADINAH.equals(choice)) return "Madinah, Masjid an-Nabawi";
+        if (SOUND_KLCC.equals(choice)) return "Kuala Lumpur, Masjid As-Syakirin";
+        if (SOUND_SINGAPORE.equals(choice)) return "Singapore, Masjid Sultan";
+        if (SOUND_INDONESIA.equals(choice)) return "Indonesia, Masjid Istiqlal";
+        if (SOUND_CHIME.equals(choice)) return "Soft chime (about 5 seconds)";
+        if (SOUND_SILENT.equals(choice)) return "Silent, card only";
+        return "Makkah, Masjid al-Haram";
+    }
+
+    /** The voice and, for a recording, how much of it plays. */
+    static String summary(Context ctx) {
+        String c = getSoundChoice(ctx);
+        String label = soundLabel(c);
+        if (SOUND_CHIME.equals(c) || SOUND_SILENT.equals(c)) return label;
+        return label + "  ·  " + (isShort(ctx) ? "short" : "whole azan");
     }
 
     /** Sets the alarm for the next prayer that is on, today or tomorrow; clears it when none is. */

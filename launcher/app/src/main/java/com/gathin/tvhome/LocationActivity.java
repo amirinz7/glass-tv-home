@@ -35,7 +35,7 @@ public class LocationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         density = getResources().getDisplayMetrics().density;
-        outfit = getResources().getFont(R.font.inter);
+        outfit = getResources().getFont(R.font.instrument_sans);
         Location.Zone now = Location.chosen(this);
         if (now == null) now = Location.byCode(getIntent().getStringExtra("zone"));
         current = now == null ? null : now.code;
@@ -50,8 +50,8 @@ public class LocationActivity extends Activity {
         String hintText;
         switch (lang) {
             case AppLanguage.LANG_EN:
-                subtitle = "Where is this TV? Prayer times follow your zone, and the weather follows its main town.";
-                hintText = "OK: choose  ·  Back: leave it as it is";
+                subtitle = "Tell us where this TV lives: prayer times use your zone and the weather uses the nearest big town.";
+                hintText = "OK to pick  ·  Back to keep what you have";
                 break;
             case AppLanguage.LANG_ID:
                 subtitle = "Where is this TV? Prayer times follow the zone, and weather follows the main city.";

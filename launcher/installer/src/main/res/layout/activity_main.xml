@@ -40,7 +40,7 @@
                     android:text="Glass TV Installer"
                     android:textColor="#FFFFFFFF"
                     android:textSize="22sp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/instrument_sans"
                     android:textStyle="bold" />
 
                 <TextView
@@ -49,7 +49,7 @@
                     android:text="Pemasang Mudah Android TV dari Telefon / Tablet"
                     android:textColor="#B3FFFFFF"
                     android:textSize="13sp"
-                    android:fontFamily="@font/inter" />
+                    android:fontFamily="@font/instrument_sans" />
             </LinearLayout>
 
             <TextView
@@ -61,7 +61,7 @@
                 android:text="v3.1.4"
                 android:textColor="#FF90B8"
                 android:textSize="12sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -80,7 +80,7 @@
                 android:text="📡 Sambungan Android TV (Wi-Fi)"
                 android:textColor="#FFFFFFFF"
                 android:textSize="15sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
 
@@ -91,7 +91,7 @@
                 android:text="IP Telefon Anda: Menyemak..."
                 android:textColor="#80FFFFFF"
                 android:textSize="12sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:layout_marginBottom="12dp" />
 
             <LinearLayout
@@ -110,7 +110,7 @@
                     android:textColorHint="#66FFFFFF"
                     android:textColor="#FFFFFFFF"
                     android:textSize="14sp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/instrument_sans"
                     android:paddingHorizontal="14dp"
                     android:inputType="textUri"
                     android:layout_marginEnd="8dp" />
@@ -123,7 +123,7 @@
                     android:text="5555"
                     android:textColor="#FFFFFFFF"
                     android:textSize="14sp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/instrument_sans"
                     android:gravity="center"
                     android:inputType="number" />
             </LinearLayout>
@@ -136,7 +136,7 @@
                 android:text="🔍 Imbas Android TV di Rangkaian Wi-Fi"
                 android:textColor="#FFFFFFFF"
                 android:textSize="13sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold"
                 android:textAllCaps="false" />
         </LinearLayout>
@@ -156,7 +156,7 @@
                 android:text="🚀 Pasang Glass TV Home"
                 android:textColor="#FFFFFFFF"
                 android:textSize="15sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp" />
 
@@ -168,7 +168,7 @@
                 android:text="Pasang ke TV Sekarang"
                 android:textColor="#0C0E14"
                 android:textSize="15sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold"
                 android:textAllCaps="false"
                 android:layout_marginBottom="10dp" />
@@ -192,7 +192,7 @@
                 android:text="Status: Masukkan IP TV atau tekan 'Imbas' untuk memulakan."
                 android:textColor="#B3FFFFFF"
                 android:textSize="12.5sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:layout_marginBottom="14dp" />
 
             <LinearLayout
@@ -209,7 +209,7 @@
                     android:text="▶️ Buka di TV"
                     android:textColor="#FFFFFFFF"
                     android:textSize="12.5sp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/instrument_sans"
                     android:textAllCaps="false"
                     android:layout_marginEnd="8dp" />
 
@@ -222,7 +222,7 @@
                     android:text="🌐 Pelayan Web TV"
                     android:textColor="#FFFFFFFF"
                     android:textSize="12.5sp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/instrument_sans"
                     android:textAllCaps="false" />
             </LinearLayout>
 
@@ -232,9 +232,9 @@
                 android:layout_height="42dp"
                 android:background="@drawable/bg_btn_glass"
                 android:text="🏠 Ubah Butang Home Remote (Set Default Launcher)"
-                android:textColor="#38BDF8"
+                android:textColor="#FFB347"
                 android:textSize="12.5sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold"
                 android:textAllCaps="false"
                 android:layout_marginTop="8dp" />
@@ -245,7 +245,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#FF90B8"
                 android:textSize="12sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:visibility="gone"
@@ -267,7 +267,7 @@
                 android:text="📖 Cara Sediakan TV Anda (Sekali Sahaja)"
                 android:textColor="#FFFFFFFF"
                 android:textSize="14sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold"
                 android:layout_marginBottom="10dp" />
 
@@ -277,7 +277,7 @@
                 android:text="1️⃣ Pada TV, pergi ke Settings > Device Preferences > About > tekan 'Android TV OS build' 7 kali berturut-turut untuk aktifkan Developer Options.\n\n2️⃣ Kembali ke Settings > Developer Options > aktifkan 'USB Debugging' dan 'Wireless Debugging' (jika ada).\n\n3️⃣ Pastikan telefon dan TV bersambung pada Wi-Fi yang sama, kemudian tekan 'Pasang Sekarang'."
                 android:textColor="#99FFFFFF"
                 android:textSize="12.5sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:lineSpacingExtra="3dp" />
         </LinearLayout>
 
@@ -311,7 +311,7 @@
                     android:text="Belanja Kopi"
                     android:textColor="#FFFFFFFF"
                     android:textSize="15sp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/instrument_sans"
                     android:textStyle="bold" />
 
                 <TextView
@@ -320,7 +320,7 @@
                     android:text=" @imsomangge"
                     android:textColor="#FF90B8"
                     android:textSize="14sp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/instrument_sans"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -330,7 +330,7 @@
                 android:text="DuitNow QR • GXBank"
                 android:textColor="#80FFFFFF"
                 android:textSize="12sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:layout_marginBottom="12dp" />
 
             <ImageView
@@ -347,7 +347,7 @@
                 android:text="Imbas guna kamera fon / perbankan untuk sokong pembangunan launcher."
                 android:textColor="#99FFFFFF"
                 android:textSize="11.5sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:gravity="center"
                 android:layout_marginBottom="10dp" />
 
@@ -357,7 +357,7 @@
                 android:text="📧 Cadangan &amp; Maklum Balas: ahmad.anammat@me.com"
                 android:textColor="#CCFFFFFF"
                 android:textSize="12.5sp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>

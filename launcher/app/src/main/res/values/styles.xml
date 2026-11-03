@@ -36,7 +36,7 @@
         <item name="android:textColor">#FFFFFFFF</item>
         <item name="android:textColorPrimary">#FFFFFFFF</item>
         <item name="android:textColorSecondary">#F0FFFFFF</item>
-        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/instrument_sans</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">15sp</item>
         <item name="android:windowTitleStyle">@style/GlassDialogTitle</item>
@@ -46,7 +46,7 @@
     </style>
 
     <style name="GlassDialogTitle" parent="android:Widget.Material.TextView">
-        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/instrument_sans</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">#FFFFFFFF</item>
@@ -57,7 +57,7 @@
     </style>
 
     <style name="GlassDialogMessage" parent="android:Widget.Material.TextView">
-        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/instrument_sans</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">#F0FFFFFF</item>
@@ -74,7 +74,7 @@
     </style>
 
     <style name="GlassDialogButton" parent="android:Widget.Material.Button.Borderless">
-        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/instrument_sans</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">#FFFFFFFF</item>
@@ -95,7 +95,7 @@
         <item name="android:background">@drawable/pill_bg</item>
         <item name="android:textColor">@drawable/pill_text</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/instrument_sans</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="android:drawablePadding">7dp</item>
         <item name="android:drawableTint">@drawable/pill_text</item>

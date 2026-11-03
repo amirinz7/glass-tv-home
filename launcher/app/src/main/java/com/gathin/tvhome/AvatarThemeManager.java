@@ -62,8 +62,8 @@ public class AvatarThemeManager {
     public static final int[] BG_PALETTE = new int[]{
             0xFF141720, // Kaca Gelap (Dark Glass default)
             0xFFFAFAFA, // Putih Krim (Light mode default)
-            0xFF1E293B, // Fajar Kelabu (Deep Slate)
-            0xFF0F172A, // Biru Gelap (Royal Navy)
+            0xFF2A2019, // Fajar Kelabu (Deep Slate)
+            0xFF1A1410, // Biru Gelap (Royal Navy)
             0xFF2E1065, // Ungu Malam (Night Violet)
             0xFF064E3B, // Hijau Gelap (Forest Dark)
             0xFF111827, // Hitam Obsidian (Obsidian)

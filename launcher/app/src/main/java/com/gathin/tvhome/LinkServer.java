@@ -119,7 +119,7 @@ final class LinkServer {
                 + "</style></head><body><h2>Google Calendar link</h2>"
                 + (message != null ? "<p><b>" + message + "</b></p>" : "")
                 + "<p>Paste the <b>Secret address in iCal format</b>. It is read only.</p>"
-                + "<ol><li>Open <a style='color:#38bdf8' href='https://calendar.google.com/calendar/u/0/r/settings'>Google Calendar settings</a> in the phone browser "
+                + "<ol><li>Open <a style='color:#FFB347' href='https://calendar.google.com/calendar/u/0/r/settings'>Google Calendar settings</a> in the phone browser "
                 + "(use Chrome and tick <i>Desktop site</i>; the Google Calendar app does not show it).</li>"
                 + "<li>Under <i>Settings for my calendars</i> tap your calendar.</li>"
                 + "<li>Scroll to <i>Integrate calendar</i> and copy <i>Secret address in iCal format</i> (it ends in basic.ics).</li>"

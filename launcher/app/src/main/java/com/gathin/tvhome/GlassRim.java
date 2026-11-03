@@ -39,12 +39,12 @@ final class GlassRim {
         // Thin-film iridescent interference spectrum inspired by ReactDrops soap-bubble:
         // Pure brilliant specular white -> electric cyan -> soap violet -> gold pearl glint -> clear glass -> ambient twilight bounce -> specular return
         int cWhiteGlint = modulateAlpha(0xFFFFFFFF, alphaFactor);
-        int cCyanShimmer = modulateAlpha(0xCC67E8F9, alphaFactor);
+        int cCyanShimmer = modulateAlpha(0xCCFFC66B, alphaFactor);
         int cVioletSoap = modulateAlpha(0xB3C084FC, alphaFactor);
         int cGoldSheen = modulateAlpha(0x80FDE047, alphaFactor);
         int cClearWaist = modulateAlpha(faint != 0 ? faint : 0x22FFFFFF, alphaFactor);
         int cTwilightLilac = modulateAlpha(0x59818CF8, alphaFactor);
-        int cSkyCyan = modulateAlpha(0x8038BDF8, alphaFactor);
+        int cSkyCyan = modulateAlpha(0x80FFB347, alphaFactor);
         int cWhiteRim = modulateAlpha(0xD9FFFFFF, alphaFactor);
 
         int[] colors = new int[]{
@@ -80,7 +80,7 @@ final class GlassRim {
                 0x00FFFFFF,
                 0x00FFFFFF,
                 0xD9FFFFFF,
-                0x8067E8F9,
+                0x80FFC66B,
                 0x00FFFFFF,
                 0x00FFFFFF
         };

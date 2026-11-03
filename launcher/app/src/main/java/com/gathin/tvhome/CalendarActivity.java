@@ -692,7 +692,7 @@ public class CalendarActivity extends Activity {
         if (qr != null) iv.setImageBitmap(qr);
         white.addView(iv, new FrameLayout.LayoutParams((int) (200 * d), (int) (200 * d)));
         box.addView(white, new LinearLayout.LayoutParams(-2, -2));
-        TextView link = text(url, 14f, 0xFF38BDF8, true);
+        TextView link = text(url, 14f, 0xFFFFB347, true);
         link.setPadding(0, (int) (8 * d), 0, 0);
         box.addView(link);
         qrDialog = new AlertDialog.Builder(this)

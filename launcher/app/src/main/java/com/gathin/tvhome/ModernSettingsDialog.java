@@ -82,7 +82,7 @@ public final class ModernSettingsDialog {
 
         float density = activity.getResources().getDisplayMetrics().density;
         DisplayMetrics dm = activity.getResources().getDisplayMetrics();
-        Typeface outfit = activity.getResources().getFont(R.font.inter);
+        Typeface outfit = activity.getResources().getFont(R.font.instrument_sans);
 
         AlertDialog[] dialogHolder = new AlertDialog[1];
         int[] activeTab = new int[]{TAB_HOME_SCREEN};
@@ -411,7 +411,7 @@ public final class ModernSettingsDialog {
             TextView lbl = new TextView(activity);
             lbl.setText(item.label);
             lbl.setTextSize(13f);
-            lbl.setTextColor(0xFFE2E8F0);
+            lbl.setTextColor(0xFFF1E7D3);
             lbl.setTypeface(outfit, Typeface.NORMAL);
             row.addView(lbl);
 
@@ -616,7 +616,7 @@ public final class ModernSettingsDialog {
                         TextView tvTag = new TextView(activity);
                         tvTag.setText("Active ");
                         tvTag.setTextSize(11f);
-                        tvTag.setTextColor(0xFF38BDF8);
+                        tvTag.setTextColor(0xFFFFB347);
                         tvTag.setTypeface(outfit, Typeface.BOLD);
                         pRow.addView(tvTag);
                     } else if (allProfiles.size() > 1) {
@@ -751,10 +751,6 @@ public final class ModernSettingsDialog {
                         activity.isWeatherWidgetEnabled(), isChecked -> {
                             activity.setWeatherWidgetEnabled(isChecked);
                         }));
-
-                rightContent.addView(buildCardRow(activity, density, outfit,
-                        "UI Sound Effects", "Choose: PS5, Nintendo Switch, Xbox, or Off",
-                        activity::showSoundEffectsDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
                         "Azan Settings & Options", "Azan audio (Makkah/Madinah/KLCC) & prayer time popup",
@@ -1060,33 +1056,35 @@ public final class ModernSettingsDialog {
     /** The Control Centre on its own, opened from the button in the top bar. */
     public static void showControl(MainActivity activity) {
         if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
-        SoundEffects.playSelect();
+        activity.restoreHomeWallpaperNow();
         float density = activity.getResources().getDisplayMetrics().density;
-        Typeface font = activity.getResources().getFont(R.font.inter);
+        Typeface font = activity.getResources().getFont(R.font.instrument_sans);
         final AlertDialog[] holder = new AlertDialog[1];
         LinearLayout panel = new LinearLayout(activity);
         panel.setOrientation(LinearLayout.VERTICAL);
         panel.setClipChildren(false);
         panel.setPadding((int) (14 * density), (int) (14 * density), (int) (14 * density), (int) (10 * density));
         buildControlTiles(activity, density, font, panel, holder);
+        GradientDrawable drawer = new GradientDrawable();
+        drawer.setColor(0xFA1A1410);
+        drawer.setCornerRadii(new float[]{18 * density, 18 * density, 0, 0, 0, 0, 18 * density, 18 * density});
+        panel.setBackground(drawer);
+        panel.setPadding((int) (18 * density), (int) (22 * density), (int) (18 * density), (int) (16 * density));
         AlertDialog dlg = new AlertDialog.Builder(activity, R.style.Theme_TvHome_GlassDialog).setView(panel).create();
         holder[0] = dlg;
         dlg.show();
-        try { activity.glassify(dlg); } catch (Throwable ignored) { }
         android.view.Window win = dlg.getWindow();
         if (win != null) {
+            win.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
             DisplayMetrics dm = activity.getResources().getDisplayMetrics();
-            win.setLayout(Math.min((int) (420 * density), (int) (dm.widthPixels * 0.5f)), ViewGroup.LayoutParams.WRAP_CONTENT);
+            win.setLayout(Math.min((int) (470 * density), (int) (dm.widthPixels * 0.5f)), ViewGroup.LayoutParams.MATCH_PARENT);
             win.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
             android.view.WindowManager.LayoutParams wl = win.getAttributes();
-            wl.x = (int) (24 * density);
-            wl.dimAmount = 0.15f;
+            wl.dimAmount = 0.45f;
             win.setAttributes(wl);
         }
-        if (panel.getChildCount() > 1 && panel.getChildAt(1) instanceof ViewGroup) {
-            ViewGroup first = (ViewGroup) panel.getChildAt(1);
-            if (first.getChildCount() > 0) first.getChildAt(0).requestFocus();
-        }
+        Object first = panel.getTag();
+        if (first instanceof View) ((View) first).requestFocus();
     }
 
     private static void glassShow(MainActivity activity, android.app.AlertDialog dlg) {
@@ -1171,100 +1169,164 @@ public final class ModernSettingsDialog {
                 .setPositiveButton("Close", null).create());
     }
 
-    /** iOS-style control centre: rounded frosted tiles, three to a row; OK on a tile runs it. */
+    /** One Control Centre tile: its own colour, a letter badge, a title and a line under it. */
+    private static LinearLayout controlTile(MainActivity activity, float density, Typeface font, String glyph,
+                                            String title, String sub, int accent, boolean active, boolean big, Runnable action) {
+        final LinearLayout tile = new LinearLayout(activity);
+        tile.setOrientation(LinearLayout.VERTICAL);
+        tile.setGravity(Gravity.BOTTOM | Gravity.START);
+        tile.setFocusable(true);
+        tile.setClickable(true);
+        final int pad = (int) (12 * density);
+        tile.setPadding(pad, pad, pad, pad);
+        applyControlLook(tile, density, accent, active, false);
+
+        TextView badge = new TextView(activity);
+        badge.setText(glyph);
+        badge.setGravity(Gravity.CENTER);
+        badge.setTextSize(big ? 17f : 14f);
+        badge.setTypeface(font, Typeface.BOLD);
+        badge.setTextColor(active ? accent : 0xFFFFFFFF);
+        GradientDrawable disc = new GradientDrawable();
+        disc.setShape(GradientDrawable.OVAL);
+        disc.setColor(active ? 0xFFFFFFFF : 0x40FFFFFF);
+        badge.setBackground(disc);
+        int bs = (int) ((big ? 38 : 30) * density);
+        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(bs, bs);
+        blp.bottomMargin = (int) (6 * density);
+        tile.addView(badge, blp);
+
+        TextView t1 = new TextView(activity);
+        t1.setText(title);
+        t1.setTextSize(big ? 17f : 13.5f);
+        t1.setTextColor(0xFFFFFFFF);
+        t1.setTypeface(font, Typeface.BOLD);
+        t1.setSingleLine(true);
+        tile.addView(t1);
+
+        TextView t2 = new TextView(activity);
+        t2.setText(sub);
+        t2.setTextSize(10f);
+        t2.setTextColor(0xCCFFFFFF);
+        t2.setTypeface(font, Typeface.NORMAL);
+        t2.setSingleLine(true);
+        t2.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        tile.addView(t2);
+
+        tile.setOnFocusChangeListener((v, has) -> {
+            applyControlLook(v, density, accent, active, has);
+            v.animate().scaleX(has ? 1.05f : 1f).scaleY(has ? 1.05f : 1f).setDuration(120).start();
+            if (has) v.bringToFront();
+        });
+        tile.setOnClickListener(v -> action.run());
+        return tile;
+    }
+
+    private static void applyControlLook(View tile, float density, int accent, boolean active, boolean focused) {
+        int dark = Color.rgb((int) (Color.red(accent) * 0.45f), (int) (Color.green(accent) * 0.45f), (int) (Color.blue(accent) * 0.45f));
+        GradientDrawable g = new GradientDrawable(GradientDrawable.Orientation.TL_BR,
+                active ? new int[]{accent, accent} : new int[]{accent, dark});
+        g.setCornerRadius(11 * density);
+        g.setStroke((int) ((focused ? 3f : 0f) * density), 0xFFFFFFFF);
+        tile.setBackground(g);
+    }
+
+    /** The Control Centre: coloured tiles of different sizes, stacked in a bento grid. OK on a tile runs it. */
     private static void buildControlTiles(MainActivity activity, float density, Typeface font, LinearLayout out, AlertDialog[] holder) {
-        addHeader(out, font, "Control Centre");
-        final boolean azanOn = Azan.isMasterEnabled(activity);
+        TextView head = new TextView(activity);
+        head.setText("Quick Panel");
+        head.setTextSize(26);
+        head.setTextColor(0xFFF5E1BC);
+        head.setTypeface(font, Typeface.BOLD);
+        out.addView(head);
+        TextView sub = new TextView(activity);
+        sub.setText(new java.text.SimpleDateFormat("EEEE, d MMMM", java.util.Locale.getDefault()).format(new java.util.Date()));
+        sub.setTextSize(12);
+        sub.setTextColor(0x99F5E1BC);
+        sub.setTypeface(font, Typeface.NORMAL);
+        sub.setPadding(0, 0, 0, (int) (14 * density));
+        out.addView(sub);
+
         final Runnable close = () -> { if (holder[0] != null) holder[0].dismiss(); };
         final Runnable again = () -> { close.run(); ModernSettingsDialog.showControl(activity); };
         final android.media.AudioManager am = (android.media.AudioManager) activity.getSystemService(android.content.Context.AUDIO_SERVICE);
         final boolean muted = am != null && am.isStreamMute(android.media.AudioManager.STREAM_MUSIC);
         final String doaName = DoaList.current().count;
-        final String[][] tiles = {
-                {"", "Calendar", "Holidays and events", "0"},
-                {"", "Prayer times", "Next 7 days", "0"},
-                {"", "Weather", "Radar and forecast", "0"},
-                {"", "Doa of the day", doaName, "0"},
-                {"", "Tasbih", "Count zikir", "0"},
-                {"", muted ? "Unmute" : "Mute", muted ? "Sound is off" : "Sound is on", muted ? "1" : "0"},
-                {"", "TV info", "Model, IP, version", "0"},
-                {"", "Android settings", "Original menu", "0"},
-                {"", "Refresh calendar", "Holidays and Google", "0"},
-                {"", "Google Home", "Assistant for your home", "0"}
-        };
-        final Runnable[] actions = {
-                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(activity, CalendarActivity.class)); },
-                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(activity, PrayerActivity.class)); },
-                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(activity, WeatherActivity.class)); },
-                () -> { close.run(); showDoaToday(activity); },
-                () -> { close.run(); showTasbih(activity); },
+
+        final LinearLayout calendar = controlTile(activity, density, font, "C", "Calendar", "Holidays and events", 0xFFFF7A59, false, true,
+                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(activity, CalendarActivity.class)); });
+        final LinearLayout weather = controlTile(activity, density, font, "W", "Weather", "Radar, forecast", 0xFF3D9BFF, false, false,
+                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(activity, WeatherActivity.class)); });
+        final LinearLayout prayer = controlTile(activity, density, font, "P", "Prayer times", "Next 7 days", 0xFF1FBF9A, false, true,
+                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(activity, PrayerActivity.class)); });
+        final LinearLayout doa = controlTile(activity, density, font, "D", "Doa of the day", doaName, 0xFF9B7BFF, false, false,
+                () -> { close.run(); showDoaToday(activity); });
+        final LinearLayout tasbih = controlTile(activity, density, font, "T", "Tasbih", "Count zikir", 0xFFFFB347, false, false,
+                () -> { close.run(); showTasbih(activity); });
+        final LinearLayout home = controlTile(activity, density, font, "G", "Google Home", "Lights, plugs and cameras", 0xFFEF5DA8, false, true,
+                () -> { close.run(); activity.openGoogleHome(); });
+        final LinearLayout mute = controlTile(activity, density, font, "M", muted ? "Unmute" : "Mute", muted ? "Sound is off" : "Sound is on", 0xFFFF5A6E, muted, false,
                 () -> {
                     if (am != null) am.adjustStreamVolume(android.media.AudioManager.STREAM_MUSIC,
                             muted ? android.media.AudioManager.ADJUST_UNMUTE : android.media.AudioManager.ADJUST_MUTE, 0);
                     again.run();
-                },
-                () -> { close.run(); showTvInfo(activity); },
-                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(Settings.ACTION_SETTINGS)); },
+                });
+        final LinearLayout info = controlTile(activity, density, font, "i", "TV info", "Model, IP, version", 0xFF7C7367, false, false,
+                () -> { close.run(); showTvInfo(activity); });
+        final LinearLayout android = controlTile(activity, density, font, "A", "Android", "Original settings", 0xFF5B6472, false, false,
+                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(Settings.ACTION_SETTINGS)); });
+        final LinearLayout refresh = controlTile(activity, density, font, "R", "Refresh", "Calendar", 0xFF2BB5C4, false, false,
                 () -> {
                     close.run();
                     CalendarData.refresh(activity, true, null);
                     Toast.makeText(activity, "Refreshing the calendar...", Toast.LENGTH_SHORT).show();
-                },
-                () -> { close.run(); activity.openGoogleHome(); }
-        };
-        // Not every tile is the same size: some are wide, and the rows differ in height.
-        final int[][] rows = {{0, 1}, {2, 3}, {4, 5, 6}, {7, 8, 9}};
-        final int[][] spans = {{2, 1}, {1, 2}, {1, 1, 1}, {1, 1, 1}};
-        final int[] heights = {92, 72, 72, 64};
-        for (int row = 0; row < rows.length; row++) {
-            LinearLayout line = new LinearLayout(activity);
-            line.setOrientation(LinearLayout.HORIZONTAL);
-            line.setClipChildren(false);
-            for (int col = 0; col < rows[row].length; col++) {
-                final int idx = rows[row][col];
-                final boolean active = "1".equals(tiles[idx][3]);
-                LinearLayout tile = new LinearLayout(activity);
-                tile.setOrientation(LinearLayout.VERTICAL);
-                tile.setGravity(Gravity.CENTER);
-                tile.setFocusable(true);
-                tile.setClickable(true);
-                tile.setPadding((int) (8 * density), (int) (8 * density), (int) (8 * density), (int) (8 * density));
-                setTileLook(tile, density, active, false);
-                TextView t1 = new TextView(activity);
-                t1.setText(tiles[idx][1]);
-                t1.setTextSize(row == 0 ? 15f : 12.5f);
-                t1.setTextColor(0xFFFFFFFF);
-                t1.setTypeface(font, Typeface.BOLD);
-                t1.setGravity(Gravity.CENTER);
-                t1.setSingleLine(true);
-                tile.addView(t1);
-                TextView t2 = new TextView(activity);
-                t2.setText(tiles[idx][2]);
-                t2.setTextSize(9.5f);
-                t2.setTextColor(active ? 0xFFFFFFFF : 0xB3FFFFFF);
-                t2.setTypeface(font, Typeface.NORMAL);
-                t2.setGravity(Gravity.CENTER);
-                t2.setSingleLine(true);
-                t2.setEllipsize(android.text.TextUtils.TruncateAt.END);
-                tile.addView(t2);
-                tile.setOnFocusChangeListener((v, has) -> setTileLook(v, density, active, has));
-                tile.setOnClickListener(v -> { SoundEffects.playSelect(); actions[idx].run(); });
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, (int) (heights[row] * density), spans[row][col]);
-                lp.setMargins((int) (4 * density), (int) (4 * density), (int) (4 * density), (int) (4 * density));
-                line.addView(tile, lp);
-            }
-            out.addView(line, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        }
+                });
+
+        // Row 1: a wide tile and a narrow one.
+        LinearLayout r1 = bentoRow(activity, density);
+        addTile(r1, calendar, 2f, 96, density);
+        addTile(r1, weather, 1f, 96, density);
+        out.addView(r1);
+        // Row 2: one tall tile on the left; two stacked on the right.
+        LinearLayout r2 = bentoRow(activity, density);
+        addTile(r2, prayer, 1f, 156, density);
+        LinearLayout stack = new LinearLayout(activity);
+        stack.setOrientation(LinearLayout.VERTICAL);
+        stack.setClipChildren(false);
+        addTile(stack, doa, 0f, 74, density);
+        addTile(stack, tasbih, 0f, 74, density);
+        r2.addView(stack, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2f));
+        out.addView(r2);
+        // Row 3: Google Home is wide, mute is narrow.
+        LinearLayout r3 = bentoRow(activity, density);
+        addTile(r3, home, 2f, 84, density);
+        addTile(r3, mute, 1f, 84, density);
+        out.addView(r3);
+        // Row 4: three small ones.
+        LinearLayout r4 = bentoRow(activity, density);
+        addTile(r4, info, 1f, 78, density);
+        addTile(r4, android, 1f, 78, density);
+        addTile(r4, refresh, 1f, 78, density);
+        out.addView(r4);
+
+        out.setTag(calendar);
     }
 
-    private static void setTileLook(View tile, float density, boolean active, boolean focused) {
-        GlassDrawable glass = new GlassDrawable(tile, 28 * density, density, null, 0.4f);
-        Backdrop.watch(tile);
-        GradientDrawable tint = new GradientDrawable();
-        tint.setCornerRadius(28 * density);
-        tint.setColor(active ? 0xB334C759 : focused ? 0x40FFFFFF : 0x00000000);
-        tint.setStroke((int) ((focused ? 2f : 0f) * density), 0xFFFFFFFF);
-        tile.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{glass, GlassPage.veil(28 * density, 0x59101522), tint}));
+    private static LinearLayout bentoRow(MainActivity activity, float density) {
+        LinearLayout row = new LinearLayout(activity);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setClipChildren(false);
+        return row;
+    }
+
+    private static void addTile(LinearLayout parent, View tile, float weight, int heightDp, float density) {
+        boolean horizontal = parent.getOrientation() == LinearLayout.HORIZONTAL;
+        LinearLayout.LayoutParams lp = horizontal
+                ? new LinearLayout.LayoutParams(0, (int) (heightDp * density), weight)
+                : new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (heightDp * density));
+        int m = (int) (4 * density);
+        lp.setMargins(m, m, m, m);
+        parent.addView(tile, lp);
     }
 
     private static void addHeader(LinearLayout root, Typeface font, String title) {
@@ -1432,7 +1494,7 @@ public final class ModernSettingsDialog {
         TextView tvTitle = new TextView(ctx);
         tvTitle.setText(title);
         tvTitle.setTextSize(13.5f);
-        tvTitle.setTextColor(0xFFE2E8F0);
+        tvTitle.setTextColor(0xFFF1E7D3);
         tvTitle.setTypeface(font, Typeface.BOLD);
         card.addView(tvTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
@@ -1717,7 +1779,7 @@ public final class ModernSettingsDialog {
                 : "Current launcher: " + activePkg + "\nChoose one of the methods below to make Glass TV your main launcher:";
         tvDesc.setText(desc);
         tvDesc.setTextSize(12.5f);
-        tvDesc.setTextColor(isDefault ? 0xFF34D399 : 0xFF94A3B8);
+        tvDesc.setTextColor(isDefault ? 0xFF34D399 : 0xFFA89F91);
         tvDesc.setTypeface(font, Typeface.NORMAL);
         tvDesc.setIncludeFontPadding(false);
         tvDesc.setPadding(0, 0, 0, Math.round(14 * density));
@@ -1742,7 +1804,7 @@ public final class ModernSettingsDialog {
                 "Open TV Launcher Picker Settings",
                 "Try opening Android's menu so you can pick Glass TV as your home app (if your TV allows it)",
                 "Open Settings ",
-                0xFF38BDF8,
+                0xFFFFB347,
                 () -> {
                     SoundEffects.playSelect();
                     try {
@@ -1921,7 +1983,7 @@ public final class ModernSettingsDialog {
             TextView tvSub = new TextView(ctx);
             tvSub.setText(subtitle);
             tvSub.setTextSize(11.5f);
-            tvSub.setTextColor(0xFF94A3B8);
+            tvSub.setTextColor(0xFFA89F91);
             tvSub.setTypeface(font, Typeface.NORMAL);
             tvSub.setIncludeFontPadding(false);
             tvSub.setPadding(0, Math.round(4 * density), Math.round(10 * density), 0);
@@ -1970,7 +2032,7 @@ public final class ModernSettingsDialog {
             } else {
                 g.setColor(0x2E1E2838);
                 g.setStroke(Math.round(1f * density), 0x2EFFFFFF);
-                btnAction.setTextColor(0xFFE2E8F0);
+                btnAction.setTextColor(0xFFF1E7D3);
                 btnAction.setBackground(pillBg);
             }
             v.setBackground(g);

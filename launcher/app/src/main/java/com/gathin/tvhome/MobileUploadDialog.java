@@ -39,16 +39,16 @@ public class MobileUploadDialog {
 
         // Header
         TextView tvTitle = new TextView(context);
-        tvTitle.setText("Upload Avatar Dari Telefon");
+        tvTitle.setText("Send an Avatar from Your Phone");
         tvTitle.setTextSize(20);
         tvTitle.setTextColor(0xFFFFFFFF);
-        tvTitle.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvTitle.setTypeface(context.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
-        tvSub.setText("Sambungkan telefon pintar ke Wi-Fi yang sama untuk menghantar gambar atau animasi GIF");
+        tvSub.setText("Put your phone on the same Wi-Fi to send a picture or an animated GIF");
         tvSub.setTextSize(13);
-        tvSub.setTextColor(0xFF94A3B8);
+        tvSub.setTextColor(0xFFA89F91);
         tvSub.setPadding(0, (int) (4 * density), 0, (int) (16 * density));
         root.addView(tvSub);
 
@@ -64,28 +64,28 @@ public class MobileUploadDialog {
         GradientDrawable urlBg = new GradientDrawable();
         urlBg.setColor(0x280284C7); // Cyan glass glow
         urlBg.setCornerRadius(18 * density);
-        urlBg.setStroke((int) (1.8f * density), 0xFF38BDF8);
+        urlBg.setStroke((int) (1.8f * density), 0xFFFFB347);
         urlBox.setBackground(urlBg);
 
         TextView tvUrlLabel = new TextView(context);
-        tvUrlLabel.setText("BUKA PAUTAN INI DI TELEFON ANDA:");
+        tvUrlLabel.setText("OPEN THIS ADDRESS ON YOUR PHONE:");
         tvUrlLabel.setTextSize(12);
-        tvUrlLabel.setTextColor(0xFF67E8F9);
-        tvUrlLabel.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvUrlLabel.setTextColor(0xFFFFC66B);
+        tvUrlLabel.setTypeface(context.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
         urlBox.addView(tvUrlLabel);
 
         TextView tvUrl = new TextView(context);
         tvUrl.setText(url);
         tvUrl.setTextSize(24);
         tvUrl.setTextColor(0xFFFFFFFF);
-        tvUrl.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvUrl.setTypeface(context.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
         tvUrl.setPadding(0, (int) (6 * density), 0, (int) (6 * density));
         urlBox.addView(tvUrl);
 
         TextView tvHelp = new TextView(context);
-        tvHelp.setText("Ketik pautan di atas pada pelayar web (Safari / Chrome) di telefon anda.");
+        tvHelp.setText("Type the address above into your phone's browser (Safari or Chrome).");
         tvHelp.setTextSize(12.5f);
-        tvHelp.setTextColor(0xFFE2E8F0);
+        tvHelp.setTextColor(0xFFF1E7D3);
         urlBox.addView(tvHelp);
 
         root.addView(urlBox);
@@ -103,7 +103,7 @@ public class MobileUploadDialog {
         statusRow.addView(tvDot);
 
         TextView tvStatus = new TextView(context);
-        tvStatus.setText("Pelayan aktif. Menunggu anda memilih fail dari telefon...");
+        tvStatus.setText("Ready. Waiting for you to pick a file on your phone...");
         tvStatus.setTextSize(13);
         tvStatus.setTextColor(0xFF10B981);
         statusRow.addView(tvStatus);
@@ -117,7 +117,7 @@ public class MobileUploadDialog {
 
         Button btnClose = new Button(context, null, android.R.attr.borderlessButtonStyle);
         btnClose.setText("Cancel");
-        btnClose.setTextColor(0xFF94A3B8);
+        btnClose.setTextColor(0xFFA89F91);
         btnClose.setFocusable(true);
         actionsRow.addView(btnClose);
 
@@ -131,7 +131,7 @@ public class MobileUploadDialog {
         // Start Local Upload Server
         File saveDir = new File(context.getFilesDir(), "avatars");
         LocalUploadServer.start(PORT, saveDir, uploadedFile -> {
-            Toast.makeText(context, "Avatar berjaya diterima dari telefon!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Avatar received from your phone!", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
             LocalUploadServer.stop();
             if (listener != null) {

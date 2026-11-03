@@ -19,7 +19,7 @@
             android:id="@+id/dailyDay"
             android:layout_width="42dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/instrument_sans"
             android:fontVariationSettings="'wght' 600"
             android:includeFontPadding="false"
             android:singleLine="true"
@@ -45,12 +45,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:fontVariationSettings="'wght' 700"
                 android:includeFontPadding="false"
                 android:singleLine="true"
                 android:text="85%"
-                android:textColor="#38BDF8"
+                android:textColor="#FFB347"
                 android:textSize="8.5sp" />
         </LinearLayout>
 
@@ -58,13 +58,13 @@
             android:id="@+id/dailyMinTemp"
             android:layout_width="22dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/instrument_sans"
             android:fontVariationSettings="'wght' 500"
             android:gravity="end"
             android:includeFontPadding="false"
             android:singleLine="true"
             android:text="24°"
-            android:textColor="#94A3B8"
+            android:textColor="#A89F91"
             android:textSize="11sp" />
 
         <com.gathin.tvhome.TempRangeBarView
@@ -79,7 +79,7 @@
             android:id="@+id/dailyMaxTemp"
             android:layout_width="22dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/instrument_sans"
             android:fontVariationSettings="'wght' 700"
             android:gravity="start"
             android:includeFontPadding="false"

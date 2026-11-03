@@ -37,7 +37,7 @@ public class WindCompassView extends View {
         dialPaint.setColor(0x35FFFFFF);
 
         needlePaint.setStyle(Paint.Style.FILL);
-        needlePaint.setColor(0xFF38BDF8);
+        needlePaint.setColor(0xFFFFB347);
 
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setTextAlign(Paint.Align.CENTER);

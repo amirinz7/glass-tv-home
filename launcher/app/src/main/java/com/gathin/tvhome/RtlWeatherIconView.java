@@ -90,7 +90,7 @@ public class RtlWeatherIconView extends View {
         // Rain
         rainPaint.setStyle(Paint.Style.STROKE);
         rainPaint.setStrokeCap(Paint.Cap.ROUND);
-        rainPaint.setColor(0xFF67E8F9); // Cyan raindrop
+        rainPaint.setColor(0xFFFFC66B); // Cyan raindrop
 
         // Lightning
         lightningPaint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -98,7 +98,7 @@ public class RtlWeatherIconView extends View {
 
         // Moon
         moonPaint.setStyle(Paint.Style.FILL);
-        moonPaint.setColor(0xFFE2E8F0);
+        moonPaint.setColor(0xFFF1E7D3);
 
         // Stars
         starPaint.setStyle(Paint.Style.FILL);
@@ -262,7 +262,7 @@ public class RtlWeatherIconView extends View {
         float backCx = w * 0.60f;
         float backCy = (h * 0.46f) + (float) Math.sin(timeSec * 1.4f) * (4f * density);
         buildPuffyCloudPath(cloudPath, backCx, backCy, scale * 0.85f);
-        cloudPaint.setColor(0xFF94A3B8); // Slate 400
+        cloudPaint.setColor(0xFFA89F91); // Slate 400
         canvas.drawPath(cloudPath, cloudPaint);
 
         // Front cloud (crisp white)
@@ -287,12 +287,12 @@ public class RtlWeatherIconView extends View {
 
         // Draw cloud
         buildPuffyCloudPath(cloudPath, cx, cy, scale);
-        cloudPaint.setColor(isDrizzle ? 0xFFE2E8F0 : 0xFFCBD5E1);
+        cloudPaint.setColor(isDrizzle ? 0xFFF1E7D3 : 0xFFD9CDB8);
         canvas.drawPath(cloudPath, cloudPaint);
 
         // Animated falling raindrops
         rainPaint.setStrokeWidth(isDrizzle ? 2.5f * density : 4f * density);
-        rainPaint.setColor(0xFF38BDF8);
+        rainPaint.setColor(0xFFFFB347);
 
         float dropLen = isDrizzle ? 10f * density : 18f * density;
         int dropCount = isDrizzle ? 3 : 5;

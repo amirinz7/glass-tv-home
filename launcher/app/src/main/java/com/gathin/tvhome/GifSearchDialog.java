@@ -65,13 +65,13 @@ public class GifSearchDialog {
         tvTitle.setText("Cari Animasi GIF Avatar");
         tvTitle.setTextSize(20);
         tvTitle.setTextColor(0xFFFFFFFF);
-        tvTitle.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvTitle.setTypeface(context.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
         tvSub.setText("Pick or search any GIF to use as your profile avatar");
         tvSub.setTextSize(13);
-        tvSub.setTextColor(0xFF94A3B8);
+        tvSub.setTextColor(0xFFA89F91);
         root.addView(tvSub);
 
         // Search Input Row
@@ -82,7 +82,7 @@ public class GifSearchDialog {
 
         EditText etSearch = new EditText(context);
         etSearch.setHint("Taip carian GIF (cth: anime, cat, gaming)...");
-        etSearch.setHintTextColor(0xFF64748B);
+        etSearch.setHintTextColor(0xFF8A7E6E);
         etSearch.setTextColor(0xFFFFFFFF);
         etSearch.setTextSize(14);
         etSearch.setSingleLine(true);
@@ -102,7 +102,7 @@ public class GifSearchDialog {
         btnSearch.setText("Cari ");
         btnSearch.setTextColor(0xFFFFFFFF);
         btnSearch.setTextSize(13.5f);
-        btnSearch.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        btnSearch.setTypeface(context.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
         btnSearch.setGravity(Gravity.CENTER);
         btnSearch.setIncludeFontPadding(false);
         btnSearch.setBackgroundResource(R.drawable.bg_dialog_btn);
@@ -136,8 +136,8 @@ public class GifSearchDialog {
             TextView chip = new TextView(context);
             chip.setText(tag);
             chip.setTextSize(12.5f);
-            chip.setTextColor(0xFFE2E8F0);
-            chip.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+            chip.setTextColor(0xFFF1E7D3);
+            chip.setTypeface(context.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
             chip.setGravity(Gravity.CENTER);
             chip.setIncludeFontPadding(false);
             chip.setFocusable(true);
@@ -158,9 +158,9 @@ public class GifSearchDialog {
             chip.setLayoutParams(lp);
 
             chip.setOnFocusChangeListener((v, hasFocus) -> {
-                chipBg.setColor(hasFocus ? 0x4067E8F9 : 0x18FFFFFF);
-                chipBg.setStroke((int) (2f * density), hasFocus ? 0xFF67E8F9 : 0x33FFFFFF);
-                chip.setTextColor(hasFocus ? 0xFFFFFFFF : 0xFFE2E8F0);
+                chipBg.setColor(hasFocus ? 0x40FFC66B : 0x18FFFFFF);
+                chipBg.setStroke((int) (2f * density), hasFocus ? 0xFFFFC66B : 0x33FFFFFF);
+                chip.setTextColor(hasFocus ? 0xFFFFFFFF : 0xFFF1E7D3);
             });
 
             chip.setOnClickListener(v -> {
@@ -195,15 +195,15 @@ public class GifSearchDialog {
         // Close Button
         TextView btnClose = new TextView(context);
         btnClose.setText("Close");
-        btnClose.setTextColor(0xFF94A3B8);
+        btnClose.setTextColor(0xFFA89F91);
         btnClose.setTextSize(13.5f);
-        btnClose.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        btnClose.setTypeface(context.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
         btnClose.setGravity(Gravity.CENTER);
         btnClose.setFocusable(true);
         btnClose.setClickable(true);
         btnClose.setPadding((int) (18 * density), (int) (8 * density), (int) (18 * density), (int) (8 * density));
         btnClose.setOnFocusChangeListener((v, hasFocus) -> {
-            btnClose.setTextColor(hasFocus ? 0xFFFFFFFF : 0xFF94A3B8);
+            btnClose.setTextColor(hasFocus ? 0xFFFFFFFF : 0xFFA89F91);
         });
 
         LinearLayout.LayoutParams closeLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -339,8 +339,8 @@ public class GifSearchDialog {
             ProfileAvatarHelper.loadGifOrImage(iv, gifUrl, context);
 
             frame.setOnFocusChangeListener((v, hasFocus) -> {
-                gd.setColor(hasFocus ? 0x3067E8F9 : 0x22FFFFFF);
-                gd.setStroke((int) (3f * density), hasFocus ? 0xFF67E8F9 : 0x33FFFFFF);
+                gd.setColor(hasFocus ? 0x30FFC66B : 0x22FFFFFF);
+                gd.setStroke((int) (3f * density), hasFocus ? 0xFFFFC66B : 0x33FFFFFF);
                 v.setScaleX(hasFocus ? 1.14f : 1.0f);
                 v.setScaleY(hasFocus ? 1.14f : 1.0f);
                 v.setElevation(hasFocus ? 8f * density : 0f);

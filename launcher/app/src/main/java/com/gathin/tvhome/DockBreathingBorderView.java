@@ -162,7 +162,7 @@ public class DockBreathingBorderView extends View {
         // 1. Soft Outer Atmospheric Breathing Glow (Cyan-Sky bloom)
         int glowAlpha = (int) (65 * alphaFactor);
         glowPaint.setStrokeWidth((4.0f + (3.0f * breathProgress)) * density);
-        glowPaint.setColor(Color.argb(glowAlpha, 56, 189, 248)); // Cyan #38BDF8
+        glowPaint.setColor(Color.argb(glowAlpha, 56, 189, 248)); // Cyan #FFB347
         canvas.drawRoundRect(glowBounds, cornerRadius + (2f * density), cornerRadius + (2f * density), glowPaint);
 
         // 2. Main Glass Rim Border with Vertical Specular Gradient

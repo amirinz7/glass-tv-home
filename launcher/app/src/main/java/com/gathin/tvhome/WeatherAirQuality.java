@@ -657,7 +657,7 @@ final class WeatherAirQuality {
 
     private static int getAqiColor(int aqi) {
         if (aqi <= 50) return 0xFF4ADE80;  // Green (Baik)
-        if (aqi <= 100) return 0xFF38BDF8; // Sky Blue (Sederhana)
+        if (aqi <= 100) return 0xFFFFB347; // Sky Blue (Sederhana)
         if (aqi <= 200) return 0xFFFB923C; // Orange (Unhealthy)
         if (aqi <= 300) return 0xFFEF4444; // Red (Sangat Unhealthy)
         return 0xFF991B1B;                 // Maroon (Berbahaya)

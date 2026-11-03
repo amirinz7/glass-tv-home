@@ -14,7 +14,7 @@
         android:layout_gravity="top|start"
         android:layout_marginStart="64dp"
         android:layout_marginTop="40dp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:text="Recent Apps"
         android:textColor="#FFFFFFFF"
         android:textSize="28sp"
@@ -36,9 +36,9 @@
             android:id="@+id/tvRamText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/instrument_sans"
             android:text="RAM 1.8 GB used of 2.3 GB"
-            android:textColor="#FFE2E8F0"
+            android:textColor="#FFF1E7D3"
             android:textSize="14sp" />
 
         <ProgressBar
@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:text="No recent apps running"
         android:textColor="#88FFFFFF"
         android:textSize="18sp"
@@ -84,7 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="40dp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:text="Press  on an app to close it"
         android:textColor="#90FFFFFF"
         android:textSize="14sp" />

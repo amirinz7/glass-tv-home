@@ -132,12 +132,12 @@ public final class ProfileManager {
 
             UserProfile p2 = new UserProfile("user_2", "Mathew", false, false);
             p2.lottieCharColor = 0xFFF59E0B; // Sunny Amber
-            p2.lottieBgColor = 0xFF1E293B;
+            p2.lottieBgColor = 0xFF2A2019;
             p2.lottieFaceIndex = 6; // Ceria
 
             UserProfile p3 = new UserProfile("user_3", "Aeena", true, false);
             p3.lottieCharColor = 0xFFFB7185; // Coral Pink
-            p3.lottieBgColor = 0xFF0F172A;
+            p3.lottieBgColor = 0xFF1A1410;
             p3.lottieFaceIndex = 2; // Kenyit
 
             list.add(p1);

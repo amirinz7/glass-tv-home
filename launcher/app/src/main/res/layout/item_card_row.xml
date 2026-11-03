@@ -28,7 +28,7 @@
             android:textColor="@drawable/pill_text"
             android:duplicateParentState="true"
             android:textSize="16sp"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/instrument_sans"
             android:fontVariationSettings="'wght' 700"
             android:textStyle="bold"
             android:shadowColor="#CC000000"
@@ -45,7 +45,7 @@
             android:textColor="@drawable/pill_text"
             android:duplicateParentState="true"
             android:textSize="13sp"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/instrument_sans"
             android:fontVariationSettings="'wght' 700"
             android:textStyle="bold"
             android:letterSpacing="0.04" />
@@ -58,7 +58,7 @@
         android:textColor="@drawable/pill_text_mid"
         android:duplicateParentState="true"
         android:textSize="13sp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:fontVariationSettings="'wght' 600"
         android:textStyle="bold"
         android:singleLine="true"
@@ -71,7 +71,7 @@
         android:textColor="@drawable/pill_text_mid"
         android:duplicateParentState="true"
         android:textSize="12sp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:fontVariationSettings="'wght' 550"
         android:singleLine="true"
         android:ellipsize="middle" />
@@ -85,7 +85,7 @@
         android:duplicateParentState="true"
         android:textSize="11sp"
         android:letterSpacing="0.03"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:fontVariationSettings="'wght' 550"
         android:maxLines="2" />
 </LinearLayout>

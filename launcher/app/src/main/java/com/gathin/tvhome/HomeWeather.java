@@ -182,13 +182,11 @@ final class HomeWeather {
         return "  ·  " + (isMalayLanguage(ctx) ? "Jam depan: " : "Next hour: ") + d;
     }
 
+    /** Whether the app is set to Malay or Indonesian. The TV's own locale does not decide it. */
     static boolean isMalayLanguage(Context ctx) {
-        if (ctx == null) return true;
+        if (ctx == null) return false;
         String lang = AppLanguage.getLanguage(ctx);
-        return AppLanguage.LANG_MS.equals(lang) || AppLanguage.LANG_ID.equals(lang)
-                || java.util.Locale.getDefault().getLanguage().startsWith("ms")
-                || java.util.Locale.getDefault().getLanguage().startsWith("in")
-                || java.util.Locale.getDefault().getLanguage().startsWith("id");
+        return AppLanguage.LANG_MS.equals(lang) || AppLanguage.LANG_ID.equals(lang);
     }
 
     private static String describe(int code, Context ctx) {

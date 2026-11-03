@@ -19,7 +19,7 @@
         android:id="@+id/dailyDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:fontVariationSettings="'wght' 500"
         android:includeFontPadding="false"
         android:singleLine="true"
@@ -46,7 +46,7 @@
                 android:id="@+id/dailyMaxTemp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:fontVariationSettings="'wght' 700"
                 android:includeFontPadding="false"
                 android:singleLine="true"
@@ -59,12 +59,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:fontFamily="@font/inter"
+                android:fontFamily="@font/instrument_sans"
                 android:fontVariationSettings="'wght' 500"
                 android:includeFontPadding="false"
                 android:singleLine="true"
                 android:text="↓ 21°C"
-                android:textColor="#94A3B8"
+                android:textColor="#A89F91"
                 android:textSize="14.5sp" />
         </LinearLayout>
 

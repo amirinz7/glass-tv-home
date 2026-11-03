@@ -544,7 +544,7 @@ public class WeatherActivity extends Activity {
             c.drawRoundRect(new RectF(0, h - 2 * d, w, h), d, d, p);
             for (int i = 0; i < n; i++) {
                 float v = Math.max(0.04f, hl.get(i).rainChance / 100f);
-                p.setColor(hl.get(i).rainChance >= 50 ? 0xFF38BDF8 : 0xAA7DD3FC);
+                p.setColor(hl.get(i).rainChance >= 50 ? 0xFFFFB347 : 0xAA7DD3FC);
                 float bh = (h - 4 * d) * v;
                 c.drawRoundRect(new RectF(i * slot + slot * 0.18f, h - 3 * d - bh, (i + 1) * slot - slot * 0.18f, h - 3 * d), 2 * d, 2 * d, p);
             }

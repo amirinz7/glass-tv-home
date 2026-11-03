@@ -30,6 +30,8 @@ public class ClockDream extends DreamService {
     private View content;
     private TextView clock;
     private TextView ampm;
+    private TextView minute;
+    private TextView dayLine;
     private TextView date;
     private TextView hijri;
     private TextView prayer;
@@ -71,6 +73,8 @@ public class ClockDream extends DreamService {
         content = findViewById(R.id.nightstandContent);
         clock = findViewById(R.id.nightstandClock);
         ampm = findViewById(R.id.nightstandAmPm);
+        minute = findViewById(R.id.nightstandMinute);
+        dayLine = findViewById(R.id.nightstandDay);
         date = findViewById(R.id.nightstandDate);
         hijri = findViewById(R.id.nightstandHijri);
         prayer = findViewById(R.id.nightstandPrayer);
@@ -129,6 +133,8 @@ public class ClockDream extends DreamService {
         if (isNightMode) {
             int red = 0xFFE0762F;
             if (clock != null) clock.setTextColor(red);
+            if (minute != null) minute.setTextColor(0xB3E0762F);
+            if (dayLine != null) dayLine.setTextColor(0xB3E0762F);
             if (ampm != null) ampm.setTextColor(0xCCE0762F);
             if (date != null) date.setTextColor(0xE6E0762F);
             if (hijri != null) hijri.setTextColor(0xE6E0762F);
@@ -144,6 +150,8 @@ public class ClockDream extends DreamService {
             if (hint != null) hint.setTextColor(0x55E0762F);
         } else {
             if (clock != null) clock.setTextColor(0xFFFFC66B);
+            if (minute != null) minute.setTextColor(0xFFF5E1BC);
+            if (dayLine != null) dayLine.setTextColor(0xB3F5E1BC);
             if (ampm != null) ampm.setTextColor(0xCCFFC66B);
             if (date != null) date.setTextColor(0xE6F5E1BC);
             if (hijri != null) hijri.setTextColor(0xD9E8B87A);

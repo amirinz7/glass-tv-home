@@ -34,7 +34,7 @@
             android:text="NOW PLAYING"
             android:textColor="#FFFFFFFF"
             android:textSize="15sp"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/instrument_sans"
             android:fontVariationSettings="'wght' 700"
             android:textStyle="bold"
             android:letterSpacing="0.08" />
@@ -50,7 +50,7 @@
             android:text="SPOTIFY"
             android:textColor="#1DB954"
             android:textSize="12sp"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/instrument_sans"
             android:fontVariationSettings="'wght' 700"
             android:textStyle="bold"
             android:letterSpacing="0.04" />
@@ -82,7 +82,7 @@
         android:text="Lagu Dimainkan"
         android:textColor="#FFFFFFFF"
         android:textSize="20sp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:fontVariationSettings="'wght' 700"
         android:textStyle="bold"
         android:singleLine="true"
@@ -99,7 +99,7 @@
         android:text="Artis"
         android:textColor="#B3FFFFFF"
         android:textSize="14sp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:fontVariationSettings="'wght' 500"
         android:singleLine="true" />
 
@@ -113,7 +113,7 @@
         android:text="Sedang Dimainkan"
         android:textColor="#1DB954"
         android:textSize="12sp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/instrument_sans"
         android:fontVariationSettings="'wght' 600"
         android:letterSpacing="0.04" />
 
@@ -188,7 +188,7 @@
             android:background="@drawable/bg_dialog_btn"
             android:textColor="@drawable/dialog_btn_text"
             android:textSize="13sp"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/instrument_sans"
             android:fontVariationSettings="'wght' 600"
             android:gravity="center"
             android:focusable="true"
@@ -206,7 +206,7 @@
             android:background="@drawable/bg_dialog_btn"
             android:textColor="@drawable/dialog_btn_text"
             android:textSize="13sp"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/instrument_sans"
             android:fontVariationSettings="'wght' 600"
             android:gravity="center"
             android:focusable="true"

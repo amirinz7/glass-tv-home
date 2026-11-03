@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Screensaver: two columns. Hours and minutes stacked big on the left, a thin amber rule, then the
+     day's details on the right. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/nightstandRoot"
     android:layout_width="match_parent"
@@ -12,158 +14,157 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <!-- Gregorian Date -->
-        <TextClock
-            android:id="@+id/nightstandDate"
-            android:textAllCaps="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:format12Hour="EEEE  ·  d MMM yyyy"
-            android:format24Hour="EEEE  ·  d MMM yyyy"
-            android:textColor="#E6F5E1BC"
-            android:textSize="15sp"
-            android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 500"
-            android:letterSpacing="0.28"
-            android:shadowColor="#80000000"
-            android:shadowDx="0"
-            android:shadowDy="2"
-            android:shadowRadius="5"
-            android:includeFontPadding="false" />
-
-        <!-- StandBy Clock Display -->
+        <!-- Left: hours over minutes -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:gravity="end"
+            android:orientation="vertical">
 
             <TextClock
                 android:id="@+id/nightstandClock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:format12Hour="h:mm"
-                android:format24Hour="HH:mm"
+                android:format12Hour="hh"
+                android:format24Hour="HH"
                 android:textColor="#FFFFC66B"
-                android:textSize="128sp"
+                android:textSize="150sp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 400"
-                android:letterSpacing="-0.02"
-                android:shadowColor="#80000000"
-                android:shadowDx="0"
-                android:shadowDy="3"
-                android:shadowRadius="10"
+                android:lineSpacingMultiplier="0.8"
+                android:includeFontPadding="false" />
+
+            <TextClock
+                android:id="@+id/nightstandMinute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-18dp"
+                android:format12Hour="mm"
+                android:format24Hour="mm"
+                android:textColor="#FFF5E1BC"
+                android:textSize="150sp"
+                android:fontFamily="@font/outfit"
                 android:includeFontPadding="false" />
 
             <TextClock
                 android:id="@+id/nightstandAmPm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:layout_marginBottom="26dp"
-                android:layout_gravity="bottom"
+                android:layout_marginTop="6dp"
                 android:format12Hour="a"
                 android:format24Hour=""
                 android:textColor="#CCFFC66B"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 android:fontFamily="@font/outfit"
-                android:fontVariationSettings="'wght' 600"
-                android:letterSpacing="0.08"
+                android:letterSpacing="0.3"
                 android:textAllCaps="true"
                 android:includeFontPadding="false" />
         </LinearLayout>
 
-        <!-- Islamic Hijri Date -->
-        <TextView
-            android:id="@+id/nightstandHijri"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:textColor="#D9E8B87A"
-            android:textSize="16sp"
-            android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 400"
-            android:letterSpacing="0.06"
-            android:shadowColor="#80000000"
-            android:shadowDx="0"
-            android:shadowDy="2"
-            android:shadowRadius="5"
-            android:includeFontPadding="false" />
+        <!-- The rule between the two columns -->
+        <View
+            android:layout_width="2dp"
+            android:layout_height="260dp"
+            android:layout_marginStart="44dp"
+            android:layout_marginEnd="44dp"
+            android:background="#55FFC66B" />
 
-        <!-- Weather line (temperature and sky) -->
-        <TextView
-            android:id="@+id/nightstandWeather"
+        <!-- Right: the day -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            android:textColor="#E6F5E1BC"
-            android:textSize="18sp"
-            android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 500"
-            android:letterSpacing="0.04"
-            android:shadowColor="#80000000"
-            android:shadowDx="0"
-            android:shadowDy="2"
-            android:shadowRadius="5"
-            android:includeFontPadding="false" />
+            android:gravity="start"
+            android:orientation="vertical">
 
-        <!-- Next Prayer Time Capsule -->
-        <TextView
-            android:id="@+id/nightstandPrayer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:background="@drawable/pill_amber"
-            android:textColor="#FFFFC66B"
-            android:textSize="14sp"
-            android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 500"
-            android:letterSpacing="0.05"
-            android:shadowColor="#80000000"
-            android:shadowDx="0"
-            android:shadowDy="1"
-            android:shadowRadius="4"
-            android:includeFontPadding="false" />
+            <TextClock
+                android:id="@+id/nightstandDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:format12Hour="EEEE"
+                android:format24Hour="EEEE"
+                android:textAllCaps="true"
+                android:textColor="#E6F5E1BC"
+                android:textSize="30sp"
+                android:fontFamily="@font/outfit"
+                android:letterSpacing="0.18"
+                android:includeFontPadding="false" />
 
-        <!-- Today's calendar -->
-        <TextView
-            android:id="@+id/nightstandAgenda"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:visibility="gone"
-            android:gravity="center"
-            android:lineSpacingExtra="4dp"
-            android:textColor="#E6F5E1BC"
-            android:textSize="16sp"
-            android:fontFamily="@font/outfit"
-            android:fontVariationSettings="'wght' 450"
-            android:shadowColor="#80000000"
-            android:shadowDx="0"
-            android:shadowDy="2"
-            android:shadowRadius="5"
-            android:includeFontPadding="false" />
+            <TextClock
+                android:id="@+id/nightstandDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:format12Hour="d MMMM yyyy"
+                android:format24Hour="d MMMM yyyy"
+                android:textColor="#B3F5E1BC"
+                android:textSize="18sp"
+                android:fontFamily="@font/instrument_sans"
+                android:letterSpacing="0.04"
+                android:includeFontPadding="false" />
 
-        <!-- Dim return hint -->
-        <TextView
-            android:id="@+id/nightstandHint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:text="PRESS ANY BUTTON TO RETURN"
-            android:textColor="#4DFFC66B"
-            android:textSize="11sp"
-            android:fontFamily="@font/outfit"
-            android:letterSpacing="0.2"
-            android:includeFontPadding="false" />
+            <TextView
+                android:id="@+id/nightstandHijri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="#D9E8B87A"
+                android:textSize="16sp"
+                android:fontFamily="@font/instrument_sans"
+                android:letterSpacing="0.04"
+                android:includeFontPadding="false" />
+
+            <TextView
+                android:id="@+id/nightstandWeather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:visibility="gone"
+                android:textColor="#E6F5E1BC"
+                android:textSize="20sp"
+                android:fontFamily="@font/instrument_sans"
+                android:includeFontPadding="false" />
+
+            <TextView
+                android:id="@+id/nightstandPrayer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp"
+                android:background="@drawable/pill_amber"
+                android:textColor="#FFFFE2A8"
+                android:textSize="15sp"
+                android:fontFamily="@font/instrument_sans"
+                android:letterSpacing="0.03"
+                android:includeFontPadding="false" />
+
+            <TextView
+                android:id="@+id/nightstandAgenda"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:visibility="gone"
+                android:lineSpacingExtra="4dp"
+                android:textColor="#E6F5E1BC"
+                android:textSize="16sp"
+                android:fontFamily="@font/instrument_sans"
+                android:includeFontPadding="false" />
+
+            <TextView
+                android:id="@+id/nightstandHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="PRESS ANY BUTTON TO RETURN"
+                android:textColor="#4DFFC66B"
+                android:textSize="11sp"
+                android:fontFamily="@font/instrument_sans"
+                android:letterSpacing="0.2"
+                android:includeFontPadding="false" />
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

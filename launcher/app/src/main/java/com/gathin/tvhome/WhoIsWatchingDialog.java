@@ -69,7 +69,7 @@ public final class WhoIsWatchingDialog {
         tvTitle.setText("Who's watching?");
         tvTitle.setTextSize(38);
         tvTitle.setTextColor(0xFFFFFFFF);
-        tvTitle.setTypeface(activity.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvTitle.setTypeface(activity.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
         tvTitle.setGravity(Gravity.CENTER);
         tvTitle.setPadding(0, 0, 0, (int) (6 * density));
         contentCol.addView(tvTitle);
@@ -78,7 +78,7 @@ public final class WhoIsWatchingDialog {
         TextView tvSub = new TextView(activity);
         tvSub.setText("Select a profile to continue");
         tvSub.setTextSize(15.5f);
-        tvSub.setTextColor(0xFF94A3B8);
+        tvSub.setTextColor(0xFFA89F91);
         tvSub.setGravity(Gravity.CENTER);
         tvSub.setPadding(0, 0, 0, (int) (40 * density));
         contentCol.addView(tvSub);
@@ -116,7 +116,7 @@ public final class WhoIsWatchingDialog {
         TextView tvHint = new TextView(activity);
         tvHint.setText("Hold to manage profile • Tekan lama untuk urus profil");
         tvHint.setTextSize(13);
-        tvHint.setTextColor(0xFF64748B);
+        tvHint.setTextColor(0xFF8A7E6E);
         tvHint.setGravity(Gravity.CENTER);
         tvHint.setPadding(0, (int) (16 * density), 0, 0);
         contentCol.addView(tvHint);
@@ -261,8 +261,8 @@ public final class WhoIsWatchingDialog {
             tvName.setLayoutParams(nameLp);
             tvName.setText(prof.name);
             tvName.setTextSize(17);
-            tvName.setTextColor(0xFF94A3B8);
-            tvName.setTypeface(activity.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+            tvName.setTextColor(0xFFA89F91);
+            tvName.setTypeface(activity.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
             tvName.setGravity(Gravity.CENTER);
             tvName.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tvName.setSingleLine(true);
@@ -281,7 +281,7 @@ public final class WhoIsWatchingDialog {
             tvRole.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tvRole.setTextSize(11);
             tvRole.setLetterSpacing(0.12f);
-            tvRole.setTypeface(activity.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+            tvRole.setTypeface(activity.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
 
             if (prof.isPrimary) {
                 tvRole.setText("PRIMARY");
@@ -289,7 +289,7 @@ public final class WhoIsWatchingDialog {
                 tvRole.setVisibility(View.VISIBLE);
             } else if (prof.isChild) {
                 tvRole.setText("KANAK-KANAK");
-                tvRole.setTextColor(0xFF38BDF8); // Sky blue
+                tvRole.setTextColor(0xFFFFB347); // Sky blue
                 tvRole.setVisibility(View.VISIBLE);
             } else {
                 tvRole.setText(" ");
@@ -308,7 +308,7 @@ public final class WhoIsWatchingDialog {
                     ringGd.setStroke(Math.round(2f * density), 0x26FFFFFF);
                     ringGd.setColor(Color.TRANSPARENT);
                     ringFrame.animate().scaleX(1.0f).scaleY(1.0f).setDuration(160).start();
-                    tvName.setTextColor(0xFF94A3B8);
+                    tvName.setTextColor(0xFFA89F91);
                 }
             });
 
@@ -361,9 +361,9 @@ public final class WhoIsWatchingDialog {
 
         TextView tvPlus = new TextView(activity);
         tvPlus.setText("+");
-        tvPlus.setTextColor(0xFF94A3B8);
+        tvPlus.setTextColor(0xFFA89F91);
         tvPlus.setTextSize(36);
-        tvPlus.setTypeface(activity.getResources().getFont(R.font.inter), android.graphics.Typeface.NORMAL);
+        tvPlus.setTypeface(activity.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.NORMAL);
         tvPlus.setGravity(Gravity.CENTER);
         tvPlus.setIncludeFontPadding(false);
         plusRing.addView(tvPlus, new FrameLayout.LayoutParams(
@@ -381,8 +381,8 @@ public final class WhoIsWatchingDialog {
         tvAddLabel.setLayoutParams(addLabelLp);
         tvAddLabel.setText("Add Profile");
         tvAddLabel.setTextSize(17);
-        tvAddLabel.setTextColor(0xFF94A3B8);
-        tvAddLabel.setTypeface(activity.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
+        tvAddLabel.setTextColor(0xFFA89F91);
+        tvAddLabel.setTypeface(activity.getResources().getFont(R.font.instrument_sans), android.graphics.Typeface.BOLD);
         tvAddLabel.setGravity(Gravity.CENTER);
         tvAddLabel.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tvAddLabel.setSingleLine(true);
@@ -410,8 +410,8 @@ public final class WhoIsWatchingDialog {
             } else {
                 plusGd.setStroke(Math.round(2f * density), 0x26FFFFFF);
                 plusGd.setColor(0x14FFFFFF);
-                tvPlus.setTextColor(0xFF94A3B8);
-                tvAddLabel.setTextColor(0xFF94A3B8);
+                tvPlus.setTextColor(0xFFA89F91);
+                tvAddLabel.setTextColor(0xFFA89F91);
                 plusRing.animate().scaleX(1.0f).scaleY(1.0f).setDuration(160).start();
             }
         });

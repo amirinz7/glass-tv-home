@@ -121,7 +121,7 @@ public final class ChildModeManager {
      */
     public static void promptPin(Context ctx, String title, String subtitle, PinCallback callback) {
         float density = ctx.getResources().getDisplayMetrics().density;
-        Typeface outfit = ctx.getResources().getFont(R.font.inter);
+        Typeface outfit = ctx.getResources().getFont(R.font.instrument_sans);
 
         AlertDialog[] dialogHolder = new AlertDialog[1];
         StringBuilder pinBuilder = new StringBuilder();
@@ -214,7 +214,7 @@ public final class ChildModeManager {
 
             StateListDrawable sld = new StateListDrawable();
             GradientDrawable f = new GradientDrawable();
-            f.setColor(k.equals("OK") ? 0xFF10B981 : 0xFF38BDF8);
+            f.setColor(k.equals("OK") ? 0xFF10B981 : 0xFFFFB347);
             f.setCornerRadius(14 * density);
             GradientDrawable u = new GradientDrawable();
             u.setColor(0x22FFFFFF);

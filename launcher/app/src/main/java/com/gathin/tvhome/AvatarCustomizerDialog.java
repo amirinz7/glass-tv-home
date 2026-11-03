@@ -197,7 +197,7 @@ public class AvatarCustomizerDialog {
         TextView tv = new TextView(context);
         tv.setText(name);
         tv.setTextSize(12.5f);
-        tv.setTextColor(0xFFE2E8F0);
+        tv.setTextColor(0xFFF1E7D3);
         tv.setGravity(Gravity.CENTER);
         tv.setFocusable(true);
         tv.setClickable(true);
@@ -213,17 +213,17 @@ public class AvatarCustomizerDialog {
         gd.setCornerRadius(17f * density);
 
         if (focused) {
-            gd.setColor(0x3567E8F9); // Luminous cyan glass
-            gd.setStroke(Math.round(2f * density), 0xFF67E8F9);
+            gd.setColor(0x35FFC66B); // Luminous cyan glass
+            gd.setStroke(Math.round(2f * density), 0xFFFFC66B);
             tv.setTextColor(0xFFFFFFFF);
         } else if (selected) {
             gd.setColor(0x28FFFFFF); // Frosted white glass
             gd.setStroke(Math.round(1.8f * density), 0xFFFFFFFF);
-            tv.setTextColor(0xFF38BDF8);
+            tv.setTextColor(0xFFFFB347);
         } else {
             gd.setColor(0x14FFFFFF); // Subtle soap-bubble glass
             gd.setStroke(Math.round(1f * density), 0x22FFFFFF);
-            tv.setTextColor(0xFF94A3B8);
+            tv.setTextColor(0xFFA89F91);
         }
         tv.setBackground(gd);
     }
@@ -263,7 +263,7 @@ public class AvatarCustomizerDialog {
         gd.setColor(color);
 
         if (focused) {
-            gd.setStroke(Math.round(3.5f * density), 0xFF67E8F9); // Luminous cyan focus glow
+            gd.setStroke(Math.round(3.5f * density), 0xFFFFC66B); // Luminous cyan focus glow
             v.setScaleX(1.15f);
             v.setScaleY(1.15f);
             v.setElevation(8f * density);

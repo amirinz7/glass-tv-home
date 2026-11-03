@@ -95,7 +95,7 @@ public class TempRangeBarView extends View {
         // Gradient representing thermal spectrum: Cyan -> Amber -> Coral
         LinearGradient barGrad = new LinearGradient(
                 0, 0, w, 0,
-                new int[]{0xFF38BDF8, 0xFF34D399, 0xFFFBBF24, 0xFFF97316},
+                new int[]{0xFFFFB347, 0xFF34D399, 0xFFFBBF24, 0xFFF97316},
                 new float[]{0f, 0.35f, 0.7f, 1f},
                 Shader.TileMode.CLAMP
         );

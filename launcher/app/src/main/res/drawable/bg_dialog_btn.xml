@@ -8,8 +8,8 @@
                 android:angle="270"
                 android:startColor="#FFFFFFFF"
                 android:endColor="#E6F0FDFF" />
-            <corners android:radius="24dp" />
-            <stroke android:width="2.5dp" android:color="#FF67E8F9" />
+            <corners android:radius="14dp" />
+            <stroke android:width="2.5dp" android:color="#FFFFC66B" />
         </shape>
     </item>
     <item>
@@ -19,8 +19,8 @@
                 android:angle="270"
                 android:startColor="#33FFFFFF"
                 android:endColor="#1F152233" />
-            <corners android:radius="24dp" />
-            <stroke android:width="1.2dp" android:color="#4D67E8F9" />
+            <corners android:radius="14dp" />
+            <stroke android:width="1.2dp" android:color="#4DFFC66B" />
         </shape>
     </item>
 </selector>

@@ -466,7 +466,7 @@ public class WallpaperUploadServer {
                 "      display: inline-block;\n" +
                 "      padding: 6px 14px;\n" +
                 "      background: rgba(56, 189, 248, 0.15);\n" +
-                "      color: #38bdf8;\n" +
+                "      color: #FFB347;\n" +
                 "      border: 1px solid rgba(56, 189, 248, 0.3);\n" +
                 "      border-radius: 9999px;\n" +
                 "      font-size: 12px;\n" +
@@ -479,7 +479,7 @@ public class WallpaperUploadServer {
                 "      margin-top: 18px;\n" +
                 "      font-size: 13px;\n" +
                 "      font-weight: 500;\n" +
-                "      color: #94a3b8;\n" +
+                "      color: #A89F91;\n" +
                 "      display: flex;\n" +
                 "      align-items: center;\n" +
                 "      justify-content: center;\n" +
@@ -487,7 +487,7 @@ public class WallpaperUploadServer {
                 "      letter-spacing: 0.3px;\n" +
                 "    }\n" +
                 "    .watermark strong {\n" +
-                "      color: #38bdf8;\n" +
+                "      color: #FFB347;\n" +
                 "      font-weight: 700;\n" +
                 "    }\n" +
                 "    h1 {\n" +
@@ -498,7 +498,7 @@ public class WallpaperUploadServer {
                 "    }\n" +
                 "    p.subtitle {\n" +
                 "      font-size: 13.5px;\n" +
-                "      color: #94a3b8;\n" +
+                "      color: #A89F91;\n" +
                 "      margin-bottom: 20px;\n" +
                 "      line-height: 1.5;\n" +
                 "    }\n" +
@@ -512,7 +512,7 @@ public class WallpaperUploadServer {
                 "      margin-bottom: 18px;\n" +
                 "    }\n" +
                 "    .dropzone:active {\n" +
-                "      border-color: #38bdf8;\n" +
+                "      border-color: #FFB347;\n" +
                 "      background: rgba(56, 189, 248, 0.08);\n" +
                 "    }\n" +
                 "    .dropzone-icon {\n" +
@@ -522,12 +522,12 @@ public class WallpaperUploadServer {
                 "    .dropzone-text {\n" +
                 "      font-size: 15px;\n" +
                 "      font-weight: 600;\n" +
-                "      color: #e2e8f0;\n" +
+                "      color: #F1E7D3;\n" +
                 "      margin-bottom: 4px;\n" +
                 "    }\n" +
                 "    .dropzone-hint {\n" +
                 "      font-size: 12px;\n" +
-                "      color: #64748b;\n" +
+                "      color: #8A7E6E;\n" +
                 "    }\n" +
                 "    #preview-container {\n" +
                 "      display: none;\n" +
@@ -596,7 +596,7 @@ public class WallpaperUploadServer {
                 "    .progress-bar {\n" +
                 "      width: 0%;\n" +
                 "      height: 100%;\n" +
-                "      background: linear-gradient(90deg, #38bdf8, #4ade80);\n" +
+                "      background: linear-gradient(90deg, #FFB347, #4ade80);\n" +
                 "      border-radius: 9999px;\n" +
                 "      transition: width 0.2s ease;\n" +
                 "    }\n" +
@@ -635,7 +635,7 @@ public class WallpaperUploadServer {
                 "    }\n" +
                 "    .gallery-desc {\n" +
                 "      font-size: 12.5px;\n" +
-                "      color: #94a3b8;\n" +
+                "      color: #A89F91;\n" +
                 "      text-align: left;\n" +
                 "      margin-bottom: 14px;\n" +
                 "      line-height: 1.4;\n" +
@@ -643,7 +643,7 @@ public class WallpaperUploadServer {
                 "    .btn-slideshow {\n" +
                 "      background: rgba(56, 189, 248, 0.18);\n" +
                 "      border: 1px solid rgba(56, 189, 248, 0.35);\n" +
-                "      color: #38bdf8;\n" +
+                "      color: #FFB347;\n" +
                 "      padding: 6px 12px;\n" +
                 "      border-radius: 12px;\n" +
                 "      font-size: 12px;\n" +
@@ -676,7 +676,7 @@ public class WallpaperUploadServer {
                 "      height: 44px;\n" +
                 "      border-radius: 10px;\n" +
                 "      object-fit: cover;\n" +
-                "      background: #1e293b;\n" +
+                "      background: #2A2019;\n" +
                 "      flex-shrink: 0;\n" +
                 "    }\n" +
                 "    .photo-meta {\n" +
@@ -694,7 +694,7 @@ public class WallpaperUploadServer {
                 "    }\n" +
                 "    .photo-sub {\n" +
                 "      font-size: 11px;\n" +
-                "      color: #94a3b8;\n" +
+                "      color: #A89F91;\n" +
                 "      margin-top: 2px;\n" +
                 "    }\n" +
                 "    .photo-btns {\n" +
@@ -705,7 +705,7 @@ public class WallpaperUploadServer {
                 "    .btn-act {\n" +
                 "      background: rgba(255, 255, 255, 0.08);\n" +
                 "      border: 1px solid rgba(255, 255, 255, 0.15);\n" +
-                "      color: #cbd5e1;\n" +
+                "      color: #D9CDB8;\n" +
                 "      padding: 6px 9px;\n" +
                 "      border-radius: 10px;\n" +
                 "      font-size: 11.5px;\n" +
@@ -715,7 +715,7 @@ public class WallpaperUploadServer {
                 "    .btn-act:active { transform: scale(0.95); }\n" +
                 "    .btn-act.active {\n" +
                 "      background: #0284c7;\n" +
-                "      border-color: #38bdf8;\n" +
+                "      border-color: #FFB347;\n" +
                 "      color: #ffffff;\n" +
                 "      font-weight: 700;\n" +
                 "    }\n" +
@@ -769,13 +769,13 @@ public class WallpaperUploadServer {
                 "    </div>\n" +
                 "    <div class=\"gallery-desc\">Choose <strong>Pin</strong> to keep only 1 image as wallpaper, or delete foto lama:</div>\n" +
                 "    <div class=\"gallery-list\" id=\"gallery-list\">\n" +
-                "      <div style=\"color:#64748b; font-size:12.5px; padding:12px 0;\">Memuat senarai foto...</div>\n" +
+                "      <div style=\"color:#8A7E6E; font-size:12.5px; padding:12px 0;\">Memuat senarai foto...</div>\n" +
                 "    </div>\n" +
                 "  </div>\n" +
                 "\n" +
                 "  <footer>\n" +
                 "    <div>Bersambung terus ke TV melalui Wi-Fi Tempatan</div>\n" +
-                "    <div style=\"margin-top: 6px; font-weight: 600; color: #64748b;\">Powered by @imsomangge</div>\n" +
+                "    <div style=\"margin-top: 6px; font-weight: 600; color: #8A7E6E;\">Powered by @imsomangge</div>\n" +
                 "  </footer>\n" +
                 "\n" +
                 "  <script>\n" +
@@ -864,7 +864,7 @@ public class WallpaperUploadServer {
                 "          const countEl = document.getElementById('photo-count');\n" +
                 "          if (countEl) countEl.innerText = items.length;\n" +
                 "          if (!items || items.length === 0) {\n" +
-                "            listEl.innerHTML = '<div style=\"color:#64748b; font-size:12.5px; padding:12px 0;\">Tiada gambar tersimpan di TV.</div>';\n" +
+                "            listEl.innerHTML = '<div style=\"color:#8A7E6E; font-size:12.5px; padding:12px 0;\">Tiada gambar tersimpan di TV.</div>';\n" +
                 "            return;\n" +
                 "          }\n" +
                 "          let html = '';\n" +
