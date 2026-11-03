@@ -79,7 +79,7 @@ public class PressureGaugeView extends View {
 
         // Pressure text in center
         textPaint.setTextSize(12f * density);
-        canvas.drawText("↑ " + pressure, cx, cy + (1f * density), textPaint);
+        canvas.drawText("" + pressure, cx, cy + (1f * density), textPaint);
 
         labelPaint.setTextSize(8f * density);
         labelPaint.setTextAlign(Paint.Align.CENTER);

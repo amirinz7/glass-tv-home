@@ -1,0 +1,44 @@
+{
+  "dock_apps": [
+    "com.netflix.ninja",
+    "com.google.android.youtube.tv",
+    "com.amazon.amazonvideo.livingroom",
+    "com.vuclip.viu.tv",
+    "com.disney.disneyplus",
+    "com.apple.atve.androidtv.appletv"
+  ],
+  "hidden_apps": [
+    "com.mediatek.wwtv.tvcenter",
+    "com.mitv.gallery"
+  ],
+  "columns": 6,
+  "rows_below_dock": 0,
+  "reduced_motion": false,
+  "background_color": "#000000",
+  "places": true,
+  "app_wallpapers": {
+    "Apple TV": "appletv.png",
+    "Disney+": "disneyplus.png",
+    "Google Play Store": "googleplaystore.png",
+    "HBO Max": "hbomax.png",
+    "iQIYI": "iqiyi.png",
+    "MyTV": "mytv.png",
+    "Netflix": "netflix.png",
+    "Prime Video": "primevideo.png",
+    "RTMKlik": "rtmklik.png",
+    "Unifi TV": "unifitv.png",
+    "Viu": "viu.png",
+    "YouTube": "youtube.png",
+    "YouTube Music": "youtubemusic.png",
+    "com.vuclip.viu.tv": "viu.png",
+    "my.gov.rtm.tv": "rtmklik.png",
+    "com.tm.unifitv.tv": "unifitv.png",
+    "com.google.android.apps.tv.launcherx": "googleplaystore.png",
+    "com.netflix.ninja": "netflix.png",
+    "com.google.android.youtube.tv": "youtube.png",
+    "com.amazon.amazonvideo.livingroom": "primevideo.png",
+    "com.disney.disneyplus": "disneyplus.png",
+    "com.apple.atve.androidtv.appletv": "appletv.png"
+  },
+  "wallpaper_seconds": 30
+}

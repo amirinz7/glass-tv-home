@@ -195,10 +195,15 @@ final class Backdrop {
      * screen, then multiplied by {@code multiply} when that is not 0), on {@code worker}.
      */
     static void update(Bitmap wallpaper, int screenW, int screenH, int multiply, Executor worker, Handler main) {
+        update(wallpaper, screenW, screenH, multiply, worker, main, 0);
+    }
+
+    /** As above, and the glass fades to the new copy over {@code fadeMs} instead of switching at once. */
+    static void update(Bitmap wallpaper, int screenW, int screenH, int multiply, Executor worker, Handler main, long fadeMs) {
         if (wallpaper == null || screenW <= 0 || screenH <= 0) return;
         worker.execute(() -> {
             Bitmap small = render(wallpaper, screenW, screenH, multiply);
-            main.post(() -> present(small, 0));
+            main.post(() -> present(small, fadeMs));
         });
     }
 

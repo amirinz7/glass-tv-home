@@ -23,7 +23,14 @@ public class AzanReceiver extends BroadcastReceiver {
             boolean masterOn = Azan.isMasterEnabled(ctx);
             boolean prayerOn = prayer >= 0 && Azan.on(ctx, prayer);
             String name = prayer >= 0 && prayer < PrayerTimes.NAMES.length ? PrayerTimes.NAMES[prayer] : "?";
-            if (masterOn && prayerOn && awake && onTime) {
+            boolean reminder = intent.getBooleanExtra("reminder", false);
+            if (reminder && awake) {
+                Intent card = new Intent(ctx, AzanActivity.class)
+                        .putExtra("prayer", prayer).putExtra("reminder", true)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                try { ctx.startActivity(card); } catch (Exception e) { Azan.note(ctx, "Reminder launch error: " + e.getMessage()); }
+                Azan.showFullScreenNotification(ctx, prayer, card);
+            } else if (masterOn && prayerOn && awake && onTime) {
                 // Wake the TV out of its screensaver first.
                 if (pm != null) {
                     @SuppressWarnings("deprecation")

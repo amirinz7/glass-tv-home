@@ -31,6 +31,8 @@ public class WeatherBackgroundView extends View {
         DRIZZLE,
         RAIN,
         THUNDERSTORM,
+        FOG,
+        SNOW,
         NIGHT
     }
 
@@ -93,6 +95,13 @@ public class WeatherBackgroundView extends View {
     }
     private final List<CloudPuff> cloudPuffs = new ArrayList<>();
 
+    // Snow
+    private static class Flake {
+        float x, y, r, speed, phase;
+        int alpha;
+    }
+    private final List<Flake> flakes = new ArrayList<>();
+
     // Sun / Lens Flare State
     private float sunPulseTime = 0f;
 
@@ -101,6 +110,29 @@ public class WeatherBackgroundView extends View {
     private float lightningAlpha = 0f;
     private final Path lightningPath = new Path();
     private boolean hasActiveBolt = false;
+
+    // Wind (0..1), hot day, and heavy rain: set from the weather text by the home screen.
+    private float windStrength = 0f;
+    private boolean hot = false;
+    private boolean heavyRain = false;
+    private float[] wx = new float[0], wy = new float[0], wl = new float[0], ws = new float[0];
+    private float shimmerTime = 0f;
+    private boolean secondFlash = false;
+    private boolean sheetOnly = false;
+
+    public void setWind(float w) {
+        w = Math.max(0f, Math.min(1f, w));
+        if (Math.abs(w - windStrength) > 0.01f) { windStrength = w; invalidate(); }
+    }
+
+    public void setHot(boolean h) {
+        if (hot != h) { hot = h; invalidate(); }
+    }
+
+    /** Heavy rain (hujan lebat): more, longer, faster drops than ordinary rain or drizzle. */
+    public void setHeavyRain(boolean h) {
+        if (heavyRain != h) { heavyRain = h; rebuildGradientsAndParticles(); invalidate(); }
+    }
 
     public WeatherBackgroundView(Context context) {
         this(context, null);
@@ -233,6 +265,14 @@ public class WeatherBackgroundView extends View {
                         Shader.TileMode.CLAMP
                 );
                 break;
+            case FOG:
+                bgGradient = new LinearGradient(0, 0, 0, cachedH,
+                        new int[]{0xFF4A5A6B, 0xFF6C7C8C, 0xFF8D9AA6}, new float[]{0f, 0.5f, 1f}, Shader.TileMode.CLAMP);
+                break;
+            case SNOW:
+                bgGradient = new LinearGradient(0, 0, 0, cachedH,
+                        new int[]{0xFF4F6482, 0xFF7F93AE, 0xFFB3C2D6}, new float[]{0f, 0.5f, 1f}, Shader.TileMode.CLAMP);
+                break;
             case NIGHT:
             default:
                 // Starry night: deep midnight sapphire
@@ -252,11 +292,11 @@ public class WeatherBackgroundView extends View {
         if (currentCondition == ConditionType.DRIZZLE || currentCondition == ConditionType.RAIN || currentCondition == ConditionType.THUNDERSTORM) {
             int count;
             if (currentCondition == ConditionType.THUNDERSTORM) {
-                count = lowSpecMode ? 70 : 140;
+                count = lowSpecMode ? 90 : 180;
             } else if (currentCondition == ConditionType.RAIN) {
-                count = lowSpecMode ? 50 : 100;
+                count = heavyRain ? (lowSpecMode ? 90 : 190) : (lowSpecMode ? 40 : 80);
             } else { // DRIZZLE
-                count = lowSpecMode ? 25 : 50;
+                count = lowSpecMode ? 20 : 40;
             }
 
             for (int i = 0; i < count; i++) {
@@ -267,9 +307,9 @@ public class WeatherBackgroundView extends View {
                 if (currentCondition == ConditionType.DRIZZLE) {
                     // Delicate translucent rintik hujan
                     drop.length = 8f + random.nextFloat() * 8f;
-                    drop.speed = 10f + random.nextFloat() * 6f;
-                    drop.width = 1.1f;
-                    drop.alpha = 40 + random.nextInt(45);
+                    drop.speed = 8f + random.nextFloat() * 5f;
+                    drop.width = 1.0f;
+                    drop.alpha = 35 + random.nextInt(40);
                 } else if (drop.layer == 0) {
                     // Background drizzle
                     drop.length = 12f + random.nextFloat() * 10f;
@@ -289,8 +329,23 @@ public class WeatherBackgroundView extends View {
                     drop.width = 2.4f;
                     drop.alpha = 140 + random.nextInt(70);
                 }
+                if (heavyRain && currentCondition == ConditionType.RAIN) {
+                    drop.length *= 1.35f;
+                    drop.speed *= 1.25f;
+                    drop.alpha = Math.min(255, drop.alpha + 25);
+                }
                 rainDrops.add(drop);
             }
+        }
+
+        // Wind streaks: thin curved lines that blow across the screen.
+        int wn = lowSpecMode ? 6 : 14;
+        wx = new float[wn]; wy = new float[wn]; wl = new float[wn]; ws = new float[wn];
+        for (int i = 0; i < wn; i++) {
+            wx[i] = random.nextFloat() * cachedW;
+            wy[i] = random.nextFloat() * cachedH * 0.85f;
+            wl[i] = cachedW * (0.06f + random.nextFloat() * 0.10f);
+            ws[i] = 0.7f + random.nextFloat() * 0.9f;
         }
 
         // 3. Initialize Stars if night
@@ -311,8 +366,25 @@ public class WeatherBackgroundView extends View {
 
         // 4. Initialize Cloud Puffs if cloudy or partly cloudy
         cloudPuffs.clear();
-        if (currentCondition == ConditionType.CLOUDY || currentCondition == ConditionType.RAIN) {
-            int puffs = 8;
+        flakes.clear();
+        if (currentCondition == ConditionType.SNOW) {
+            int n = lowSpecMode ? 45 : 110;
+            for (int i = 0; i < n; i++) {
+                Flake f = new Flake();
+                f.x = random.nextFloat() * cachedW;
+                f.y = random.nextFloat() * cachedH;
+                f.r = 1.5f + random.nextFloat() * 3.2f;
+                f.speed = 0.6f + random.nextFloat() * 1.4f;
+                f.phase = random.nextFloat() * 6.28f;
+                f.alpha = 130 + random.nextInt(110);
+                flakes.add(f);
+            }
+        }
+        if (currentCondition == ConditionType.CLOUDY || currentCondition == ConditionType.RAIN
+                || currentCondition == ConditionType.DRIZZLE || currentCondition == ConditionType.THUNDERSTORM
+                || currentCondition == ConditionType.FOG || currentCondition == ConditionType.SNOW) {
+            boolean fog = currentCondition == ConditionType.FOG;
+            int puffs = fog ? 10 : 8;
             for (int i = 0; i < puffs; i++) {
                 CloudPuff p = new CloudPuff();
                 p.x = random.nextFloat() * cachedW;
@@ -320,7 +392,8 @@ public class WeatherBackgroundView extends View {
                 p.rx = (cachedW * 0.22f) + (random.nextFloat() * (cachedW * 0.25f));
                 p.ry = (cachedH * 0.16f) + (random.nextFloat() * (cachedH * 0.18f));
                 p.speed = 0.25f + (random.nextFloat() * 0.45f);
-                p.alpha = 15 + random.nextInt(25);
+                p.alpha = fog ? 45 + random.nextInt(35) : 15 + random.nextInt(25);
+                if (fog) { p.y = random.nextFloat() * cachedH; p.speed = 0.15f + random.nextFloat() * 0.3f; }
                 cloudPuffs.add(p);
             }
         }
@@ -349,30 +422,174 @@ public class WeatherBackgroundView extends View {
         switch (currentCondition) {
             case SUNNY:
                 if (!overlayMode) drawSunnyAtmosphere(canvas, dt);
+                else drawSpinningSun(canvas, dt);
                 break;
             case CLOUDY:
-                if (!overlayMode) drawClouds(canvas, dt);
+                drawClouds(canvas, dt);
+                break;
+            case FOG:
+                drawClouds(canvas, dt);
+                break;
+            case SNOW:
+                drawClouds(canvas, dt);
+                drawSnow(canvas, dt);
                 break;
             case DRIZZLE:
-                if (!overlayMode) drawClouds(canvas, dt);
+                drawClouds(canvas, dt);
                 drawRainAndRipples(canvas, dt, false);
                 break;
             case RAIN:
-                if (!overlayMode) drawClouds(canvas, dt);
+                drawClouds(canvas, dt);
                 drawRainAndRipples(canvas, dt, false);
                 break;
             case THUNDERSTORM:
-                if (!overlayMode) drawClouds(canvas, dt);
+                drawClouds(canvas, dt);
                 drawRainAndRipples(canvas, dt, true);
                 drawLightning(canvas, now, dt);
                 break;
             case NIGHT:
                 if (!overlayMode) drawNightSky(canvas, dt);
+                else drawShootingStars(canvas, dt);
                 break;
         }
 
+        if (windStrength > 0.15f) drawWind(canvas, dt);
+
         if (isAnimating) {
             postInvalidateOnAnimation();
+        }
+    }
+
+    /** Streaks of wind, faster the stronger it blows. */
+    private void drawWind(Canvas canvas, float dt) {
+        ripplePaint.setStyle(Paint.Style.STROKE);
+        ripplePaint.setStrokeCap(Paint.Cap.ROUND);
+        ripplePaint.setStrokeWidth(2f);
+        int shown = Math.max(2, (int) (wx.length * windStrength));
+        for (int i = 0; i < shown && i < wx.length; i++) {
+            wx[i] += ws[i] * (300f + 900f * windStrength) * dt;
+            if (wx[i] - wl[i] > cachedW) {
+                wx[i] = -wl[i];
+                wy[i] = random.nextFloat() * cachedH * 0.85f;
+            }
+            float k = Math.min(1f, Math.min(wx[i] + wl[i], cachedW - wx[i]) / (wl[i] * 2f));
+            if (k < 0f) k = 0f;
+            int a = (int) (70 * windStrength * Math.min(1f, k + 0.3f));
+            ripplePaint.setColor(Color.argb(a, 255, 255, 255));
+            float bend = (float) Math.sin(wx[i] * 0.01f + i) * 12f;
+            windPath.reset();
+            windPath.moveTo(wx[i] - wl[i], wy[i]);
+            windPath.quadTo(wx[i] - wl[i] * 0.4f, wy[i] + bend, wx[i], wy[i] - bend * 0.3f);
+            canvas.drawPath(windPath, ripplePaint);
+        }
+    }
+
+    private final Path windPath = new Path();
+
+    /** A hot day: the air wobbles above the ground in slow bright bands. */
+    private void drawHeatShimmer(Canvas canvas, float dt) {
+        shimmerTime += dt;
+        ripplePaint.setStyle(Paint.Style.STROKE);
+        ripplePaint.setStrokeCap(Paint.Cap.ROUND);
+        ripplePaint.setStrokeWidth(3f);
+        int bands = lowSpecMode ? 3 : 6;
+        for (int b = 0; b < bands; b++) {
+            float y = cachedH * (0.55f + 0.07f * b);
+            float shade = 0.5f + 0.5f * (float) Math.sin(shimmerTime * 0.9f + b);
+            ripplePaint.setColor(Color.argb((int) (14 + 22 * shade), 255, 236, 190));
+            windPath.reset();
+            windPath.moveTo(0, y);
+            for (int x = 0; x <= cachedW; x += cachedW / 12) {
+                float yy = y + (float) Math.sin(x * 0.012f + shimmerTime * 2.4f + b * 1.7f) * 6f;
+                windPath.lineTo(x, yy);
+            }
+            canvas.drawPath(windPath, ripplePaint);
+        }
+    }
+
+    private float sunSpin;
+
+    /** A sun in the corner whose rays turn very slowly, drawn in front of the tiles. */
+    private void drawSpinningSun(Canvas canvas, float dt) {
+        sunSpin = (sunSpin + dt * (hot ? 9f : 5f)) % 360f;
+        sunPulseTime += dt;
+        float cx = cachedW * 0.92f, cy = cachedH * 0.10f, r = cachedH * (hot ? 0.085f : 0.07f);
+        flarePaint.setStyle(Paint.Style.FILL);
+        // A soft warm wash from the corner, breathing slowly; stronger when it is hot.
+        float breathe = 1f + 0.08f * (float) Math.sin(sunPulseTime * 1.3f);
+        RadialGradient wash = new RadialGradient(cx, cy, cachedW * (hot ? 0.55f : 0.40f) * breathe,
+                new int[]{Color.argb(hot ? 90 : 55, 255, 214, 120), Color.argb(0, 255, 214, 120)},
+                new float[]{0f, 1f}, Shader.TileMode.CLAMP);
+        sunGlowPaint.setShader(wash);
+        canvas.drawCircle(cx, cy, cachedW * 0.6f, sunGlowPaint);
+        if (hot) drawHeatShimmer(canvas, dt);
+        flarePaint.setColor(0x33FFE082);
+        canvas.drawCircle(cx, cy, r * 2.4f * breathe, flarePaint);
+        ripplePaint.setStyle(Paint.Style.STROKE);
+        ripplePaint.setStrokeCap(Paint.Cap.ROUND);
+        ripplePaint.setStrokeWidth(Math.max(3f, r * 0.12f));
+        ripplePaint.setColor(0x88FFD54F);
+        canvas.save();
+        canvas.rotate(sunSpin, cx, cy);
+        for (int i = 0; i < 12; i++) {
+            double a = Math.toRadians(i * 30);
+            float len = (i % 2 == 0) ? r * 0.95f : r * 0.6f;
+            canvas.drawLine(cx + (float) Math.cos(a) * r * 1.35f, cy + (float) Math.sin(a) * r * 1.35f,
+                    cx + (float) Math.cos(a) * (r * 1.35f + len), cy + (float) Math.sin(a) * (r * 1.35f + len), ripplePaint);
+        }
+        canvas.restore();
+        flarePaint.setColor(0xCCFFE082);
+        canvas.drawCircle(cx, cy, r, flarePaint);
+        flarePaint.setColor(0xAAFFF8E1);
+        canvas.drawCircle(cx, cy, r * 0.7f, flarePaint);
+    }
+
+    private float shootX, shootY, shootLife = -1f, shootWait = 2f;
+
+    /** Twinkling stars and an occasional shooting star across the whole screen, in front of the tiles. */
+    private void drawShootingStars(Canvas canvas, float dt) {
+        // A crescent moon with a halo, top right.
+        float mx = cachedW * 0.90f, my = cachedH * 0.11f, mr = cachedH * 0.045f;
+        RadialGradient halo = new RadialGradient(mx, my, mr * 4.5f,
+                new int[]{0x40DDEBFF, 0x00DDEBFF}, new float[]{0f, 1f}, Shader.TileMode.CLAMP);
+        sunGlowPaint.setShader(halo);
+        canvas.drawCircle(mx, my, mr * 4.5f, sunGlowPaint);
+        // The crescent: a disc minus a slightly shifted disc, so nothing is erased behind it.
+        Path moon = new Path(), bite = new Path();
+        moon.addCircle(mx, my, mr, Path.Direction.CW);
+        bite.addCircle(mx + mr * 0.45f, my - mr * 0.15f, mr * 0.88f, Path.Direction.CW);
+        moon.op(bite, Path.Op.DIFFERENCE);
+        starPaint.setColor(0xF0F4F8FF);
+        canvas.drawPath(moon, starPaint);
+        for (Star s : stars) {
+            s.phase += s.speed * dt;
+            float twinkle = (float) ((Math.sin(s.phase) + 1.0) / 2.0);
+            int alpha = (int) (s.baseAlpha * (0.25f + 0.75f * twinkle));
+            starPaint.setColor(Color.argb(Math.min(255, alpha), 255, 255, 255));
+            canvas.drawCircle(s.x, s.y, s.size, starPaint);
+        }
+        if (shootLife < 0) {
+            shootWait -= dt;
+            if (shootWait <= 0) {
+                shootX = cachedW * (0.25f + random.nextFloat() * 0.7f);
+                shootY = cachedH * (0.02f + random.nextFloat() * 0.3f);
+                shootLife = 0f;
+            }
+        } else {
+            shootLife += dt;
+            float k = shootLife / 1.1f;
+            if (k >= 1f) { shootLife = -1f; shootWait = 3f + random.nextFloat() * 5f; }
+            else {
+                float dx = -cachedW * 0.22f, dy = cachedH * 0.14f;
+                float hx = shootX + dx * k, hy = shootY + dy * k;
+                ripplePaint.setStyle(Paint.Style.STROKE);
+                ripplePaint.setStrokeCap(Paint.Cap.ROUND);
+                ripplePaint.setStrokeWidth(3f);
+                ripplePaint.setColor(Color.argb((int) (230 * (1f - k)), 255, 255, 255));
+                canvas.drawLine(hx, hy, hx - dx * 0.35f, hy - dy * 0.35f, ripplePaint);
+                starPaint.setColor(Color.argb((int) (255 * (1f - k)), 255, 255, 255));
+                canvas.drawCircle(hx, hy, 3.5f, starPaint);
+            }
         }
     }
 
@@ -439,14 +656,16 @@ public class WeatherBackgroundView extends View {
 
     private void drawClouds(Canvas canvas, float dt) {
         for (CloudPuff p : cloudPuffs) {
-            p.x += p.speed * 60f * dt;
+            p.x += p.speed * 60f * dt * (1f + windStrength * 3f);
             if (p.x - p.rx > cachedW) {
                 p.x = -p.rx;
             }
 
+            // Over a wallpaper the haze is fainter than a whole sky.
+            int a = overlayMode && currentCondition != ConditionType.FOG ? (int) (p.alpha * 0.6f) : p.alpha;
             RadialGradient cloudGrad = new RadialGradient(
                     p.x, p.y, Math.max(p.rx, p.ry),
-                    new int[]{Color.argb(p.alpha, 255, 255, 255), Color.argb(0, 255, 255, 255)},
+                    new int[]{Color.argb(a, 255, 255, 255), Color.argb(0, 255, 255, 255)},
                     new float[]{0f, 1f},
                     Shader.TileMode.CLAMP
             );
@@ -455,8 +674,30 @@ public class WeatherBackgroundView extends View {
         }
     }
 
+    private void drawSnow(Canvas canvas, float dt) {
+        for (int i = 0; i < flakes.size(); i++) {
+            Flake f = flakes.get(i);
+            f.y += f.speed * 60f * dt;
+            f.phase += dt * 1.2f;
+            f.x += (float) Math.sin(f.phase) * 0.6f;
+            if (f.y > cachedH + 6) {
+                f.y = -6;
+                f.x = random.nextFloat() * cachedW;
+            }
+            rainPaint.setStyle(Paint.Style.FILL);
+            rainPaint.setColor(Color.argb(f.alpha, 255, 255, 255));
+            canvas.drawCircle(f.x, f.y, f.r, rainPaint);
+            rainPaint.setStyle(Paint.Style.STROKE);
+        }
+    }
+
     private void drawRainAndRipples(Canvas canvas, float dt, boolean heavy) {
-        float angleTan = 0.16f; // ~9 degree wind slant
+        float angleTan = 0.10f + windStrength * 0.40f + (heavy ? 0.10f : 0f); // slant grows with the wind
+        if (overlayMode) {
+            // Rain darkens the picture a little; the heavier, the darker.
+            int wash = heavy ? 70 : (currentCondition == ConditionType.RAIN ? (heavyRain ? 60 : 28) : 0);
+            if (wash > 0) canvas.drawColor(Color.argb(wash, 6, 12, 24));
+        }
 
         for (int i = 0; i < rainDrops.size(); i++) {
             RainDrop drop = rainDrops.get(i);
@@ -518,9 +759,12 @@ public class WeatherBackgroundView extends View {
         if (now >= nextLightningTime && lightningAlpha <= 0f) {
             // Trigger lightning flash
             lightningAlpha = 0.95f;
-            nextLightningTime = now + 4000 + random.nextInt(6000);
+            nextLightningTime = now + 3000 + random.nextInt(7000);
+            // Sheet lightning lights up the clouds with no bolt; forked bolts and double flashes are also common.
+            sheetOnly = random.nextFloat() < 0.3f;
+            secondFlash = random.nextFloat() < 0.4f;
             generateLightningPath();
-            hasActiveBolt = true;
+            hasActiveBolt = !sheetOnly;
         }
 
         if (lightningAlpha > 0f) {
@@ -530,7 +774,7 @@ public class WeatherBackgroundView extends View {
 
             // Draw bolt
             if (hasActiveBolt && lightningAlpha > 0.4f) {
-                lightningPaint.setStrokeWidth(2.5f);
+                lightningPaint.setStrokeWidth(3f);
                 lightningPaint.setStyle(Paint.Style.STROKE);
                 lightningPaint.setColor(Color.argb((int) (lightningAlpha * 230), 255, 255, 255));
                 canvas.drawPath(lightningPath, lightningPaint);
@@ -541,6 +785,11 @@ public class WeatherBackgroundView extends View {
             if (lightningAlpha <= 0f) {
                 lightningAlpha = 0f;
                 hasActiveBolt = false;
+                if (secondFlash) { // the quick second flash, a little weaker
+                    secondFlash = false;
+                    lightningAlpha = 0.7f;
+                    hasActiveBolt = !sheetOnly;
+                }
             }
         }
     }

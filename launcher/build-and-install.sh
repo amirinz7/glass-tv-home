@@ -179,4 +179,30 @@ enable_service() {   # appends to enabled_accessibility_services without droppin
 }
 if [ "${INPUT_KEY_SERVICE:-0}" = 1 ]; then enable_service InputKeyService; fi
 if [ "${HOME_KEY_SERVICE:-0}" = 1 ]; then enable_service HomeKeyService; fi
+# The settings (six favourites, six columns, 30 s wallpaper) are lost when the app is removed: put them back only if the TV has none.
+CFG_DIR=/sdcard/Android/data/com.gathin.tvhome/files
+if [ -f theme-config.json ] && ! "$PY" -I ../tools/tv.py "ls $CFG_DIR/config.json" 2>/dev/null | grep -q 'config.json$'; then
+  "$PY" -I ../tools/tv.py "mkdir -p $CFG_DIR" >/dev/null
+  "$PY" -I ../tools/tv.py --push theme-config.json "$CFG_DIR/config.json" | tail -n 1
+fi
+# Pictures that show behind the home screen when an app tile is selected (netflix.png, disneyplus.png ...).
+if ls app-wallpapers/*.png app-wallpapers/*.jpg app-wallpapers/*.jpeg >/dev/null 2>&1; then
+  echo "Copying app wallpapers to the TV ..."
+  AW=/sdcard/Android/data/com.gathin.tvhome/files/app-wallpapers
+  "$PY" -I ../tools/tv.py "mkdir -p $AW" >/dev/null
+  for f in app-wallpapers/*.png app-wallpapers/*.jpg app-wallpapers/*.jpeg; do
+    [ -f "$f" ] || continue
+    "$PY" -I ../tools/b64push.py "$f" "$AW/$(basename "$f")" | tail -n 1
+  done
+fi
+# Calendar links are kept in the app, so they go when the app is removed. If you keep them in ~/.glass-tv-calendar-links
+# (one address per line; a line like file:///sdcard/Android/data/com.gathin.tvhome/files/birthdays.ics is fine too),
+# they are sent to the TV again after every install.
+if [ -f "$HOME/.glass-tv-calendar-links" ]; then
+  LINKS=$(grep -v '^[[:space:]]*#' "$HOME/.glass-tv-calendar-links" | tr '\r\n' '  ' | sed 's/^ *//; s/ *$//')
+  if [ -n "$LINKS" ]; then
+    echo "Sending your calendar links to the TV ..."
+    "$PY" -I ../tools/tv.py "am broadcast -a com.gathin.tvhome.SET_CALENDAR -p com.gathin.tvhome --es url '$LINKS' --ez on true" | tail -n 1 || true
+  fi
+fi
 echo "Installed. Press Home on the remote to see it."

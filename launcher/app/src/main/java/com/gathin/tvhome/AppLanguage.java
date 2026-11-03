@@ -22,9 +22,14 @@ final class AppLanguage {
     private AppLanguage() {}
 
     public static String getLanguage(Context ctx) {
-        if (ctx == null) return LANG_MS;
-        return ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                .getString(KEY_LANG, LANG_MS);
+        if (ctx == null) return LANG_EN;
+        android.content.SharedPreferences sp = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        // One time: a TV that was set to Malay by an earlier build moves to English (the default now).
+        if (!sp.getBoolean("english_default_applied", false)) {
+            sp.edit().putString(KEY_LANG, LANG_EN).putBoolean("english_default_applied", true).apply();
+            return LANG_EN;
+        }
+        return sp.getString(KEY_LANG, LANG_EN);
     }
 
     public static void setLanguage(Context ctx, String lang) {
@@ -52,12 +57,12 @@ final class AppLanguage {
         String lang = getLanguage(ctx);
         switch (lang) {
             case LANG_EN:
-                return "🇬🇧 EN";
+                return "EN";
             case LANG_ID:
-                return "🇮🇩 ID";
+                return "ID";
             case LANG_MS:
             default:
-                return "🇲🇾 BM";
+                return "BM";
         }
     }
 
@@ -65,7 +70,7 @@ final class AppLanguage {
         String lang = getLanguage(ctx);
         switch (lang) {
             case LANG_EN:
-                return new String[]{"Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"};
+                return new String[]{"Subuh", "Syuruk", "Zohor", "Asar", "Maghrib", "Isyak"};
             case LANG_ID:
                 return new String[]{"Subuh", "Terbit", "Dzuhur", "Ashar", "Maghrib", "Isya"};
             case LANG_MS:
@@ -78,7 +83,7 @@ final class AppLanguage {
         String lang = getLanguage(ctx);
         switch (lang) {
             case LANG_EN:
-                return "PRAYER TIMES";
+                return "WAKTU SOLAT";
             case LANG_ID:
                 return "WAKTU SHOLAT";
             case LANG_MS:
@@ -92,7 +97,7 @@ final class AppLanguage {
         String prefix;
         switch (lang) {
             case LANG_EN:
-                prefix = "DAILY PRAYER";
+                prefix = "DOA HARIAN";
                 break;
             case LANG_ID:
             case LANG_MS:
@@ -318,8 +323,8 @@ final class AppLanguage {
     public static String strBack(Context ctx) {
         switch (getLanguage(ctx)) {
             case LANG_EN: return "Back";
-            case LANG_ID: return "Kembali";
-            case LANG_MS: default: return "Kembali";
+            case LANG_ID: return "Back";
+            case LANG_MS: default: return "Back";
         }
     }
 
@@ -341,9 +346,9 @@ final class AppLanguage {
 
     public static String strLocationRow(Context ctx, String zoneName) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "📍 Location (Weather & Prayer): " + zoneName;
-            case LANG_ID: return "📍 Lokasi (Cuaca & Sholat): " + zoneName;
-            case LANG_MS: default: return "📍 Lokasi (Cuaca & Solat): " + zoneName;
+            case LANG_EN: return "Location (Weather & Prayer): " + zoneName;
+            case LANG_ID: return "Lokasi (Cuaca & Sholat): " + zoneName;
+            case LANG_MS: default: return "Lokasi (Cuaca & Solat): " + zoneName;
         }
     }
 
@@ -426,12 +431,12 @@ final class AppLanguage {
     public static String strLanguageChangedToast(Context ctx, String lang) {
         switch (lang) {
             case LANG_EN:
-                return "Language switched to English 🇬🇧";
+                return "Language switched to English ";
             case LANG_ID:
-                return "Bahasa diubah ke Bahasa Indonesia 🇮🇩";
+                return "Bahasa diubah ke Bahasa Indonesia ";
             case LANG_MS:
             default:
-                return "Bahasa ditukar ke Bahasa Melayu 🇲🇾";
+                return "Bahasa ditukar ke Bahasa Melayu ";
         }
     }
 
@@ -446,9 +451,9 @@ final class AppLanguage {
     // --- Restart Dialog ---
     public static String strRestartTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "🔄 Restart TV";
-            case LANG_ID: return "🔄 Mulai Ulang TV";
-            case LANG_MS: default: return "🔄 Mulakan Semula TV (Restart)";
+            case LANG_EN: return "Restart TV";
+            case LANG_ID: return "Mulai Ulang TV";
+            case LANG_MS: default: return "Mulakan Semula TV (Restart)";
         }
     }
 
@@ -479,9 +484,9 @@ final class AppLanguage {
     // --- Turn Off Dialog ---
     public static String strTurnOffTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "🔌 Turn Off TV";
-            case LANG_ID: return "🔌 Matikan TV";
-            case LANG_MS: default: return "🔌 Padamkan TV (Turn Off)";
+            case LANG_EN: return "Turn Off TV";
+            case LANG_ID: return "Matikan TV";
+            case LANG_MS: default: return "Padamkan TV (Turn Off)";
         }
     }
 
@@ -504,9 +509,9 @@ final class AppLanguage {
     // --- Clean Cache Dialog ---
     public static String strCleanCacheTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "🧹 Clean TV Cache";
-            case LANG_ID: return "🧹 Bersihkan Cache TV";
-            case LANG_MS: default: return "🧹 Bersihkan Cache TV";
+            case LANG_EN: return "Clean TV Cache";
+            case LANG_ID: return "Bersihkan Cache TV";
+            case LANG_MS: default: return "Bersihkan Cache TV";
         }
     }
 
@@ -514,28 +519,28 @@ final class AppLanguage {
         switch (getLanguage(ctx)) {
             case LANG_EN:
                 return "Clear app cache files, temporary download fragments, and refresh TV memory.\n\n"
-                        + "📊 TV Storage Status:\n"
+                        + "TV Storage Status:\n"
                         + "• Free Space: " + freeStr + " of " + totalStr + " (" + freePct + "% free)\n"
                         + "• Usage: " + usedPct + "%";
             case LANG_ID:
                 return "Bersihkan file cache aplikasi, file unduhan sementara, dan segarkan memori TV.\n\n"
-                        + "📊 Status Penyimpanan TV:\n"
-                        + "• Ruang Bebas: " + freeStr + " dari " + totalStr + " (" + freePct + "% bebas)\n"
+                        + "Status Penyimpanan TV:\n"
+                        + "• Free space: " + freeStr + " dari " + totalStr + " (" + freePct + "% bebas)\n"
                         + "• Penggunaan: " + usedPct + "%";
             case LANG_MS:
             default:
                 return "Kosongkan fail cache aplikasi, serpihan muat turun sementara, dan segarkan memori TV.\n\n"
-                        + "📊 Status Storan TV:\n"
-                        + "• Ruang Bebas: " + freeStr + " daripada " + totalStr + " (" + freePct + "% bebas)\n"
+                        + "Status Storan TV:\n"
+                        + "• Free space: " + freeStr + " daripada " + totalStr + " (" + freePct + "% bebas)\n"
                         + "• Penggunaan: " + usedPct + "%";
         }
     }
 
     public static String strCleanCacheStart(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "🧹 Start Cleaning";
-            case LANG_ID: return "🧹 Mulai Bersihkan";
-            case LANG_MS: default: return "🧹 Mula Bersihkan";
+            case LANG_EN: return "Start Cleaning";
+            case LANG_ID: return "Mulai Bersihkan";
+            case LANG_MS: default: return "Mula Bersihkan";
         }
     }
 
@@ -549,9 +554,9 @@ final class AppLanguage {
 
     public static String strCleanCacheDoneTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "✨ Cleaning Complete";
-            case LANG_ID: return "✨ Pembersihan Selesai";
-            case LANG_MS: default: return "✨ Pembersihan Selesai";
+            case LANG_EN: return "Cleaning Complete";
+            case LANG_ID: return "Pembersihan Selesai";
+            case LANG_MS: default: return "Pembersihan Selesai";
         }
     }
 
@@ -559,25 +564,25 @@ final class AppLanguage {
         switch (getLanguage(ctx)) {
             case LANG_EN:
                 return hasFreed
-                        ? "✅ Successfully cleaned " + freedStr + " of cache files!\nTV storage is now lighter and smoother."
-                        : "✅ TV cache is already completely clean.\nTV storage and memory are at optimal levels.";
+                        ? "Successfully cleaned " + freedStr + " of cache files!\nTV storage is now lighter and smoother."
+                        : "TV cache is already completely clean.\nTV storage and memory are at optimal levels.";
             case LANG_ID:
                 return hasFreed
-                        ? "✅ Berhasil membersihkan " + freedStr + " file cache!\nPenyimpanan TV kini lebih lega dan lancar."
-                        : "✅ Cache TV sudah bersih sepenuhnya.\nPenyimpanan dan memori TV berada pada tingkat optimal.";
+                        ? "Berhasil membersihkan " + freedStr + " file cache!\nPenyimpanan TV kini lebih lega dan lancar."
+                        : "Cache TV sudah bersih sepenuhnya.\nPenyimpanan dan memori TV berada pada tingkat optimal.";
             case LANG_MS:
             default:
                 return hasFreed
-                        ? "✅ Berjaya membersihkan " + freedStr + " fail cache!\nStoran TV kini lebih ringan dan lancar."
-                        : "✅ Cache TV telah dibersihkan sepenuhnya.\nStoran dan memori TV berada pada tahap optimum.";
+                        ? "Berjaya membersihkan " + freedStr + " fail cache!\nStoran TV kini lebih ringan dan lancar."
+                        : "Cache TV telah dibersihkan sepenuhnya.\nStoran dan memori TV berada pada tahap optimum.";
         }
     }
 
     public static String strCleanCacheUsageLine(Context ctx, int before, int after) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "\n\n📊 Storage Usage: " + before + "% → " + after + "%";
-            case LANG_ID: return "\n\n📊 Penggunaan Penyimpanan: " + before + "% → " + after + "%";
-            case LANG_MS: default: return "\n\n📊 Penggunaan Storan: " + before + "% → " + after + "%";
+            case LANG_EN: return "\n\n Storage Usage: " + before + "%  " + after + "%";
+            case LANG_ID: return "\n\n Penggunaan Penyimpanan: " + before + "%  " + after + "%";
+            case LANG_MS: default: return "\n\n Penggunaan Storan: " + before + "%  " + after + "%";
         }
     }
 
@@ -592,9 +597,9 @@ final class AppLanguage {
     // --- Azan Settings Dialog ---
     public static String strAzanSettingsHeaderTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "🕌 Adhan Settings & Options";
-            case LANG_ID: return "🕌 Pengaturan & Pilihan Adzan";
-            case LANG_MS: default: return "🕌 Tetapan & Pilihan Azan";
+            case LANG_EN: return "Adhan Settings & Options";
+            case LANG_ID: return "Pengaturan & Pilihan Adzan";
+            case LANG_MS: default: return "Tetapan & Pilihan Azan";
         }
     }
 
@@ -616,9 +621,9 @@ final class AppLanguage {
 
     public static String strAzanMasterTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "🔔 TV Adhan Popup Notification";
-            case LANG_ID: return "🔔 Notifikasi Popup Adzan TV";
-            case LANG_MS: default: return "🔔 Notifikasi Popup Azan TV";
+            case LANG_EN: return "TV Adhan Popup Notification";
+            case LANG_ID: return "Notifikasi Popup Adzan TV";
+            case LANG_MS: default: return "Notifikasi Popup Azan TV";
         }
     }
 
@@ -648,17 +653,17 @@ final class AppLanguage {
 
     public static String strAzanAudioCurrent(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "🔊 Current Adhan Audio";
-            case LANG_ID: return "🔊 Suara Adzan Saat Ini";
-            case LANG_MS: default: return "🔊 Bunyi Azan Semasa";
+            case LANG_EN: return "Current Adhan Audio";
+            case LANG_ID: return "Suara Adzan Saat Ini";
+            case LANG_MS: default: return "Bunyi Azan Semasa";
         }
     }
 
     public static String strAzanAudioChangeBtn(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "CHANGE ❯";
-            case LANG_ID: return "UBAH ❯";
-            case LANG_MS: default: return "TUKAR ❯";
+            case LANG_EN: return "CHANGE ";
+            case LANG_ID: return "UBAH ";
+            case LANG_MS: default: return "TUKAR ";
         }
     }
 
@@ -672,9 +677,9 @@ final class AppLanguage {
 
     public static String strAzanTestTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "▶️ Test Adhan Popup Now";
-            case LANG_ID: return "▶️ Uji Popup Adzan Sekarang";
-            case LANG_MS: default: return "▶️ Uji Popup Azan Sekarang";
+            case LANG_EN: return "Test Adhan Popup Now";
+            case LANG_ID: return "Uji Popup Adzan Sekarang";
+            case LANG_MS: default: return "Uji Popup Azan Sekarang";
         }
     }
 
@@ -688,33 +693,33 @@ final class AppLanguage {
 
     public static String strAzanTestBtn(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "TEST ▶";
-            case LANG_ID: return "UJI ▶";
-            case LANG_MS: default: return "UJI ▶";
+            case LANG_EN: return "TEST";
+            case LANG_ID: return "UJI";
+            case LANG_MS: default: return "UJI";
         }
     }
 
     public static String strAzanInfoText(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "💡 Prayer times are automatically synchronized based on official schedules. The adhan card appears over Netflix, YouTube & streaming apps.";
-            case LANG_ID: return "💡 Waktu sholat disinkronkan secara otomatis sesuai jadwal resmi. Kartu adzan tetap muncul di atas Netflix, YouTube & aplikasi streaming.";
-            case LANG_MS: default: return "💡 Waktu solat diselaraskan secara automatik mengikut zon JAKIM. Kad azan tetap muncul di atas Netflix, YouTube & Perfect TV.";
+            case LANG_EN: return "Prayer times are automatically synchronized based on official schedules. The adhan card appears over Netflix, YouTube & streaming apps.";
+            case LANG_ID: return "Waktu sholat disinkronkan secara otomatis sesuai jadwal resmi. Kartu adzan tetap muncul di atas Netflix, YouTube & aplikasi streaming.";
+            case LANG_MS: default: return "Waktu solat diselaraskan secara automatik mengikut zon JAKIM. Kad azan tetap muncul di atas Netflix, YouTube & Perfect TV.";
         }
     }
 
     public static String strAzanCloseBtn(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "✕ Close Settings";
-            case LANG_ID: return "✕ Tutup Pengaturan";
-            case LANG_MS: default: return "✕ Tutup Tetapan";
+            case LANG_EN: return " Close Settings";
+            case LANG_ID: return " Tutup Pengaturan";
+            case LANG_MS: default: return " Tutup Tetapan";
         }
     }
 
     public static String strAzanChooseAudioTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "🔊 Choose Adhan Audio";
-            case LANG_ID: return "🔊 Pilih Suara Adzan";
-            case LANG_MS: default: return "🔊 Pilih Audio Azan";
+            case LANG_EN: return "Choose Adhan Audio";
+            case LANG_ID: return "Pilih Suara Adzan";
+            case LANG_MS: default: return "Pilih Audio Azan";
         }
     }
 
@@ -722,34 +727,34 @@ final class AppLanguage {
         switch (getLanguage(ctx)) {
             case LANG_EN:
                 return new String[]{
-                        "🕋 Masjid al-Haram Makkah Adhan (Full)",
-                        "🕌 Al-Masjid an-Nabawi Madinah Adhan (Full)",
-                        "🇲🇾 KLCC As-Syakirin Mosque Adhan",
-                        "🇸🇬 Singapore Sultan Mosque / Regional Adhan",
-                        "🇮🇩 Indonesia National / Istiqlal Mosque Adzan",
-                        "🔔 Soft Chime Tone (Brief ~5s)",
-                        "🔕 Silent Mode (Visual Only, No Audio)"
+                        "Masjid al-Haram Makkah Adhan (Full)",
+                        "Al-Masjid an-Nabawi Madinah Adhan (Full)",
+                        "KLCC As-Syakirin Mosque Adhan",
+                        "Singapore Sultan Mosque / Regional Adhan",
+                        "Indonesia National / Istiqlal Mosque Adzan",
+                        "Soft Chime Tone (Brief ~5s)",
+                        "Silent Mode (Visual Only, No Audio)"
                 };
             case LANG_ID:
                 return new String[]{
-                        "🕋 Adzan Masjidil Haram Makkah (Penuh)",
-                        "🕌 Adzan Masjid Nabawi Madinah (Penuh)",
-                        "🇲🇾 Adzan Masjid As-Syakirin KLCC",
-                        "🇸🇬 Adzan Singapura (Masjid Sultan)",
-                        "🇮🇩 Adzan Indonesia (Masjid Istiqlal / Nasional)",
-                        "🔔 Nada Chime Lembut (Singkat ~5 detik)",
-                        "🔕 Mode Hening (Hanya Visual Tanpa Suara)"
+                        "Adzan Masjidil Haram Makkah (Penuh)",
+                        "Adzan Masjid Nabawi Madinah (Penuh)",
+                        "Adzan Masjid As-Syakirin KLCC",
+                        "Adzan Singapura (Masjid Sultan)",
+                        "Adzan Indonesia (Masjid Istiqlal / Nasional)",
+                        "Nada Chime Lembut (Singkat ~5 detik)",
+                        "Mode Hening (Hanya Visual Tanpa Suara)"
                 };
             case LANG_MS:
             default:
                 return new String[]{
-                        "🕋 Azan Masjidil Haram Makkah (Penuh)",
-                        "🕌 Azan Masjid Nabawi Madinah (Penuh)",
-                        "🇲🇾 Azan Masjid As-Syakirin KLCC",
-                        "🇸🇬 Azan Singapura (Masjid Sultan / Jiharkah)",
-                        "🇮🇩 Adzan Indonesia (Masjid Istiqlal / Nasional)",
-                        "🔔 Nada Chime Lembut (Ringkas ~5 saat)",
-                        "🔕 Mod Senyap (Visual Sahaja Tanpa Audio)"
+                        "Azan Masjidil Haram Makkah (Penuh)",
+                        "Azan Masjid Nabawi Madinah (Penuh)",
+                        "Azan Masjid As-Syakirin KLCC",
+                        "Azan Singapura (Masjid Sultan / Jiharkah)",
+                        "Adzan Indonesia (Masjid Istiqlal / Nasional)",
+                        "Nada Chime Lembut (Ringkas ~5 saat)",
+                        "Mod Senyap (Visual Sahaja Tanpa Audio)"
                 };
         }
     }
@@ -757,9 +762,9 @@ final class AppLanguage {
     // --- Wallpaper Dialog ---
     public static String strWallpaperDialogTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "🖼️ Select 4K Wallpaper Collection";
-            case LANG_ID: return "🖼️ Pilih Koleksi Wallpaper 4K";
-            case LANG_MS: default: return "🖼️ Pilih Koleksi Wallpaper 4K";
+            case LANG_EN: return "Select 4K Wallpaper Collection";
+            case LANG_ID: return "Pilih Koleksi Wallpaper 4K";
+            case LANG_MS: default: return "Pilih Koleksi Wallpaper 4K";
         }
     }
 
@@ -773,9 +778,9 @@ final class AppLanguage {
 
     public static String strWallpaperIntervalTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "⏱️ Wallpaper Shuffle Interval";
-            case LANG_ID: return "⏱️ Interval Shuffle Wallpaper";
-            case LANG_MS: default: return "⏱️ Selang Masa Shuffle Wallpaper";
+            case LANG_EN: return " Wallpaper Shuffle Interval";
+            case LANG_ID: return " Interval Shuffle Wallpaper";
+            case LANG_MS: default: return " Selang Masa Shuffle Wallpaper";
         }
     }
 
@@ -789,6 +794,7 @@ final class AppLanguage {
 
     public static String strWallpaperIntervalText(Context ctx, int curInterval) {
         String lang = getLanguage(ctx);
+        if (curInterval == -30) return "Every 30 Seconds";
         if (curInterval == 1) {
             return LANG_EN.equals(lang) ? "Every 1 Minute" : (LANG_ID.equals(lang) ? "Setiap 1 Menit" : "Setiap 1 Minit");
         } else if (curInterval == 5) {

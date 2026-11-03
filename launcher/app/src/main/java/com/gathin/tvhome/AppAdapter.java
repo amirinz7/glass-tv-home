@@ -213,6 +213,8 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
             if (ri.activityInfo == null) continue;
             String pkg = ri.activityInfo.packageName;
             if (pkg.equals(ctx.getPackageName()) || hidden.contains(pkg) || ChildModeManager.isAppHidden(ctx, pkg)) continue;
+            // The separate Lumen weather and prayer apps are replaced by the built-in pages: no tiles for them.
+            if (String.valueOf(ri.loadLabel(pm)).toLowerCase(java.util.Locale.ROOT).contains("lumen")) continue;
             ComponentName component = new ComponentName(pkg, ri.activityInfo.name);
             Cards.Card card = cardByPkg.get(pkg);
             if (card != null && !card.component.equals(component)) continue;   // the card stands in for this tile
@@ -401,7 +403,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
             return;
         }
         if (ChildModeManager.isAppLocked(ctx, e.pkg)) {
-            ChildModeManager.promptPin(ctx, "Aplikasi Dikunci", "Masukkan PIN 4-digit untuk membuka " + e.label, new ChildModeManager.PinCallback() {
+            ChildModeManager.promptPin(ctx, "App Locked", "Enter the 4-digit PIN to open " + e.label, new ChildModeManager.PinCallback() {
                 @Override
                 public void onSuccess() {
                     performLaunch(e);

@@ -49,7 +49,7 @@ public class ProfileSettingsDialog {
 
         // Header
         TextView tvTitle = new TextView(context);
-        tvTitle.setText("⚙️ Tetapan Profil: " + profile.name);
+        tvTitle.setText("Profile Settings: " + profile.name);
         tvTitle.setTextSize(20);
         tvTitle.setTextColor(0xFFFFFFFF);
         tvTitle.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
@@ -82,7 +82,7 @@ public class ProfileSettingsDialog {
         inputCol.setOrientation(LinearLayout.VERTICAL);
 
         TextView tvNameLabel = new TextView(context);
-        tvNameLabel.setText("NAMA PROFIL");
+        tvNameLabel.setText("PROFILE NAME");
         tvNameLabel.setTextSize(11);
         tvNameLabel.setTextColor(0xFF94A3B8);
         tvNameLabel.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
@@ -103,7 +103,7 @@ public class ProfileSettingsDialog {
         inputCol.addView(etName);
 
         CheckBox cbChild = new CheckBox(context);
-        cbChild.setText("Aktifkan Mod Kanak-kanak (Sekat aplikasi dewasa)");
+        cbChild.setText("Turn on Child Mode (blocks adult apps)");
         cbChild.setTextColor(0xFFE2E8F0);
         cbChild.setTextSize(12.5f);
         cbChild.setChecked(profile.isChild);
@@ -125,7 +125,7 @@ public class ProfileSettingsDialog {
         // Option 1: Watak Tunggal (Lottie Animation)
         View opt1 = createOptionCard(
                 context,
-                "🎭 1. Watak Tunggal (Animasi Bergerak)",
+                "1. Watak Tunggal (Animasi Bergerak)",
                 "Animasi karakter comel yang terapung dengan pelbagai mimik muka & warna tersendiri",
                 "Kustomisasi Watak",
                 density,
@@ -142,7 +142,7 @@ public class ProfileSettingsDialog {
         // Option 2: Cari GIF (Giphy Search)
         View opt2 = createOptionCard(
                 context,
-                "🔍 2. Cari Animasi GIF (Giphy)",
+                "2. Cari Animasi GIF (Giphy)",
                 "Cari ribuan animasi GIF menarik daripada pangkalan data Giphy secara terus",
                 "Cari GIF",
                 density,
@@ -157,9 +157,9 @@ public class ProfileSettingsDialog {
         // Option 3: Muat Naik Mudah Alih (Mobile Upload)
         View opt3 = createOptionCard(
                 context,
-                "📲 3. Muat Naik Mudah Alih (Telefon / Storan)",
-                "Muat naik gambar profil atau GIF terus dari telefon pintar anda melalui Wi-Fi",
-                "Muat Naik Dari Telefon",
+                "3. Mobile Upload (Phone / Storage)",
+                "Upload a profile picture or GIF from your phone over Wi-Fi",
+                "Upload From Phone",
                 density,
                 v -> MobileUploadDialog.show(context, profile.id, path -> {
                     profile.avatarType = ProfileManager.AVATAR_TYPE_CUSTOM;
@@ -178,7 +178,7 @@ public class ProfileSettingsDialog {
         List<ProfileManager.UserProfile> allProfs = ProfileManager.getAllProfiles(context);
         if (allProfs.size() > 1) {
             TextView btnDelete = new TextView(context);
-            btnDelete.setText("🗑️ Padam Profil");
+            btnDelete.setText("Delete Profile");
             btnDelete.setTextColor(0xFFEF4444); // Red
             btnDelete.setTextSize(13);
             btnDelete.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
@@ -202,7 +202,7 @@ public class ProfileSettingsDialog {
         actionsRow.addView(spacer, new LinearLayout.LayoutParams(0, 1, 1f));
 
         TextView btnCancel = new TextView(context);
-        btnCancel.setText("Batal");
+        btnCancel.setText("Cancel");
         btnCancel.setTextColor(0xFF94A3B8);
         btnCancel.setTextSize(13.5f);
         btnCancel.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.NORMAL);
@@ -216,7 +216,7 @@ public class ProfileSettingsDialog {
         actionsRow.addView(btnCancel);
 
         TextView btnSave = new TextView(context);
-        btnSave.setText("Simpan Perubahan");
+        btnSave.setText("Save Changes");
         btnSave.setTextColor(0xFFFFFFFF);
         btnSave.setTextSize(13.5f);
         btnSave.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
@@ -242,7 +242,7 @@ public class ProfileSettingsDialog {
             }
             profile.isChild = cbChild.isChecked();
             ProfileManager.updateProfile(context, profile);
-            Toast.makeText(context, "✨ Profil berjaya dikemaskini!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Profil berjaya dikemaskini!", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
             if (listener != null) listener.onProfileSaved();
         });

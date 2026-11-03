@@ -62,14 +62,14 @@ public class GifSearchDialog {
 
         // Header
         TextView tvTitle = new TextView(context);
-        tvTitle.setText("🔍 Cari Animasi GIF Avatar");
+        tvTitle.setText("Cari Animasi GIF Avatar");
         tvTitle.setTextSize(20);
         tvTitle.setTextColor(0xFFFFFFFF);
         tvTitle.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
-        tvSub.setText("Pilih atau cari sebarang animasi GIF untuk dijadikan avatar profil anda");
+        tvSub.setText("Pick or search any GIF to use as your profile avatar");
         tvSub.setTextSize(13);
         tvSub.setTextColor(0xFF94A3B8);
         root.addView(tvSub);
@@ -99,7 +99,7 @@ public class GifSearchDialog {
         searchRow.addView(etSearch, etLp);
 
         TextView btnSearch = new TextView(context);
-        btnSearch.setText("Cari 🚀");
+        btnSearch.setText("Cari ");
         btnSearch.setTextColor(0xFFFFFFFF);
         btnSearch.setTextSize(13.5f);
         btnSearch.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
@@ -194,7 +194,7 @@ public class GifSearchDialog {
 
         // Close Button
         TextView btnClose = new TextView(context);
-        btnClose.setText("Tutup");
+        btnClose.setText("Close");
         btnClose.setTextColor(0xFF94A3B8);
         btnClose.setTextSize(13.5f);
         btnClose.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
@@ -347,15 +347,15 @@ public class GifSearchDialog {
             });
 
             frame.setOnClickListener(v -> {
-                Toast.makeText(context, "⏳ Sedang memuat turun GIF avatar...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Downloading avatar GIF...", Toast.LENGTH_SHORT).show();
                 new Thread(() -> {
                     String localPath = downloadAndSaveGif(context, gifUrl, profileId);
                     MAIN_HANDLER.post(() -> {
                         if (localPath != null) {
-                            Toast.makeText(context, "✨ GIF berjaya dipilih sebagai avatar!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "GIF set as avatar!", Toast.LENGTH_SHORT).show();
                             if (listener != null) listener.onGifSelected(localPath);
                         } else {
-                            Toast.makeText(context, "Ralat memuat turun GIF. Sila cuba lagi.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Could not download the GIF. Please try again.", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }).start();

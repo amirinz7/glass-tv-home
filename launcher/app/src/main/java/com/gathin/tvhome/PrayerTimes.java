@@ -676,6 +676,34 @@ final class PrayerTimes {
         return null;
     }
 
+    /** The six times (Subuh, Syuruk, Zohor, Asar, Maghrib, Isyak) for any day: JAKIM data this month, calculation otherwise. */
+    static long[] timesFor(Context context, Calendar day) {
+        Calendar now = Calendar.getInstance();
+        long[] t = null;
+        if (day.get(Calendar.MONTH) == now.get(Calendar.MONTH) && day.get(Calendar.YEAR) == now.get(Calendar.YEAR)) {
+            t = getTimesForToday(context, day.get(Calendar.DAY_OF_MONTH));
+        }
+        if (t == null || t.length < 6) t = calculateFallback(context, day);
+        return t;
+    }
+
+    /** {index of the next prayer (Syuruk skipped), its time, the time of the one before it}, in epoch ms. */
+    static long[] nextInfo(Context context) {
+        Calendar now = Calendar.getInstance();
+        long nowMs = now.getTimeInMillis();
+        long[] today = timesFor(context, now);
+        long prev = today[5] - 86_400_000L;
+        for (int i = 0; i < 6; i++) {
+            if (i == 1) continue;
+            if (today[i] > nowMs) return new long[]{i, today[i], prev};
+            prev = today[i];
+        }
+        Calendar tomorrow = (Calendar) now.clone();
+        tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+        long[] tom = timesFor(context, tomorrow);
+        return new long[]{0, tom[0], prev};
+    }
+
     /** Astronomical calculation fallback based on user's active Malaysian, Singapore, or Indonesian location. */
     private static long[] calculateFallback(Context context, Calendar cal) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -827,6 +855,34 @@ final class PrayerTimes {
             list.add(new ScheduleItem(prayerNames[i], sdf.format(new Date(times[i])), isNext, isPast));
         }
         return list;
+    }
+
+    /** "Maghrib in 1h 23m": the next prayer (Syuruk skipped) and the time left, for the countdown under the prayer times. */
+    static String getNextCountdown(Context context) {
+        Calendar now = Calendar.getInstance();
+        long[] times = getTimesForToday(context, now.get(Calendar.DAY_OF_MONTH));
+        if (times == null || times.length < 6) times = calculateFallback(context, now);
+        long nowMs = now.getTimeInMillis();
+        int nextIdx = -1;
+        for (int i = 0; i < times.length; i++) {
+            if (i == 1) continue;
+            if (times[i] > nowMs) { nextIdx = i; break; }
+        }
+        long target;
+        if (nextIdx != -1) {
+            target = times[nextIdx];
+        } else {
+            nextIdx = 0;
+            Calendar tomorrow = (Calendar) now.clone();
+            tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+            long[] tom = getTimesForToday(context, tomorrow.get(Calendar.DAY_OF_MONTH));
+            if (tom == null || tom.length < 6) tom = calculateFallback(context, tomorrow);
+            target = (tom != null && tom.length > 0) ? tom[0] : times[0] + 86400000L;
+        }
+        long mins = Math.max(0, (target - nowMs + 59_999L) / 60_000L);
+        long h = mins / 60, m = mins % 60;
+        String left = h > 0 ? h + "h " + m + "m" : m + "m";
+        return AppLanguage.getPrayerNames(context)[nextIdx] + " in " + left;
     }
 
     /** Returns short summary of next prayer (e.g. for screensaver). */

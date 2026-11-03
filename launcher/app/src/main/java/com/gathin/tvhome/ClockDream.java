@@ -112,11 +112,11 @@ public class ClockDream extends DreamService {
         if (content == null) return;
 
         if (hijri != null) {
-            hijri.setText("🌙 " + PrayerTimes.getHijriDate());
+            hijri.setText("" + PrayerTimes.getHijriDate());
         }
 
         if (prayer != null) {
-            prayer.setText("🕌 " + PrayerTimes.getNextPrayerSummary(this));
+            prayer.setText("" + PrayerTimes.getNextPrayerSummary(this));
         }
 
         float density = getResources().getDisplayMetrics().density;

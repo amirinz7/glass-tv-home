@@ -272,7 +272,7 @@ final class WeatherAirQuality {
         }, "weather-aqi-sync").start();
     }
 
-    /** Formats a clean Spannable UI string for the Home screen: "⛅ 29° Cerah  •  IPU 112 Tidak Sihat" */
+    /** Formats a clean Spannable UI string for the Home screen: "29° Cerah  •  IPU 112 Unhealthy" */
     static CharSequence getFormatted(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         int temp = prefs.getInt(KEY_TEMP, 29);
@@ -297,7 +297,7 @@ final class WeatherAirQuality {
 
         SpannableStringBuilder sb = new SpannableStringBuilder();
 
-        // Weather: e.g. "⛅ 29° Cerah"
+        // Weather: e.g. "29° Cerah"
         int startWeather = sb.length();
         sb.append(icon).append(" ").append(String.valueOf(temp)).append("° ").append(condition);
         sb.setSpan(new ForegroundColorSpan(0xFFFFFFFF), startWeather, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -308,7 +308,7 @@ final class WeatherAirQuality {
         sb.append("  •  ");
         sb.setSpan(new ForegroundColorSpan(0x80FFFFFF), startDot, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Air Quality: "IPU 112 Tidak Sihat"
+        // Air Quality: "IPU 112 Unhealthy"
         int startAqi = sb.length();
         String prefix = isMalay ? "IPU " : "API ";
         sb.append(prefix).append(String.valueOf(aqi)).append(" ").append(aqiStatus);
@@ -430,7 +430,7 @@ final class WeatherAirQuality {
                     Calendar nowCal = Calendar.getInstance();
                     int currentHour = nowCal.get(Calendar.HOUR_OF_DAY);
                     int count = 0;
-                    for (int i = 0; i < hTimes.length() && count < 12; i++) {
+                    for (int i = 0; i < hTimes.length() && count < 24; i++) {
                         String tStr = hTimes.optString(i, "");
                         if (tStr.contains("T")) {
                             int hour = Integer.parseInt(tStr.substring(tStr.indexOf('T') + 1, tStr.indexOf(':')));
@@ -452,17 +452,17 @@ final class WeatherAirQuality {
 
         // Fill fallback if empty
         if (hourly.isEmpty()) {
-            hourly.add(new HourlyItem("Now", "⛅", temp, 40));
-            hourly.add(new HourlyItem("6 PM", "⛅", temp, 35));
-            hourly.add(new HourlyItem("7 PM", "☁", temp - 1, 30));
-            hourly.add(new HourlyItem("8 PM", "☁", temp - 2, 25));
-            hourly.add(new HourlyItem("9 PM", "☁", temp - 2, 20));
+            hourly.add(new HourlyItem("Now", "", temp, 40));
+            hourly.add(new HourlyItem("6 PM", "", temp, 35));
+            hourly.add(new HourlyItem("7 PM", "", temp - 1, 30));
+            hourly.add(new HourlyItem("8 PM", "", temp - 2, 25));
+            hourly.add(new HourlyItem("9 PM", "", temp - 2, 20));
         }
 
         if (daily.isEmpty()) {
-            daily.add(new DailyItem("Today", "⛅", highTemp, lowTemp, 60));
-            daily.add(new DailyItem("Sat", "🌧", 31, 24, 75));
-            daily.add(new DailyItem("Sun", "⛅", 32, 24, 50));
+            daily.add(new DailyItem("Today", "", highTemp, lowTemp, 60));
+            daily.add(new DailyItem("Sat", "", 31, 24, 75));
+            daily.add(new DailyItem("Sun", "", 32, 24, 50));
         }
 
         // Air Quality
@@ -502,8 +502,8 @@ final class WeatherAirQuality {
         String s = status.toLowerCase(Locale.ROOT);
         if (s.contains("good") || s.contains("baik")) return "Baik";
         if (s.contains("moderate") || s.contains("sederhana")) return "Sederhana";
-        if (s.contains("very unhealthy") || s.contains("sangat")) return "Sangat Tidak Sihat";
-        if (s.contains("unhealthy") || s.contains("tidak sihat")) return "Tidak Sihat";
+        if (s.contains("very unhealthy") || s.contains("sangat")) return "Sangat Unhealthy";
+        if (s.contains("unhealthy") || s.contains("tidak sihat")) return "Unhealthy";
         if (s.contains("hazardous") || s.contains("bahaya")) return "Berbahaya";
         return status;
     }
@@ -617,49 +617,49 @@ final class WeatherAirQuality {
     private static String getWeatherIcon(int code) {
         switch (code) {
             case 0:
-                return "☀️";
+                return "";
             case 1:
             case 2:
-                return "⛅";
+                return "";
             case 3:
-                return "☁️";
+                return "";
             case 45:
             case 48:
-                return "🌫️";
+                return "";
             case 51:
             case 53:
             case 55:
-                return "🌦️";
+                return "";
             case 61:
             case 63:
             case 65:
-                return "🌧️";
+                return "";
             case 80:
             case 81:
             case 82:
-                return "⛈️";
+                return "";
             case 95:
             case 96:
             case 99:
-                return "⚡";
+                return "";
             default:
-                return "⛅";
+                return "";
         }
     }
 
     private static String getAqiStatus(int aqi, boolean isMalay) {
         if (aqi <= 50) return isMalay ? "Baik" : "Good";
         if (aqi <= 100) return isMalay ? "Sederhana" : "Moderate";
-        if (aqi <= 200) return isMalay ? "Tidak Sihat" : "Unhealthy";
-        if (aqi <= 300) return isMalay ? "Sangat Tidak Sihat" : "Very Unhealthy";
+        if (aqi <= 200) return isMalay ? "Unhealthy" : "Unhealthy";
+        if (aqi <= 300) return isMalay ? "Sangat Unhealthy" : "Very Unhealthy";
         return isMalay ? "Berbahaya" : "Hazardous";
     }
 
     private static int getAqiColor(int aqi) {
         if (aqi <= 50) return 0xFF4ADE80;  // Green (Baik)
         if (aqi <= 100) return 0xFF38BDF8; // Sky Blue (Sederhana)
-        if (aqi <= 200) return 0xFFFB923C; // Orange (Tidak Sihat)
-        if (aqi <= 300) return 0xFFEF4444; // Red (Sangat Tidak Sihat)
+        if (aqi <= 200) return 0xFFFB923C; // Orange (Unhealthy)
+        if (aqi <= 300) return 0xFFEF4444; // Red (Sangat Unhealthy)
         return 0xFF991B1B;                 // Maroon (Berbahaya)
     }
 

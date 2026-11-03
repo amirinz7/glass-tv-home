@@ -67,7 +67,7 @@ final class HomeWeather {
             if (degIdx > 0) {
                 try {
                     int temp = Integer.parseInt(w.substring(0, degIdx).trim());
-                    w = temp + "°  " + describe(iconCode, ctx);
+                    w = temp + "°  " + describe(iconCode, ctx) + nextText(ctx, p.getInt("next_code", -1));
                 } catch (Exception ignored) {}
             }
         }
@@ -93,16 +93,34 @@ final class HomeWeather {
                 iconCode < 0 ? 0 : icon(iconCode, p.getBoolean("icon_day", true)));
     }
 
+    /** Wind speed in km/h from the last fetch (0 when unknown). */
+    static float windKmh(Context ctx) {
+        return prefs(ctx).getFloat("wind", 0f);
+    }
+
+    /** Whether it was day at the last fetch; true when unknown. */
+    static boolean isDay(Context ctx) {
+        return prefs(ctx).getBoolean("icon_day", true);
+    }
+
     /** Fetches both parts. Network; never on the UI thread. Returns null when neither could be read. */
     static Line refresh(Context ctx, double lat, double lon) {
         String weather = "", api = "";
-        int color = 0, code = -1;
+        int color = 0, code = -1, nextCode = -1;
         boolean day = true;
+        double windKmh = 0;
         try {
-            JSONObject now = new JSONObject(get("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon
-                    + "&current=temperature_2m,weather_code,is_day,precipitation,rain&timezone=Asia%2FKuala_Lumpur")).getJSONObject("current");
+            JSONObject whole = new JSONObject(get("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon
+                    + "&current=temperature_2m,weather_code,is_day,precipitation,rain,wind_speed_10m&hourly=weather_code&timezone=Asia%2FKuala_Lumpur"));
+            JSONObject now = whole.getJSONObject("current");
+            try {
+                // The sky an hour from now: the hourly list starts at midnight today.
+                int hour = Integer.parseInt(now.getString("time").substring(11, 13));
+                nextCode = whole.getJSONObject("hourly").getJSONArray("weather_code").getInt(hour + 1);
+            } catch (Exception ignored) { }
             code = now.optInt("weather_code");
             day = now.optInt("is_day", 1) == 1;
+            windKmh = now.optDouble("wind_speed_10m", 0.0);
             double precip = now.optDouble("precipitation", 0.0);
             double rain = now.optDouble("rain", 0.0);
 
@@ -150,8 +168,18 @@ final class HomeWeather {
             return null;
         }
         ed.putString("weather", weather).putString("api", api).putInt("api_color", color)
-                .putInt("icon_code", code).putBoolean("icon_day", day).apply();
+                .putInt("icon_code", code).putInt("next_code", nextCode).putBoolean("icon_day", day)
+                .putFloat("wind", (float) windKmh).apply();
+        weather = weather + nextText(ctx, nextCode);
         return new Line(weather, api, color, code < 0 ? 0 : icon(code, day));
+    }
+
+    /** "  ·  Next hour: Rain", or nothing when the hourly forecast was not read. */
+    private static String nextText(Context ctx, int code) {
+        if (code < 0) return "";
+        String d = describe(code, ctx);
+        if (d.isEmpty()) return "";
+        return "  ·  " + (isMalayLanguage(ctx) ? "Jam depan: " : "Next hour: ") + d;
     }
 
     static boolean isMalayLanguage(Context ctx) {

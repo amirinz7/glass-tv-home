@@ -14,6 +14,7 @@ import android.os.Looper;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -36,6 +37,9 @@ public class AzanActivity extends Activity {
     private AudioFocusRequest focus;
     private float density;
     private TextView hint;
+    /** The card stays up this long after the sound ends, so "Already prayed" / "Remind me" can be pressed. */
+    private static final long AFTER_MS = 90_000L;
+    private int prayerIdx;
     /** True once the card has been on screen: until then a stop is the screensaver going, not the owner. */
     private boolean shown;
 
@@ -69,6 +73,7 @@ public class AzanActivity extends Activity {
         glass.setStroke(Math.max(1, dp(1.5f)), 0x59FFFFFF);
         card.setBackground(glass);
         card.setClipToOutline(true);
+        card.setMinimumWidth(dp(640));
         card.setElevation(dp(16));
 
         TextView takbir = text("ٱللَّهُ أَكْبَرُ", amiri, 40, 0xFFF5D489, 400);
@@ -107,10 +112,36 @@ public class AzanActivity extends Activity {
         hint = text(AppLanguage.strAzanPopupHint(this), outfit, 12, 0x99FFFFFF, 400);
         hint.setGravity(Gravity.START);
         words.addView(hint);
-        card.addView(words);
-        card.setFocusable(true);
-        card.setClickable(true);
-        card.setOnClickListener(v -> finish());
+        prayerIdx = validPrayerIdx;
+        final boolean reminder = getIntent().getBooleanExtra("reminder", false);
+        if (reminder) {
+            label.setText("REMINDER");
+            hint.setText("Have you prayed " + pNames[validPrayerIdx] + "?");
+        }
+        LinearLayout buttons = new LinearLayout(this);
+        buttons.setOrientation(LinearLayout.HORIZONTAL);
+        buttons.setPadding(0, dp(12), 0, 0);
+        TextView done = button("Already prayed", outfit, true);
+        done.setOnClickListener(v -> {
+            Azan.cancelReminder(this);
+            finish();
+        });
+        TextView later = button("Remind in 10 minutes", outfit, false);
+        later.setOnClickListener(v -> {
+            Azan.remindLater(this, prayerIdx, 10);
+            android.widget.Toast.makeText(this, "I will remind you in 10 minutes", android.widget.Toast.LENGTH_SHORT).show();
+            finish();
+        });
+        done.setGravity(Gravity.CENTER);
+        later.setGravity(Gravity.CENTER);
+        buttons.addView(done, new LinearLayout.LayoutParams(0, -2, 1f));
+        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(0, -2, 1.3f);
+        blp.leftMargin = dp(10);
+        buttons.addView(later, blp);
+        words.addView(buttons);
+        card.addView(words, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        card.setFocusable(false);
+        done.post(done::requestFocus);
 
         // CRITICAL FIX FOR ISSUE #5:
         // Must call setContentView(card) FIRST so the Window creates and attaches its DecorView.
@@ -131,10 +162,14 @@ public class AzanActivity extends Activity {
             }
         }
 
+        if (reminder) {
+            handler.postDelayed(this::finish, AFTER_MS);
+            return;
+        }
         String soundChoice = Azan.getSoundChoice(this);
         if (Azan.SOUND_SILENT.equals(soundChoice)) {
             hint.setText(AppLanguage.strAzanPopupSilentHint(this));
-            handler.postDelayed(this::finish, 15_000);
+            handler.postDelayed(this::finish, AFTER_MS);
         } else if (Azan.SOUND_CHIME.equals(soundChoice)) {
             hint.setText(AppLanguage.strAzanPopupChimeHint(this));
             playChime();
@@ -144,11 +179,32 @@ public class AzanActivity extends Activity {
                 hint.setText(AppLanguage.strAzanPopupDownloadingHint(this, Azan.soundLabel(soundChoice)));
                 Azan.fetch(this, soundChoice);
                 playChime();
-                handler.postDelayed(this::finish, 8000);
+                handler.postDelayed(this::finish, AFTER_MS);
                 return;
             }
             play(file, soundChoice);
         }
+    }
+
+    /** A pill button: white when it is the one to press first, glass otherwise; lights up when selected. */
+    private TextView button(String label, Typeface font, boolean primary) {
+        final TextView b = text(label, font, 14, primary ? 0xFF000000 : 0xFFFFFFFF, 600);
+        b.setSingleLine(true);
+        b.setPadding(dp(18), dp(8), dp(18), dp(8));
+        b.setFocusable(true);
+        b.setClickable(true);
+        setButtonLook(b, primary, false);
+        b.setOnFocusChangeListener((v, has) -> setButtonLook(b, primary, has));
+        return b;
+    }
+
+    private void setButtonLook(TextView b, boolean primary, boolean focused) {
+        GradientDrawable g = new GradientDrawable();
+        g.setCornerRadius(dp(20));
+        g.setColor(focused ? 0xFFFFFFFF : primary ? 0xE6FFFFFF : 0x33FFFFFF);
+        g.setStroke(Math.max(1, dp(1)), focused ? 0xFFFFFFFF : 0x66FFFFFF);
+        b.setTextColor(focused || primary ? 0xFF000000 : 0xFFFFFFFF);
+        b.setBackground(g);
     }
 
     private void playChime() {
@@ -165,13 +221,13 @@ public class AzanActivity extends Activity {
         try {
             player = MediaPlayer.create(this, R.raw.ps5_select);
             if (player != null) {
-                player.setOnCompletionListener(mp -> handler.postDelayed(this::finish, 5000));
+                player.setOnCompletionListener(mp -> handler.postDelayed(this::finish, AFTER_MS));
                 player.start();
             } else {
-                handler.postDelayed(this::finish, 8000);
+                handler.postDelayed(this::finish, AFTER_MS);
             }
         } catch (Exception e) {
-            handler.postDelayed(this::finish, 8000);
+            handler.postDelayed(this::finish, AFTER_MS);
         }
     }
 
@@ -191,7 +247,7 @@ public class AzanActivity extends Activity {
             player = new MediaPlayer();
             player.setAudioAttributes(attrs);
             player.setDataSource(file.getPath());
-            player.setOnCompletionListener(mp -> finish());
+            player.setOnCompletionListener(mp -> handler.postDelayed(this::finish, AFTER_MS));
             player.setOnErrorListener((mp, what, extra) -> {
                 finish();
                 return true;

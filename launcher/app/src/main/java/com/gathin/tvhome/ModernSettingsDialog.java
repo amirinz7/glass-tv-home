@@ -42,7 +42,7 @@ import java.util.Set;
  * Features:
  * - Left column: Search, Profile & User card, and categorized navigation tabs.
  * - Right column: Dynamic content pane (Multi-user profiles, 7 Animal Avatars, Home, etc.).
- * - TV & Sistem: Displays native 4K Ultra HD panel resolution (3840x2160) & UI scale.
+ * - TV & System: Displays native 4K Ultra HD panel resolution (3840x2160) & UI scale.
  * - Anti-clipping: Zero crop on focus borders and selection items across all TV screens.
  * - All Candy Box customizations consolidated here.
  */
@@ -57,6 +57,7 @@ public final class ModernSettingsDialog {
     private static final int TAB_CHILD_MODE = 6;
     private static final int TAB_GENERAL = 7;
     private static final int TAB_TV = 8;
+    private static final int TAB_CONTROL = 9;
 
     private static Runnable sDpadLeftTarget;
 
@@ -84,7 +85,7 @@ public final class ModernSettingsDialog {
         Typeface outfit = activity.getResources().getFont(R.font.inter);
 
         AlertDialog[] dialogHolder = new AlertDialog[1];
-        int[] activeTab = new int[]{TAB_PROFILE};
+        int[] activeTab = new int[]{TAB_HOME_SCREEN};
 
         // Main Horizontal Container (2 Columns)
         LinearLayout root = new LinearLayout(activity);
@@ -96,11 +97,20 @@ public final class ModernSettingsDialog {
         // ReactDrops Soap Bubble styled translucent liquid glass modal container
         GradientDrawable dialogBg = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{0xF4141B28, 0xF40C111A}
+                new int[]{0xB81E2432, 0xB8101522}
         );
-        dialogBg.setCornerRadius(26 * density);
-        dialogBg.setStroke((int) (1.5f * density), 0x4D67E8F9); // Soap bubble thin-film iridescent rim
-        root.setBackground(dialogBg);
+        dialogBg.setCornerRadius(34 * density);
+        dialogBg.setStroke((int) (1.2f * density), 0x66FFFFFF); // Soap bubble thin-film iridescent rim
+        // The same glass as the home screen: it shows the blurred wallpaper behind the panel.
+        root.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{new GlassDrawable(root, 34 * density, density, null, 0.6f), GlassPage.veil(34 * density, 0x8C0B1220)}));
+        Backdrop.watch(root);
+        final float panelRadius = 34 * density;
+        root.setOutlineProvider(new android.view.ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, android.graphics.Outline outline) {
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), panelRadius);
+            }
+        });
         root.setClipToOutline(true);
 
         // --- LEFT COLUMN: Sidebar ---
@@ -114,10 +124,9 @@ public final class ModernSettingsDialog {
         leftCol.setClipToPadding(false);
 
         // Subtle dark translucent background for left pane
-        GradientDrawable leftBg = new GradientDrawable();
-        leftBg.setColor(0x38090D14);
-        leftCol.setBackground(leftBg);
 
+
+        final View[] firstNav = new View[1];
         final LinearLayout profileCard = new LinearLayout(activity);
         final LinearLayout rightContent = new LinearLayout(activity);
 
@@ -134,20 +143,19 @@ public final class ModernSettingsDialog {
                 new int[]{0x3328354A, 0x241C2534}
         );
         searchBg.setCornerRadius(14 * density);
-        searchBg.setStroke((int) (1 * density), 0x2E67E8F9);
+        searchBg.setStroke((int) (1 * density), 0x2EFFFFFF);
         searchBox.setBackground(searchBg);
 
         ImageView searchIcon = new ImageView(activity);
         searchIcon.setImageResource(R.drawable.ic_search);
-        searchIcon.setColorFilter(0xFF8E929E);
+        searchIcon.setColorFilter(0xB3FFFFFF);
         LinearLayout.LayoutParams sIconLp = new LinearLayout.LayoutParams((int) (15 * density), (int) (15 * density));
         sIconLp.setMarginEnd((int) (8 * density));
-        searchBox.addView(searchIcon, sIconLp);
 
         TextView searchPrompt = new TextView(activity);
         searchPrompt.setText(AppLanguage.strSettingsSearch(activity));
         searchPrompt.setTextSize(12.5f);
-        searchPrompt.setTextColor(0xFF8E929E);
+        searchPrompt.setTextColor(0xB3FFFFFF);
         searchPrompt.setTypeface(outfit, Typeface.NORMAL);
         searchBox.addView(searchPrompt);
 
@@ -157,10 +165,10 @@ public final class ModernSettingsDialog {
                     hasFocus ? new int[]{0x55384B66, 0x4428354A} : new int[]{0x3328354A, 0x241C2534}
             );
             g.setCornerRadius(14 * density);
-            g.setStroke((int) ((hasFocus ? 2f : 1f) * density), hasFocus ? 0xFF67E8F9 : 0x2E67E8F9);
+            g.setStroke((int) ((hasFocus ? 2f : 1f) * density), hasFocus ? 0xFFFFFFFF : 0x2EFFFFFF);
             v.setBackground(g);
-            searchPrompt.setTextColor(hasFocus ? 0xFFFFFFFF : 0xFF8E929E);
-            searchIcon.setColorFilter(hasFocus ? 0xFF67E8F9 : 0xFF8E929E);
+            searchPrompt.setTextColor(hasFocus ? 0xFFFFFFFF : 0xB3FFFFFF);
+            searchIcon.setColorFilter(hasFocus ? 0xFFFFFFFF : 0xB3FFFFFF);
             v.animate()
                     .scaleX(hasFocus ? 1.02f : 1.0f)
                     .scaleY(hasFocus ? 1.02f : 1.0f)
@@ -171,13 +179,13 @@ public final class ModernSettingsDialog {
 
         searchBox.setOnClickListener(v -> {
             SoundEffects.playSelect();
-            Toast.makeText(activity, "🔍 Carian Pantas Tetapan & Aplikasi", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Quick Search Settings & Apps", Toast.LENGTH_SHORT).show();
         });
 
         searchBox.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-                    profileCard.requestFocus();
+                    if (firstNav[0] != null) firstNav[0].requestFocus();
                     return true;
                 } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                     return focusRightPane(rightContent);
@@ -195,8 +203,10 @@ public final class ModernSettingsDialog {
         profileCard.setOrientation(LinearLayout.HORIZONTAL);
         profileCard.setGravity(Gravity.CENTER_VERTICAL);
         profileCard.setPadding((int) (10 * density), (int) (6 * density), (int) (10 * density), (int) (6 * density));
-        profileCard.setFocusable(true);
-        profileCard.setClickable(true);
+        // Profile removed from the control centre: the card stays out of sight and out of focus.
+        profileCard.setFocusable(false);
+        profileCard.setClickable(false);
+        profileCard.setVisibility(View.GONE);
 
         FrameLayout profileAvatarView = new FrameLayout(activity);
         ProfileAvatarHelper.bindAvatar(profileAvatarView, ProfileManager.getActiveProfile(activity), activity);
@@ -218,7 +228,7 @@ public final class ModernSettingsDialog {
         TextView tvProfileSub = new TextView(activity);
         tvProfileSub.setText(AppLanguage.strProfileSubtitle(activity));
         tvProfileSub.setTextSize(11f);
-        tvProfileSub.setTextColor(0xFF8E929E);
+        tvProfileSub.setTextColor(0xB3FFFFFF);
         tvProfileSub.setTypeface(outfit, Typeface.NORMAL);
         profileTextCol.addView(tvProfileSub);
 
@@ -230,7 +240,7 @@ public final class ModernSettingsDialog {
 
         // Vertical divider between Left and Right
         View verticalDivider = new View(activity);
-        verticalDivider.setBackgroundColor(0xFF262832);
+        verticalDivider.setBackgroundColor(0x22FFFFFF);
         LinearLayout.LayoutParams divLp = new LinearLayout.LayoutParams((int) (1 * density), ViewGroup.LayoutParams.MATCH_PARENT);
 
         // --- RIGHT COLUMN: Content Area ---
@@ -292,7 +302,7 @@ public final class ModernSettingsDialog {
         navItems.add(new NavItem(TAB_GENERAL, AppLanguage.strGeneral(activity), R.drawable.ic_globe, 0xFF374151));
         String tvLabel = AppLanguage.strTv(activity);
         if (AppUpdateManager.isUpdateAvailable(activity)) {
-            tvLabel += " 🔴";
+            tvLabel += " •";
         }
         navItems.add(new NavItem(TAB_TV, tvLabel, R.drawable.ic_tv_display, 0xFF374151));
 
@@ -305,7 +315,7 @@ public final class ModernSettingsDialog {
                     isProfile ? new int[]{0x55384B66, 0x3D28354A} : new int[]{0x2A28354A, 0x1E1C2534}
             );
             pcBg.setCornerRadius(14 * density);
-            pcBg.setStroke((int) (1.5f * density), isProfile ? 0x9967E8F9 : 0x2467E8F9);
+            pcBg.setStroke((int) (1.5f * density), isProfile ? 0x99FFFFFF : 0x24FFFFFF);
             profileCard.setBackground(pcBg);
 
             ProfileAvatarHelper.bindAvatar(profileAvatarView, ProfileManager.getActiveProfile(activity), activity);
@@ -316,10 +326,10 @@ public final class ModernSettingsDialog {
                 boolean isSelected = (activeTab[0] == item.tabId);
                 GradientDrawable rbg = new GradientDrawable(
                         GradientDrawable.Orientation.LEFT_RIGHT,
-                        isSelected ? new int[]{0x3D38BDF8, 0x24818CF8} : new int[]{Color.TRANSPARENT, Color.TRANSPARENT}
+                        isSelected ? new int[]{0x4DFFFFFF, 0x33FFFFFF} : new int[]{Color.TRANSPARENT, Color.TRANSPARENT}
                 );
                 rbg.setCornerRadius(12 * density);
-                if (isSelected) rbg.setStroke((int) (1.2f * density), 0x9967E8F9);
+                if (isSelected) rbg.setStroke((int) (1.2f * density), 0x99FFFFFF);
                 item.rowView.setBackground(rbg);
             }
         };
@@ -396,7 +406,6 @@ public final class ModernSettingsDialog {
 
             LinearLayout.LayoutParams sqLp = new LinearLayout.LayoutParams((int) (26 * density), (int) (26 * density));
             sqLp.setMarginEnd((int) (10 * density));
-            row.addView(iconSquircle, sqLp);
 
             // Label
             TextView lbl = new TextView(activity);
@@ -419,7 +428,7 @@ public final class ModernSettingsDialog {
             row.setOnKeyListener((v, keyCode, event) -> {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     if (keyCode == KeyEvent.KEYCODE_DPAD_UP && itemIndex == 0) {
-                        profileCard.requestFocus();
+                        searchBox.requestFocus();
                         return true;
                     } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                         return focusRightPane(rightContent);
@@ -440,6 +449,7 @@ public final class ModernSettingsDialog {
             rLp.bottomMargin = (int) (2 * density);
             menuList.addView(row, rLp);
             item.rowView = row;
+            if (i == 0) firstNav[0] = row;
         }
 
         // --- RENDER RIGHT CONTENT PANE ---
@@ -447,7 +457,9 @@ public final class ModernSettingsDialog {
             rightContent.removeAllViews();
             int tab = activeTab[0];
 
-            if (tab == TAB_PROFILE) {
+            if (tab == TAB_CONTROL) {
+                buildControlTiles(activity, density, outfit, rightContent, dialogHolder);
+            } else if (tab == TAB_PROFILE) {
                 // === TAB 0: PROFILES & MULTI-USER MANAGEMENT ===
                 TextView tvTitle = new TextView(activity);
                 tvTitle.setText(AppLanguage.strProfileTitle(activity));
@@ -462,7 +474,7 @@ public final class ModernSettingsDialog {
                 TextView tvAvatars = new TextView(activity);
                 tvAvatars.setText("AVATAR PROFIL SEMASA (" + activeP.name.toUpperCase() + ")");
                 tvAvatars.setTextSize(11.5f);
-                tvAvatars.setTextColor(0xFF8E929E);
+                tvAvatars.setTextColor(0xB3FFFFFF);
                 tvAvatars.setTypeface(outfit, Typeface.BOLD);
                 tvAvatars.setPadding(0, (int) (14 * density), 0, (int) (8 * density));
                 rightContent.addView(tvAvatars);
@@ -472,8 +484,8 @@ public final class ModernSettingsDialog {
                         activity,
                         density,
                         outfit,
-                        "🎨 Kustomisasi Avatar (3 Pilihan)",
-                        "Pilih Watak Tunggal, Cari GIF (Giphy), atau Muat Naik dari Telefon",
+                        "Customise Avatar (3 Options)",
+                        "Pick a character, search GIFs (Giphy), or upload from your phone",
                         () -> {
                             SoundEffects.playSelect();
                             ProfileSettingsDialog.show(activity, activeP, () -> {
@@ -524,7 +536,7 @@ public final class ModernSettingsDialog {
                 TextView tvCurName = new TextView(activity);
                 tvCurName.setText(activeP.name);
                 tvCurName.setTextSize(13.5f);
-                tvCurName.setTextColor(0xFF8E929E);
+                tvCurName.setTextColor(0xB3FFFFFF);
                 tvCurName.setTypeface(outfit, Typeface.NORMAL);
                 editNameCard.addView(tvCurName);
 
@@ -566,7 +578,7 @@ public final class ModernSettingsDialog {
                 TextView tvUserList = new TextView(activity);
                 tvUserList.setText("SENARAI PENGGUNA (" + allProfiles.size() + ")");
                 tvUserList.setTextSize(11.5f);
-                tvUserList.setTextColor(0xFF8E929E);
+                tvUserList.setTextColor(0xB3FFFFFF);
                 tvUserList.setTypeface(outfit, Typeface.BOLD);
                 tvUserList.setPadding(0, 0, 0, (int) (8 * density));
                 rightContent.addView(tvUserList);
@@ -594,7 +606,7 @@ public final class ModernSettingsDialog {
                     pRow.addView(ivP, ivpLp2);
 
                     TextView tvPName = new TextView(activity);
-                    tvPName.setText(p.name + (p.isChild ? " (Mod Kanak-kanak)" : ""));
+                    tvPName.setText(p.name + (p.isChild ? " (Child mode)" : ""));
                     tvPName.setTextSize(13.5f);
                     tvPName.setTextColor(0xFFFFFFFF);
                     tvPName.setTypeface(outfit, isCur ? Typeface.BOLD : Typeface.NORMAL);
@@ -602,14 +614,14 @@ public final class ModernSettingsDialog {
 
                     if (isCur) {
                         TextView tvTag = new TextView(activity);
-                        tvTag.setText("Aktif ✓");
+                        tvTag.setText("Active ");
                         tvTag.setTextSize(11f);
                         tvTag.setTextColor(0xFF38BDF8);
                         tvTag.setTypeface(outfit, Typeface.BOLD);
                         pRow.addView(tvTag);
                     } else if (allProfiles.size() > 1) {
                         TextView tvDel = new TextView(activity);
-                        tvDel.setText("🗑️ Padam");
+                        tvDel.setText("Delete");
                         tvDel.setTextSize(11.5f);
                         tvDel.setTextColor(0xFFF87171);
                         tvDel.setTypeface(outfit, Typeface.NORMAL);
@@ -647,10 +659,10 @@ public final class ModernSettingsDialog {
                         } else {
                             // Show options: Switch, Manage/Avatar, or Delete
                             AlertDialog.Builder ob = new AlertDialog.Builder(activity, R.style.Theme_TvHome_GlassDialog);
-                            ob.setTitle("Pengguna: " + p.name);
+                            ob.setTitle("User: " + p.name);
                             String[] opts = allProfiles.size() > 1 
-                                    ? new String[]{"✨ Tukar ke Profil Ini", "⚙️ Urus Profil & Avatar", "🗑️ Padam Pengguna"} 
-                                    : new String[]{"✨ Tukar ke Profil Ini", "⚙️ Urus Profil & Avatar"};
+                                    ? new String[]{"Switch to This Profile", "Manage Profile & Avatar", "Delete User"} 
+                                    : new String[]{"Switch to This Profile", "Manage Profile & Avatar"};
                             ob.setItems(opts, (d, which) -> {
                                 if (which == 0) {
                                     ProfileManager.setActiveProfile(activity, p.id);
@@ -659,7 +671,7 @@ public final class ModernSettingsDialog {
                                     activity.updateTopBarUserIcon();
                                     updateSidebarSelection.run();
                                     if (renderRightPane[0] != null) renderRightPane[0].run();
-                                    Toast.makeText(activity, "✨ Bertukar ke profil: " + p.name, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(activity, "Bertukar ke profil: " + p.name, Toast.LENGTH_SHORT).show();
                                 } else if (which == 1) {
                                     ProfileSettingsDialog.show(activity, p, () -> {
                                         updateSidebarSelection.run();
@@ -670,7 +682,7 @@ public final class ModernSettingsDialog {
                                     ProfileManager.deleteProfile(activity, p.id);
                                     updateSidebarSelection.run();
                                     if (renderRightPane[0] != null) renderRightPane[0].run();
-                                    Toast.makeText(activity, "🗑️ Profil dipadam", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(activity, "Profil dipadam", Toast.LENGTH_SHORT).show();
                                 }
                             });
                             ob.show();
@@ -683,7 +695,7 @@ public final class ModernSettingsDialog {
                 }
 
                 // Add User Button
-                LinearLayout addUserBtn = buildCardRow(activity, density, outfit, "➕ Tambah Pengguna Baru", "Cipta profil baharu untuk ahli keluarga atau anak", () -> {
+                LinearLayout addUserBtn = buildCardRow(activity, density, outfit, "Add New User", "Cipta profil baharu untuk ahli keluarga atau anak", () -> {
                     SoundEffects.playSelect();
                     UserSwitchDialog.showAddProfileDialog(activity, density, outfit, () -> {
                         updateSidebarSelection.run();
@@ -696,12 +708,12 @@ public final class ModernSettingsDialog {
                 TextView tvPhotos = new TextView(activity);
                 tvPhotos.setText(AppLanguage.strYourPhotos(activity));
                 tvPhotos.setTextSize(11.5f);
-                tvPhotos.setTextColor(0xFF8E929E);
+                tvPhotos.setTextColor(0xB3FFFFFF);
                 tvPhotos.setTypeface(outfit, Typeface.BOLD);
                 tvPhotos.setPadding(0, (int) (12 * density), 0, (int) (4 * density));
                 rightContent.addView(tvPhotos);
 
-                LinearLayout photoUploadRow = buildCardRow(activity, density, outfit, "📸 Urus Gambar & Muat Naik Telefon (QR)", "Imbas kod QR untuk hantar gambar dari telefon terus ke TV", () -> {
+                LinearLayout photoUploadRow = buildCardRow(activity, density, outfit, "Manage Pictures & Phone Upload (QR)", "Imbas kod QR untuk hantar gambar dari telefon terus ke TV", () -> {
                     SoundEffects.playSelect();
                     activity.showCustomWallpaperManagerDialog();
                 });
@@ -712,14 +724,14 @@ public final class ModernSettingsDialog {
                 addHeader(rightContent, outfit, "Home Screen");
 
                 rightContent.addView(buildSwitchRow(activity, density, outfit,
-                        "Rak Doa Harian & Waktu Solat", "Paparkan ayat pilihan & jadual solat waktu tempatan",
+                        "Doa Harian & Prayer Times Shelf", "Show a daily doa and local prayer times",
                         activity.isIslamicShelfEnabled(), isChecked -> {
                             activity.setIslamicShelfEnabled(isChecked);
                         }));
 
                 boolean ayahShown = WeeklyAyah.shown(activity);
                 rightContent.addView(buildSwitchRow(activity, density, outfit,
-                        "📖 Paparan Teks Di Atas Jadual Solat", "Papar Doa Harian atau Teks Minbar di atas jadual solat",
+                        "Text Above Prayer Times", "Show Daily Doa or Minbar text above the prayer times",
                         ayahShown, isChecked -> {
                             WeeklyAyah.setShown(activity, isChecked);
                             activity.updateIslamicShelf();
@@ -728,32 +740,32 @@ public final class ModernSettingsDialog {
                 int displayMode = MinbarManager.getDisplayMode(activity);
                 String modeLabel = displayMode == MinbarManager.MODE_MINBAR ? "Teks Minbar (Khutbah Jumaat)" : "Doa Harian (Ayat Al-Quran)";
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🕌 Pilihan Paparan: " + modeLabel,
-                        "Pilih paparan antara Doa Harian atau Minbar (Khutbah Jumaat mengikut lokasi)",
+                        "Display: " + modeLabel,
+                        "Choose between Doa Harian or Minbar (Friday sermon by location)",
                         () -> activity.showDisplayModeChoiceDialog(() -> {
                             if (renderRightPane[0] != null) renderRightPane[0].run();
                         })));
 
                 rightContent.addView(buildSwitchRow(activity, density, outfit,
-                        "Papan Pemuka Cuaca & Kualiti Udara (AQI)", "Papar suhu live, cuaca dan status jerebu JAS",
+                        "Weather & Air Quality (AQI) Panel", "Show live temperature, weather and haze status",
                         activity.isWeatherWidgetEnabled(), isChecked -> {
                             activity.setWeatherWidgetEnabled(isChecked);
                         }));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🔊 Kesan Bunyi Antaramuka (UI Sound)", "Pilih bunyi pilihan: PS5, Nintendo Switch, Xbox, atau Matikan",
+                        "UI Sound Effects", "Choose: PS5, Nintendo Switch, Xbox, or Off",
                         activity::showSoundEffectsDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🕌 Tetapan & Pilihan Azan", "Konfigurasi audio azan Makkah/Madinah/KLCC & popup waktu solat",
+                        "Azan Settings & Options", "Azan audio (Makkah/Madinah/KLCC) & prayer time popup",
                         activity::showAzanSettingsDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "✨ Gemini AI Assistant", "Bantuan pintar AI dan pembantu suara peribadi",
+                        "Gemini AI Assistant", "Bantuan pintar AI dan pembantu suara peribadi",
                         activity::showGeminiAssistantDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🧹 Kosongkan Cache TV (Clean TV Cache)", "Segarkan memori TV dan kosongkan fail sementara",
+                        "Kosongkan Cache TV (Clean TV Cache)", "Segarkan memori TV dan kosongkan fail sementara",
                         activity::showCleanTvCacheDialog));
 
             } else if (tab == TAB_APPEARANCE) {
@@ -761,15 +773,15 @@ public final class ModernSettingsDialog {
                 addHeader(rightContent, outfit, "Appearance");
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🖼️ Koleksi Wallpaper 4K", "Malaysia 4K, Alam Semula Jadi, Bandar Raya, Luar Angkasa, dll.",
+                        "Koleksi Wallpaper 4K", "Malaysia 4K, Alam Semula Jadi, Bandar Raya, Luar Angkasa, dll.",
                         activity::showWallpaperDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "⏱️ Selang Masa Shuffle Wallpaper", "Kekerapan pertukaran gambar automatik (5 min, 10 min, dll.)",
+                        " Selang Masa Shuffle Wallpaper", "Kekerapan pertukaran gambar automatik (5 min, 10 min, dll.)",
                         activity::showWallpaperIntervalDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🌐 Pilihan Bahasa (Language Selection)", "Bahasa Melayu 🇲🇾, English 🇬🇧, Bahasa Indonesia 🇮🇩",
+                        "Language", "Bahasa Melayu, English, Bahasa Indonesia",
                         activity::showLanguageDialog));
 
                 String darkSubtitle;
@@ -781,10 +793,10 @@ public final class ModernSettingsDialog {
                 } else if (curDark == MainActivity.DARK_MODE_OLED_BLACK) {
                     darkSubtitle = "Hitam Pekat OLED (Pure Black • 0% Wallpaper)";
                 } else {
-                    darkSubtitle = "Mati (Kecerahan Asal Wallpaper)";
+                    darkSubtitle = "Off (original wallpaper brightness)";
                 }
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🌙 Mod Gelap & Perlindungan OLED", darkSubtitle,
+                        "Mod Gelap & Perlindungan OLED", darkSubtitle,
                         activity::showDarkModeDialog));
 
             } else if (tab == TAB_STATUS_WEATHER) {
@@ -792,17 +804,17 @@ public final class ModernSettingsDialog {
                 addHeader(rightContent, outfit, "Status Bar & Weather");
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "📍 Pilih Lokasi TV & Zon Solat", "Sokongan zon Malaysia (JAKIM), Singapura (MUIS), & Indonesia (Kemenag)",
+                        "Choose TV Location & Prayer Zone", "Supports Malaysia (JAKIM), Singapore (MUIS) & Indonesia (Kemenag) zones",
                         () -> activity.startActivity(new Intent(activity, LocationActivity.class))));
 
                 boolean isWeatherFx = activity.getSharedPreferences("wallpaper_prefs", Context.MODE_PRIVATE).getBoolean("dynamic_weather_overlay", true);
                 rightContent.addView(buildSwitchRow(activity, density, outfit,
-                        "🌧️ Cuaca Dinamik (Weather Overlay Effects)", "Kesan visual zarah hujan, awan kabut dan salji pada wallpaper",
+                        "Dynamic Weather (overlay effects)", "Kesan visual zarah hujan, awan kabut dan salji pada wallpaper",
                         isWeatherFx, isChecked -> {
                             activity.getSharedPreferences("wallpaper_prefs", Context.MODE_PRIVATE).edit().putBoolean("dynamic_weather_overlay", isChecked).apply();
                             activity.testWeatherOverride = null;
                             activity.updateWeatherOverlay(HomeWeather.last(activity));
-                            Toast.makeText(activity, isChecked ? "🌧️ Cuaca Dinamik Dihidupkan" : "⛅ Cuaca Dinamik Dimatikan", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, isChecked ? "Dynamic weather on" : "Dynamic weather off", Toast.LENGTH_SHORT).show();
                         }));
 
             } else if (tab == TAB_STANDBY) {
@@ -810,8 +822,21 @@ public final class ModernSettingsDialog {
                 addHeader(rightContent, outfit, "StandBy Mode");
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🌙 Uji StandBy Screensaver Sekarang", "Aktifkan jam ambien StandBy skrin penuh",
+                        "Test StandBy Screensaver Now", "Aktifkan jam ambien StandBy skrin penuh",
                         activity::showNightstandScreensaver));
+
+                final boolean photosOn = activity.screensaverPhotos();
+                rightContent.addView(buildCardRow(activity, density, outfit,
+                        "Screensaver background: " + (photosOn ? "My photos" : "Black"),
+                        "Show the photos you uploaded behind the clock. Press OK to switch.",
+                        () -> {
+                            activity.setScreensaverPhotos(!photosOn);
+                            if (renderRightPane[0] != null) renderRightPane[0].run();
+                        }));
+                rightContent.addView(buildCardRow(activity, density, outfit,
+                        "Upload my photos from the phone (QR)",
+                        "Scan the code on the TV, pick any pictures. They are also used as wallpapers.",
+                        () -> { if (dialogHolder[0] != null) dialogHolder[0].dismiss(); activity.showWallpaperUploadQrDialog(); }));
 
             } else if (tab == TAB_REMOTE) {
                 // === TAB 5: REMOTE & ACCESSIBILITY ===
@@ -821,17 +846,17 @@ public final class ModernSettingsDialog {
                 homeIntent.addCategory(Intent.CATEGORY_HOME);
                 ResolveInfo resolveInfo = activity.getPackageManager().resolveActivity(homeIntent, PackageManager.MATCH_DEFAULT_ONLY);
                 boolean isDefault = resolveInfo != null && activity.getPackageName().equals(resolveInfo.activityInfo.packageName);
-                String activePkg = resolveInfo != null ? resolveInfo.activityInfo.packageName : "Tiada";
+                String activePkg = resolveInfo != null ? resolveInfo.activityInfo.packageName : "None";
 
-                String homeSub = isDefault ? "✅ Aktif sebagai pelancar utama default TV" : "⚠️ Butang Home masih dikawal oleh: " + activePkg;
+                String homeSub = isDefault ? "Active as the TV's default launcher" : "Butang Home masih dikawal oleh: " + activePkg;
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🏠 Tetapkan Glass TV Sebagai Default Home",
+                        "Set Glass TV as Default Home",
                         homeSub + " — Klik untuk panduan kunci butang Home",
                         () -> showDefaultLauncherDialog(activity, density, outfit, isDefault, activePkg)));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "♿ Buka Tetapan Accessibility TV",
-                        "Hidupkan 'Glass TV Home Button Service' untuk memintas butang Home pada Google TV & Chromecast",
+                        "Open TV Accessibility Settings",
+                        "Turn on 'Glass TV Home Button Service' to take over the Home button on Google TV & Chromecast",
                         () -> {
                             SoundEffects.playSelect();
                             try {
@@ -839,7 +864,7 @@ public final class ModernSettingsDialog {
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 activity.startActivity(intent);
                             } catch (Exception e) {
-                                Toast.makeText(activity, "Buka Tetapan TV > System > Accessibility", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity, "Open TV Settings > System > Accessibility", Toast.LENGTH_SHORT).show();
                             }
                         }));
 
@@ -852,15 +877,15 @@ public final class ModernSettingsDialog {
                 Set<String> hiddenSet = ChildModeManager.getHiddenApps(activity);
 
                 rightContent.addView(buildSwitchRow(activity, density, outfit,
-                        "🛡️ Status Mode Kanak-kanak",
-                        "Kunci aplikasi dengan PIN keselamatan 4-digit atau sembunyikan aplikasi dari skrin utama",
+                        "Child Mode Status",
+                        "Lock apps with a 4-digit PIN or hide apps from the home screen",
                         isChildOn, isChecked -> {
-                            ChildModeManager.promptPin(activity, "Sahkan PIN Keselamatan", "Masukkan PIN 4-digit untuk menukar mod ini", new ChildModeManager.PinCallback() {
+                            ChildModeManager.promptPin(activity, "Confirm Security PIN", "Enter the 4-digit PIN to change this mode", new ChildModeManager.PinCallback() {
                                 @Override
                                 public void onSuccess() {
                                     ChildModeManager.setChildModeEnabled(activity, isChecked);
                                     activity.reloadTiles();
-                                    Toast.makeText(activity, isChecked ? "✅ Mode Kanak-kanak diaktifkan!" : "Mode Kanak-kanak dimatikan", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(activity, isChecked ? "Child mode on" : "Child mode off", Toast.LENGTH_SHORT).show();
                                     if (renderRightPane[0] != null) renderRightPane[0].run();
                                 }
 
@@ -872,18 +897,18 @@ public final class ModernSettingsDialog {
                         }));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🔒 Kunci Aplikasi dengan PIN (" + lockedSet.size() + " Aplikasi)",
-                        "Pilih aplikasi yang memerlukan kata laluan PIN 4-digit untuk dibuka",
+                        "Lock Apps with PIN (" + lockedSet.size() + " Apps)",
+                        "Choose apps that need the 4-digit PIN to open",
                         () -> showAppLockPicker(activity, density, outfit, false)));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "👁️ Sembunyikan Aplikasi (" + hiddenSet.size() + " Aplikasi)",
-                        "Pilih aplikasi yang disembunyikan sepenuhnya daripada dock dan grid skrin utama",
+                        "Hide Apps (" + hiddenSet.size() + " Apps)",
+                        "Choose apps to hide completely from the dock and home grid",
                         () -> showAppLockPicker(activity, density, outfit, true)));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🔢 Tukar Kod PIN Keselamatan",
-                        "Tukar 4-digit PIN kawalan ibu bapa (PIN Semasa: " + (ChildModeManager.getPin(activity).equals("0000") ? "0000 [Lalai]" : "••••") + ")",
+                        "Change Security PIN",
+                        "Change the 4-digit parental PIN (current PIN: " + (ChildModeManager.getPin(activity).equals("0000") ? "0000 [default]" : "••••") + ")",
                         () -> showChangePinDialog(activity, density, outfit)));
 
             } else if (tab == TAB_GENERAL) {
@@ -891,11 +916,11 @@ public final class ModernSettingsDialog {
                 addHeader(rightContent, outfit, "General");
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🔄 Mulakan Semula TV (Restart TV)", "Mula semula sistem Android TV secara lancar",
+                        "Restart TV", "Restart the Android TV system",
                         activity::showRestartDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🔌 Padamkan TV (Turn Off TV)", "Letakkan peranti Android TV dalam mod tidur / mati",
+                        "Turn Off TV", "Put the Android TV into sleep / off mode",
                         activity::showTurnOffDialog));
 
                 long freeBytes = CacheCleaner.getFreeStorageBytes();
@@ -904,11 +929,11 @@ public final class ModernSettingsDialog {
                 String totalStr = android.text.format.Formatter.formatFileSize(activity, totalBytes);
 
                 rightContent.addView(buildInfoCard(activity, density, outfit,
-                        "📊 Status Storan TV", "Ruang Bebas: " + freeStr + " daripada " + totalStr + " (" + (100 - CacheCleaner.usedPercent()) + "% bebas)"));
+                        "Status Storan TV", "Free space: " + freeStr + " of " + totalStr + " (" + (100 - CacheCleaner.usedPercent()) + "% free)"));
 
             } else if (tab == TAB_TV) {
                 // === TAB 8: TV & SISTEM (NATIVE 4K RECOGNITION) ===
-                addHeader(rightContent, outfit, "TV & Sistem");
+                addHeader(rightContent, outfit, "TV & System");
 
                 Display display = activity.getWindowManager().getDefaultDisplay();
                 Display.Mode mode = (display != null) ? display.getMode() : null;
@@ -928,34 +953,34 @@ public final class ModernSettingsDialog {
                 }
 
                 rightContent.addView(buildInfoCard(activity, density, outfit,
-                        "📺 Model TV", Build.MODEL + " (" + Build.MANUFACTURER + ")"));
+                        "Model TV", Build.MODEL + " (" + Build.MANUFACTURER + ")"));
 
                 rightContent.addView(buildInfoCard(activity, density, outfit,
-                        "🤖 Versi Android TV", "Android " + Build.VERSION.RELEASE + " (SDK " + Build.VERSION.SDK_INT + ")"));
+                        "Android TV Version", "Android " + Build.VERSION.RELEASE + " (SDK " + Build.VERSION.SDK_INT + ")"));
 
                 rightContent.addView(buildInfoCard(activity, density, outfit,
-                        "📐 Resolusi Paparan TV", resTitle));
+                        "TV Display Resolution", resTitle));
 
                 rightContent.addView(buildInfoCard(activity, density, outfit,
-                        "🖥️ Resolusi UI Framebuffer", dm.widthPixels + " × " + dm.heightPixels + " (" + Math.round(density * 160) + " dpi · 60fps lancar)"));
+                        "UI Framebuffer Resolution", dm.widthPixels + " × " + dm.heightPixels + " (" + Math.round(density * 160) + " dpi · 60fps lancar)"));
 
                 Intent homeIntent = new Intent(Intent.ACTION_MAIN);
                 homeIntent.addCategory(Intent.CATEGORY_HOME);
                 ResolveInfo resolveInfo = activity.getPackageManager().resolveActivity(homeIntent, PackageManager.MATCH_DEFAULT_ONLY);
                 boolean isDefault = resolveInfo != null && activity.getPackageName().equals(resolveInfo.activityInfo.packageName);
-                String activePkg = resolveInfo != null ? resolveInfo.activityInfo.packageName : "Tiada";
+                String activePkg = resolveInfo != null ? resolveInfo.activityInfo.packageName : "None";
 
-                String homeSub = isDefault ? "✅ Aktif sebagai pelancar utama default TV" : "⚠️ Butang Home masih dikawal oleh: " + activePkg;
+                String homeSub = isDefault ? "Active as the TV's default launcher" : "Butang Home masih dikawal oleh: " + activePkg;
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "🏠 Tetapkan Sebagai Pelancar Utama (Default Home)",
+                        "Set as Default Home Launcher",
                         homeSub + " — Klik untuk panduan kunci butang Home",
                         () -> showDefaultLauncherDialog(activity, density, outfit, isDefault, activePkg)));
 
                 boolean hasUpdate = AppUpdateManager.isUpdateAvailable(activity);
-                String otaTitle = hasUpdate ? "🚀 Kemas Kini Sistem (OTA Update) 🔴" : "🚀 Kemas Kini Sistem (OTA Update)";
+                String otaTitle = hasUpdate ? "System Update (OTA) •" : "System Update (OTA)";
                 String otaSub = hasUpdate
-                        ? "Kemas kini baharu (v" + AppUpdateManager.getNewVersionName(activity) + ") sedia dipasang! Klik untuk kemas kini."
-                        : "Semak versi terkini Glass TV Home (" + activity.getAppVersionName() + ")";
+                        ? "New update (v" + AppUpdateManager.getNewVersionName(activity) + ") is ready! Click to update."
+                        : "Check for the latest Glass TV Home (" + activity.getAppVersionName() + ")";
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
                         otaTitle, otaSub,
@@ -968,7 +993,11 @@ public final class ModernSettingsDialog {
                         }));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "⚙️ Buka Tetapan Penuh Android TV", "Akses menu tetapan asal pengeluar peranti",
+                        "Google Home", "Control your home (opens Google Assistant on TV)",
+                        activity::openGoogleHome));
+
+                rightContent.addView(buildCardRow(activity, density, outfit,
+                        "Open Full Android TV Settings", "Open the device's original settings menu",
                         () -> activity.startActivity(new Intent(Settings.ACTION_SETTINGS))));
             }
         };
@@ -992,14 +1021,237 @@ public final class ModernSettingsDialog {
         if (win != null) {
             win.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             win.addFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            win.setDimAmount(0.65f);
+            win.setDimAmount(0.3f);
+            if (Build.VERSION.SDK_INT >= 31) {
+                // Frosted glass: blur what is behind the panel where the TV allows it.
+                try {
+                    win.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+                    android.view.WindowManager.LayoutParams wl = win.getAttributes();
+                    wl.setBlurBehindRadius(50);
+                    win.setAttributes(wl);
+                    win.setBackgroundBlurRadius(60);
+                } catch (Throwable ignored) { }
+            }
             int w = Math.min((int) (1000 * density), (int) (dm.widthPixels * 0.92f));
             int h = Math.min((int) (580 * density), (int) (dm.heightPixels * 0.92f));
             win.setLayout(w, h);
             win.setGravity(Gravity.CENTER);
         }
 
-        profileCard.requestFocus();
+        if (!navItems.isEmpty() && navItems.get(0).rowView != null) navItems.get(0).rowView.requestFocus();
+    }
+
+    /** Set when a Control Centre tile opens another screen: Home opens the Control Centre again when Back returns. */
+    static boolean returnToControl;
+
+    /** The Control Centre on its own, opened from the button in the top bar. */
+    public static void showControl(MainActivity activity) {
+        if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+        SoundEffects.playSelect();
+        float density = activity.getResources().getDisplayMetrics().density;
+        Typeface font = activity.getResources().getFont(R.font.inter);
+        final AlertDialog[] holder = new AlertDialog[1];
+        LinearLayout panel = new LinearLayout(activity);
+        panel.setOrientation(LinearLayout.VERTICAL);
+        panel.setClipChildren(false);
+        panel.setPadding((int) (14 * density), (int) (14 * density), (int) (14 * density), (int) (10 * density));
+        buildControlTiles(activity, density, font, panel, holder);
+        AlertDialog dlg = new AlertDialog.Builder(activity, R.style.Theme_TvHome_GlassDialog).setView(panel).create();
+        holder[0] = dlg;
+        dlg.show();
+        try { activity.glassify(dlg); } catch (Throwable ignored) { }
+        android.view.Window win = dlg.getWindow();
+        if (win != null) {
+            DisplayMetrics dm = activity.getResources().getDisplayMetrics();
+            win.setLayout(Math.min((int) (420 * density), (int) (dm.widthPixels * 0.5f)), ViewGroup.LayoutParams.WRAP_CONTENT);
+            win.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+            android.view.WindowManager.LayoutParams wl = win.getAttributes();
+            wl.x = (int) (24 * density);
+            wl.dimAmount = 0.15f;
+            win.setAttributes(wl);
+        }
+        if (panel.getChildCount() > 1 && panel.getChildAt(1) instanceof ViewGroup) {
+            ViewGroup first = (ViewGroup) panel.getChildAt(1);
+            if (first.getChildCount() > 0) first.getChildAt(0).requestFocus();
+        }
+    }
+
+    private static void glassShow(MainActivity activity, android.app.AlertDialog dlg) {
+        // Closing one of the Control Centre's own dialogs lands back on the Control Centre.
+        dlg.setOnDismissListener(x -> showControl(activity));
+        dlg.show();
+        try { activity.glassify(dlg); } catch (Throwable ignored) { }
+    }
+
+    /** The doa now on the home screen, in full. */
+    private static void showDoaToday(MainActivity activity) {
+        ZikirList.Zikir z = DoaList.current();
+        android.app.AlertDialog dlg = new android.app.AlertDialog.Builder(activity)
+                .setTitle("Doa  -  " + z.count)
+                .setMessage(z.arabic + "\n\n" + z.rumi + "\n\n" + z.meaning)
+                .setPositiveButton("Close", null).create();
+        glassShow(activity, dlg);
+    }
+
+    /** A zikir counter: OK adds one. */
+    private static void showTasbih(MainActivity activity) {
+        final int[] n = {0};
+        final android.app.AlertDialog dlg = new android.app.AlertDialog.Builder(activity)
+                .setTitle("Tasbih")
+                .setMessage("0\n\nPress OK to count")
+                .setPositiveButton("Count", null)
+                .setNeutralButton("Reset", null)
+                .setNegativeButton("Close", null).create();
+        glassShow(activity, dlg);
+        dlg.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            n[0]++;
+            dlg.setMessage(n[0] + (n[0] == 33 || n[0] == 99 ? "   (done)" : "") + "\n\nPress OK to count");
+        });
+        dlg.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setOnClickListener(v -> {
+            n[0] = 0;
+            dlg.setMessage("0\n\nPress OK to count");
+        });
+    }
+
+    /** What the launcher can actually see: build number, app wallpaper files and calendar sources. For when something does not show up. */
+    private static String diagnostics(MainActivity activity) {
+        StringBuilder b = new StringBuilder();
+        try {
+            long code = Build.VERSION.SDK_INT >= 28
+                    ? activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).getLongVersionCode()
+                    : activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionCode;
+            b.append("\nBuild number: ").append(code);
+        } catch (Exception ignored) { }
+        try {
+            java.io.File[] w = new java.io.File(activity.getExternalFilesDir(null), "app-wallpapers").listFiles();
+            b.append("\nApp wallpapers on the TV: ").append(w == null ? 0 : w.length);
+            java.io.File cfg = new java.io.File(activity.getExternalFilesDir(null), "config.json");
+            b.append("\nSettings file (config.json): ").append(cfg.isFile() ? "yes" : "no");
+        } catch (Exception ignored) { }
+        try {
+            String urls = CalendarData.myUrl(activity).trim();
+            int linked = urls.isEmpty() ? 0 : urls.split("\\s+").length;
+            java.time.LocalDate today = java.time.LocalDate.now();
+            int mine = 0, all = CalendarData.items(activity, today.minusYears(1), today.plusYears(1)).size();
+            for (CalendarData.Item it : CalendarData.items(activity, today.minusYears(1), today.plusYears(1))) if (!it.holiday) mine++;
+            b.append("\nCalendars linked: ").append(linked).append("  (").append(mine).append(" of my events, ").append(all - mine).append(" holidays)");
+        } catch (Exception ignored) { }
+        return b.toString();
+    }
+
+    private static void showTvInfo(MainActivity activity) {
+        String ip = "-";
+        try {
+            for (java.util.Enumeration<java.net.NetworkInterface> e = java.net.NetworkInterface.getNetworkInterfaces(); e.hasMoreElements();) {
+                java.net.NetworkInterface ni = e.nextElement();
+                for (java.util.Enumeration<java.net.InetAddress> a = ni.getInetAddresses(); a.hasMoreElements();) {
+                    java.net.InetAddress ia = a.nextElement();
+                    if (!ia.isLoopbackAddress() && ia instanceof java.net.Inet4Address) ip = ia.getHostAddress();
+                }
+            }
+        } catch (Exception ignored) { }
+        String msg = "Model: " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL
+                + "\nAndroid: " + android.os.Build.VERSION.RELEASE + " (API " + android.os.Build.VERSION.SDK_INT + ")"
+                + "\nIP address: " + ip
+                + "\nGlass TV Home: " + activity.getAppVersionName() + diagnostics(activity);
+        glassShow(activity, new android.app.AlertDialog.Builder(activity).setTitle("TV info").setMessage(msg)
+                .setPositiveButton("Close", null).create());
+    }
+
+    /** iOS-style control centre: rounded frosted tiles, three to a row; OK on a tile runs it. */
+    private static void buildControlTiles(MainActivity activity, float density, Typeface font, LinearLayout out, AlertDialog[] holder) {
+        addHeader(out, font, "Control Centre");
+        final boolean azanOn = Azan.isMasterEnabled(activity);
+        final Runnable close = () -> { if (holder[0] != null) holder[0].dismiss(); };
+        final Runnable again = () -> { close.run(); ModernSettingsDialog.showControl(activity); };
+        final android.media.AudioManager am = (android.media.AudioManager) activity.getSystemService(android.content.Context.AUDIO_SERVICE);
+        final boolean muted = am != null && am.isStreamMute(android.media.AudioManager.STREAM_MUSIC);
+        final String doaName = DoaList.current().count;
+        final String[][] tiles = {
+                {"", "Calendar", "Holidays and events", "0"},
+                {"", "Prayer times", "Next 7 days", "0"},
+                {"", "Weather", "Radar and forecast", "0"},
+                {"", "Doa of the day", doaName, "0"},
+                {"", "Tasbih", "Count zikir", "0"},
+                {"", muted ? "Unmute" : "Mute", muted ? "Sound is off" : "Sound is on", muted ? "1" : "0"},
+                {"", "TV info", "Model, IP, version", "0"},
+                {"", "Android settings", "Original menu", "0"},
+                {"", "Refresh calendar", "Holidays and Google", "0"},
+                {"", "Google Home", "Assistant for your home", "0"}
+        };
+        final Runnable[] actions = {
+                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(activity, CalendarActivity.class)); },
+                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(activity, PrayerActivity.class)); },
+                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(activity, WeatherActivity.class)); },
+                () -> { close.run(); showDoaToday(activity); },
+                () -> { close.run(); showTasbih(activity); },
+                () -> {
+                    if (am != null) am.adjustStreamVolume(android.media.AudioManager.STREAM_MUSIC,
+                            muted ? android.media.AudioManager.ADJUST_UNMUTE : android.media.AudioManager.ADJUST_MUTE, 0);
+                    again.run();
+                },
+                () -> { close.run(); showTvInfo(activity); },
+                () -> { returnToControl = true; close.run(); activity.startActivity(new Intent(Settings.ACTION_SETTINGS)); },
+                () -> {
+                    close.run();
+                    CalendarData.refresh(activity, true, null);
+                    Toast.makeText(activity, "Refreshing the calendar...", Toast.LENGTH_SHORT).show();
+                },
+                () -> { close.run(); activity.openGoogleHome(); }
+        };
+        // Not every tile is the same size: some are wide, and the rows differ in height.
+        final int[][] rows = {{0, 1}, {2, 3}, {4, 5, 6}, {7, 8, 9}};
+        final int[][] spans = {{2, 1}, {1, 2}, {1, 1, 1}, {1, 1, 1}};
+        final int[] heights = {92, 72, 72, 64};
+        for (int row = 0; row < rows.length; row++) {
+            LinearLayout line = new LinearLayout(activity);
+            line.setOrientation(LinearLayout.HORIZONTAL);
+            line.setClipChildren(false);
+            for (int col = 0; col < rows[row].length; col++) {
+                final int idx = rows[row][col];
+                final boolean active = "1".equals(tiles[idx][3]);
+                LinearLayout tile = new LinearLayout(activity);
+                tile.setOrientation(LinearLayout.VERTICAL);
+                tile.setGravity(Gravity.CENTER);
+                tile.setFocusable(true);
+                tile.setClickable(true);
+                tile.setPadding((int) (8 * density), (int) (8 * density), (int) (8 * density), (int) (8 * density));
+                setTileLook(tile, density, active, false);
+                TextView t1 = new TextView(activity);
+                t1.setText(tiles[idx][1]);
+                t1.setTextSize(row == 0 ? 15f : 12.5f);
+                t1.setTextColor(0xFFFFFFFF);
+                t1.setTypeface(font, Typeface.BOLD);
+                t1.setGravity(Gravity.CENTER);
+                t1.setSingleLine(true);
+                tile.addView(t1);
+                TextView t2 = new TextView(activity);
+                t2.setText(tiles[idx][2]);
+                t2.setTextSize(9.5f);
+                t2.setTextColor(active ? 0xFFFFFFFF : 0xB3FFFFFF);
+                t2.setTypeface(font, Typeface.NORMAL);
+                t2.setGravity(Gravity.CENTER);
+                t2.setSingleLine(true);
+                t2.setEllipsize(android.text.TextUtils.TruncateAt.END);
+                tile.addView(t2);
+                tile.setOnFocusChangeListener((v, has) -> setTileLook(v, density, active, has));
+                tile.setOnClickListener(v -> { SoundEffects.playSelect(); actions[idx].run(); });
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, (int) (heights[row] * density), spans[row][col]);
+                lp.setMargins((int) (4 * density), (int) (4 * density), (int) (4 * density), (int) (4 * density));
+                line.addView(tile, lp);
+            }
+            out.addView(line, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+    }
+
+    private static void setTileLook(View tile, float density, boolean active, boolean focused) {
+        GlassDrawable glass = new GlassDrawable(tile, 28 * density, density, null, 0.4f);
+        Backdrop.watch(tile);
+        GradientDrawable tint = new GradientDrawable();
+        tint.setCornerRadius(28 * density);
+        tint.setColor(active ? 0xB334C759 : focused ? 0x40FFFFFF : 0x00000000);
+        tint.setStroke((int) ((focused ? 2f : 0f) * density), 0xFFFFFFFF);
+        tile.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{glass, GlassPage.veil(28 * density, 0x59101522), tint}));
     }
 
     private static void addHeader(LinearLayout root, Typeface font, String title) {
@@ -1012,18 +1264,20 @@ public final class ModernSettingsDialog {
         root.addView(tv);
     }
 
+    /** A row on the panel: its own glass, and a brighter fill with a white rim while selected. */
     private static void applySoapBubbleCardBg(View v, float density, boolean hasFocus) {
-        GradientDrawable g = new GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                hasFocus ? new int[]{0x5533445C, 0x3D223042} : new int[]{0x2E1E2838, 0x22141B26}
-        );
-        g.setCornerRadius(15 * density);
-        if (hasFocus) {
-            g.setStroke((int) (2f * density), 0xFF67E8F9); // Soap bubble luminous cyan glint
-        } else {
-            g.setStroke((int) (1f * density), 0x2E67E8F9); // Subtle iridescent rim
+        GlassDrawable glass = new GlassDrawable(v, 20 * density, density, null, 0.3f);
+        Backdrop.watch(v);
+        android.graphics.drawable.Drawable dark = GlassPage.veil(20 * density, 0x66101522);
+        if (!hasFocus) {
+            v.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{glass, dark}));
+            return;
         }
-        v.setBackground(g);
+        GradientDrawable tint = new GradientDrawable();
+        tint.setCornerRadius(20 * density);
+        tint.setColor(0x40FFFFFF);
+        tint.setStroke((int) (2f * density), 0xFFFFFFFF);
+        v.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{glass, dark, tint}));
     }
 
     private static LinearLayout buildCardRow(Context ctx, float density, Typeface font, String title, String subtitle, Runnable action) {
@@ -1046,7 +1300,7 @@ public final class ModernSettingsDialog {
             TextView tvSub = new TextView(ctx);
             tvSub.setText(subtitle);
             tvSub.setTextSize(12);
-            tvSub.setTextColor(0xFF8E929E);
+            tvSub.setTextColor(0xB3FFFFFF);
             tvSub.setTypeface(font, Typeface.NORMAL);
             tvSub.setPadding(0, (int) (2 * density), 0, 0);
             card.addView(tvSub);
@@ -1106,7 +1360,7 @@ public final class ModernSettingsDialog {
             TextView tvSub = new TextView(ctx);
             tvSub.setText(subtitle);
             tvSub.setTextSize(12);
-            tvSub.setTextColor(0xFF8E929E);
+            tvSub.setTextColor(0xB3FFFFFF);
             tvSub.setTypeface(font, Typeface.NORMAL);
             tvSub.setPadding(0, (int) (2 * density), 0, 0);
             textCol.addView(tvSub);
@@ -1159,10 +1413,8 @@ public final class ModernSettingsDialog {
         card.setGravity(Gravity.CENTER_VERTICAL);
         card.setPadding((int) (16 * density), (int) (10 * density), (int) (16 * density), (int) (10 * density));
 
-        GradientDrawable bg = new GradientDrawable();
-        bg.setColor(0xFF22252E);
-        bg.setCornerRadius(12 * density);
-        card.setBackground(bg);
+        card.setBackground(new GlassDrawable(card, 18 * density, density, null, 0.3f));
+        Backdrop.watch(card);
 
         TextView tvTitle = new TextView(ctx);
         tvTitle.setText(title);
@@ -1174,7 +1426,7 @@ public final class ModernSettingsDialog {
         TextView tvVal = new TextView(ctx);
         tvVal.setText(value);
         tvVal.setTextSize(13f);
-        tvVal.setTextColor(0xFF38BDF8);
+        tvVal.setTextColor(0xFF64B5FF);
         tvVal.setTypeface(font, Typeface.NORMAL);
         card.addView(tvVal);
 
@@ -1206,7 +1458,7 @@ public final class ModernSettingsDialog {
         AlertDialog dialog = new AlertDialog.Builder(activity, R.style.Theme_TvHome_GlassDialog)
                 .setTitle(AppLanguage.strEditName(activity))
                 .setView(container)
-                .setPositiveButton("Simpan", (d, which) -> {
+                .setPositiveButton("Save", (d, which) -> {
                     String newName = et.getText().toString().trim();
                     if (!newName.isEmpty()) {
                         if (callback != null) callback.onSave(newName);
@@ -1218,13 +1470,13 @@ public final class ModernSettingsDialog {
     }
 
     private static void showChangePinDialog(MainActivity activity, float density, Typeface font) {
-        ChildModeManager.promptPin(activity, "Sahkan PIN Semasa", "Masukkan 4-digit PIN keselamatan semasa", new ChildModeManager.PinCallback() {
+        ChildModeManager.promptPin(activity, "Confirm Current PIN", "Enter the current 4-digit security PIN", new ChildModeManager.PinCallback() {
             @Override
             public void onSuccess() {
-                ChildModeManager.promptPin(activity, "Tetapkan PIN Baharu", "Masukkan 4-digit PIN baharu untuk kawalan ibu bapa", new ChildModeManager.PinCallback() {
+                ChildModeManager.promptPin(activity, "Set New PIN", "Enter a new 4-digit PIN for parental control", new ChildModeManager.PinCallback() {
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(activity, "✅ PIN Keselamatan Berjaya Dikemaskini!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Security PIN updated!", Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public void onCancelled() {}
@@ -1282,16 +1534,16 @@ public final class ModernSettingsDialog {
         pickerLayout.setBackground(bg);
 
         TextView tvTitle = new TextView(activity);
-        tvTitle.setText(isHideMode ? "👁️ Sembunyikan Aplikasi dari Skrin Utama" : "🔒 Kunci Aplikasi dengan PIN 4-Digit");
+        tvTitle.setText(isHideMode ? "Hide Apps from Home Screen" : "Lock Apps with 4-Digit PIN");
         tvTitle.setTextSize(17);
         tvTitle.setTextColor(0xFFFFFFFF);
         tvTitle.setTypeface(font, Typeface.BOLD);
         pickerLayout.addView(tvTitle);
 
         TextView tvSub = new TextView(activity);
-        tvSub.setText(isHideMode ? "Aplikasi yang ditandakan tidak akan dipaparkan pada skrin utama." : "Aplikasi yang dipilih memerlukan kod PIN untuk dibuka.");
+        tvSub.setText(isHideMode ? "Marked apps will not appear on the home screen." : "Selected apps need the PIN to open.");
         tvSub.setTextSize(12);
-        tvSub.setTextColor(0xFF8E929E);
+        tvSub.setTextColor(0xB3FFFFFF);
         tvSub.setTypeface(font, Typeface.NORMAL);
         tvSub.setPadding(0, (int) (2 * density), 0, (int) (10 * density));
         pickerLayout.addView(tvSub);
@@ -1431,13 +1683,13 @@ public final class ModernSettingsDialog {
         GradientDrawable bg = new GradientDrawable();
         bg.setColor(0xF4181B24); // Deep translucent glass
         bg.setCornerRadius(20 * density);
-        bg.setStroke(Math.round(1.5f * density), 0x3367E8F9); // Subtle cyan rim
+        bg.setStroke(Math.round(1.5f * density), 0x33FFFFFF); // Subtle cyan rim
         dialogBox.setBackground(bg);
         dialogBox.setPadding(Math.round(24 * density), Math.round(20 * density), Math.round(24 * density), Math.round(20 * density));
 
         // Dialog Title
         TextView tvTitle = new TextView(activity);
-        tvTitle.setText("🏠 Tetapkan Glass TV Sebagai Default Home");
+        tvTitle.setText("Set Glass TV as Default Home");
         tvTitle.setTextSize(18f);
         tvTitle.setTextColor(0xFFFFFFFF);
         tvTitle.setTypeface(font, Typeface.BOLD);
@@ -1448,8 +1700,8 @@ public final class ModernSettingsDialog {
         // Subtitle / Status description
         TextView tvDesc = new TextView(activity);
         String desc = isDefault
-                ? "✅ Tahniah! Glass TV Home kini merupakan pelancar lalai utama peranti anda. Setiap kali butang Home ditekan pada alat kawalan jauh, anda akan terus kembali ke Glass TV."
-                : "⚠️ Pelancar aktif semasa: " + activePkg + "\nSila pilih salah satu kaedah di bawah untuk mengunci Glass TV sebagai pelancar utama:";
+                ? "Tahniah! Glass TV Home kini merupakan pelancar lalai utama peranti anda. Setiap kali butang Home ditekan pada alat kawalan jauh, anda akan terus kembali ke Glass TV."
+                : "Current launcher: " + activePkg + "\nSila pilih salah satu kaedah di bawah untuk mengunci Glass TV sebagai pelancar utama:";
         tvDesc.setText(desc);
         tvDesc.setTextSize(12.5f);
         tvDesc.setTextColor(isDefault ? 0xFF34D399 : 0xFF94A3B8);
@@ -1474,9 +1726,9 @@ public final class ModernSettingsDialog {
         // Selection Option 1: Open TV Settings
         View optSettings = buildSelectionOption(
                 activity, density, font,
-                "⚙️ Buka Tetapan Pemilih Pelancar TV",
+                "Open TV Launcher Picker Settings",
                 "Cuba buka menu Android untuk memilih Glass TV sebagai Default Home (jika disokong oleh TV)",
-                "Buka Tetapan ⚙️",
+                "Open Settings ",
                 0xFF38BDF8,
                 () -> {
                     SoundEffects.playSelect();
@@ -1502,10 +1754,10 @@ public final class ModernSettingsDialog {
         // Selection Option 2: ADB Command
         View optAdb = buildSelectionOption(
                 activity, density, font,
-                "💻 Kunci Kekal Melalui Arahan ADB (Sangat Disyorkan)",
+                "Lock Permanently via ADB (Recommended)",
                 "Jalankan arahan melalui PC:\nadb shell cmd package set-home-activity com.gathin.tvhome/.MainActivity" +
                 (isDefault ? "" : "\nNyahdayakan pelancar lama: adb shell pm disable-user --user 0 " + activePkg),
-                "Salin ADB 📋",
+                "Salin ADB ",
                 0xFF34D399,
                 () -> {
                     SoundEffects.playSelect();
@@ -1514,7 +1766,7 @@ public final class ModernSettingsDialog {
                         if (cm != null) {
                             cm.setPrimaryClip(android.content.ClipData.newPlainText("ADB Command", "adb shell cmd package set-home-activity com.gathin.tvhome/.MainActivity"));
                         }
-                        Toast.makeText(activity, "📋 Arahan ADB disalin ke papan keratan", Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity, "Arahan ADB disalin ke papan keratan", Toast.LENGTH_LONG).show();
                     } catch (Exception ignored) {
                         Toast.makeText(activity, "Arahan: adb shell cmd package set-home-activity com.gathin.tvhome/.MainActivity", Toast.LENGTH_LONG).show();
                     }
@@ -1525,13 +1777,13 @@ public final class ModernSettingsDialog {
         // Selection Option 3: Phone App / Installer
         View optPhone = buildSelectionOption(
                 activity, density, font,
-                "📱 Tanpa PC: Gunakan Aplikasi Telefon (Glass TV Installer)",
-                "Pasang release/glass-tv-installer.apk pada telefon di Wi-Fi yang sama untuk aktifkan Home dalam 1-klik.",
-                "Buka Panduan 📱",
+                "No PC: Use the Phone App (Glass TV Installer)",
+                "Install release/glass-tv-installer.apk on a phone on the same Wi-Fi to turn on Home in one click.",
+                "Open Guide ",
                 0xFFA78BFA,
                 () -> {
                     SoundEffects.playSelect();
-                    Toast.makeText(activity, "Buka glass-tv-installer.apk di telefon anda pada Wi-Fi sama.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Open glass-tv-installer.apk on your phone on the same Wi-Fi.", Toast.LENGTH_SHORT).show();
                 }
         );
         optionsCol.addView(optPhone);
@@ -1544,7 +1796,7 @@ public final class ModernSettingsDialog {
 
         // Bottom Action: Tutup Button (styled as uncropped focusable pill TextView)
         TextView btnClose = new TextView(activity);
-        btnClose.setText("Tutup");
+        btnClose.setText("Close");
         btnClose.setTextColor(0xFFFFFFFF);
         btnClose.setTypeface(font, Typeface.BOLD);
         btnClose.setTextSize(14f);
@@ -1570,7 +1822,7 @@ public final class ModernSettingsDialog {
             g.setCornerRadius(closeRadius);
             if (hasFocus) {
                 g.setColor(0xFF434C5E);
-                g.setStroke(Math.round(2f * density), 0xFF67E8F9); // Glowing cyan rim
+                g.setStroke(Math.round(2f * density), 0xFFFFFFFF); // Glowing cyan rim
             } else {
                 g.setColor(0xFF2E3440);
                 g.setStroke(Math.round(1f * density), 0x33FFFFFF);
@@ -1636,7 +1888,7 @@ public final class ModernSettingsDialog {
         GradientDrawable idleBg = new GradientDrawable();
         idleBg.setColor(0x2E1E2838);
         idleBg.setCornerRadius(radius);
-        idleBg.setStroke(Math.round(1f * density), 0x2E67E8F9);
+        idleBg.setStroke(Math.round(1f * density), 0x2EFFFFFF);
         row.setBackground(idleBg);
 
         // Text Column (Left)
@@ -1694,7 +1946,7 @@ public final class ModernSettingsDialog {
             g.setCornerRadius(radius);
             if (hasFocus) {
                 g.setColor(0x5533445C);
-                g.setStroke(Math.round(2f * density), 0xFF67E8F9); // Luminous cyan glint
+                g.setStroke(Math.round(2f * density), 0xFFFFFFFF); // Luminous cyan glint
                 btnAction.setTextColor(0xFFFFFFFF);
                 GradientDrawable pGlow = new GradientDrawable();
                 pGlow.setShape(GradientDrawable.RECTANGLE);
@@ -1704,7 +1956,7 @@ public final class ModernSettingsDialog {
                 btnAction.setBackground(pGlow);
             } else {
                 g.setColor(0x2E1E2838);
-                g.setStroke(Math.round(1f * density), 0x2E67E8F9);
+                g.setStroke(Math.round(1f * density), 0x2EFFFFFF);
                 btnAction.setTextColor(0xFFE2E8F0);
                 btnAction.setBackground(pillBg);
             }

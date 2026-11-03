@@ -151,6 +151,25 @@
                 android:shadowRadius="4" />
 
             <TextView
+                android:id="@+id/ayahRumi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:maxWidth="400dp"
+                android:gravity="end"
+                android:textColor="#FFFFD76A"
+                android:textSize="11sp"
+                android:textStyle="italic"
+                android:fontFamily="@font/inter"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:visibility="gone"
+                android:shadowColor="#99000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3" />
+
+            <TextView
                 android:id="@+id/ayahText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -394,6 +413,27 @@
                     android:shadowRadius="4" />
             </LinearLayout>
         </LinearLayout>
+
+        <!-- Countdown to the next prayer, in a glass pill under the times -->
+        <TextView
+            android:id="@+id/prayerCountdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textColor="#FFFFFFFF"
+            android:textSize="12sp"
+            android:fontFamily="@font/inter"
+            android:fontVariationSettings="'wght' 600"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:shadowColor="#99000000"
+            android:shadowDy="1"
+            android:shadowRadius="3" />
     </LinearLayout>
 
     <LinearLayout
@@ -424,7 +464,26 @@
                 android:gravity="center_vertical"
                 android:baselineAligned="false">
 
-                <TextClock
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/greeting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:textColor="#E6FFFFFF"
+                        android:textSize="15sp"
+                        android:fontFamily="@font/inter"
+                        android:fontVariationSettings="'wght' 500"
+                        android:shadowColor="#80000000"
+                        android:shadowDx="0"
+                        android:shadowDy="1"
+                        android:shadowRadius="3" />
+
+                    <TextClock
                     android:id="@+id/clock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -440,6 +499,7 @@
                     android:shadowDy="1"
                     android:shadowRadius="4"
                     android:includeFontPadding="false" />
+                </LinearLayout>
 
                 <!-- 1:2 layout: 1 jam on left, 2 stacked rows on right (atas: am/pm, bawah: tarikh) -->
                 <LinearLayout
@@ -529,13 +589,28 @@
                 android:shadowRadius="3"
                 android:singleLine="true" />
 
+            <!-- Football (built in MainActivity.renderSports): one thin glass box per team. -->
+            <LinearLayout
+                android:id="@+id/sportsCard"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/weatherAirQuality"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:visibility="gone" />
+
             <!-- Now Playing Widget Card: Matching bravia-glass-tv design -->
             <LinearLayout
                 android:id="@+id/nowPlayingCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="64dp"
-                android:layout_below="@id/weatherAirQuality"
+                android:layout_below="@id/sportsCard"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="12dp"
                 android:focusable="false"
@@ -694,11 +769,25 @@
                 <TextView
                     android:id="@+id/btnWifi"
                     style="@style/TopMenuButton"
-                    android:maxWidth="180dp"
+                    android:maxWidth="104dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textSize="12sp"
+                    android:drawablePadding="5dp"
                     android:singleLine="true"
                     android:ellipsize="end"
                     android:text="@string/wifi"
                     android:drawableStart="@drawable/ic_wifi" />
+
+                <TextView
+                    android:id="@+id/btnCalendar"
+                    style="@style/TopMenuButton"
+                    android:layout_width="42dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="0dp"
+                    android:drawablePadding="0dp"
+                    android:contentDescription="Calendar"
+                    android:drawableStart="@drawable/ic_calendar" />
 
                 <TextView
                     android:id="@+id/btnAssistant"
@@ -712,6 +801,7 @@
 
                 <FrameLayout
                     android:id="@+id/btnCandyBox"
+                    android:visibility="gone"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
                     android:layout_marginStart="10dp"
@@ -729,6 +819,16 @@
                         app:lottie_autoPlay="true"
                         app:lottie_loop="true" />
                 </FrameLayout>
+
+                <TextView
+                    android:id="@+id/btnControl"
+                    style="@style/TopMenuButton"
+                    android:layout_width="42dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="0dp"
+                    android:drawablePadding="0dp"
+                    android:contentDescription="Control Centre"
+                    android:drawableStart="@drawable/ic_control" />
 
                 <FrameLayout
                     android:id="@+id/btnSettingsContainer"
@@ -757,6 +857,16 @@
                         android:visibility="gone"
                         android:background="@drawable/badge_dot_red" />
                 </FrameLayout>
+
+                <TextView
+                    android:id="@+id/btnPower"
+                    style="@style/TopMenuButton"
+                    android:layout_width="42dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="0dp"
+                    android:drawablePadding="0dp"
+                    android:contentDescription="Power"
+                    android:drawableStart="@drawable/ic_power" />
             </LinearLayout>
 
             <!-- Fallback Prayer Times view -->

@@ -53,6 +53,79 @@ public class RadarMapView extends View {
         badgeStroke.setColor(0xFFFFFFFF);
     }
 
+    private android.graphics.Bitmap mapBmp;
+    private float markerX, markerY;
+    private boolean loading;
+
+    /**
+     * A real map: dark street tiles (CARTO) around the place with the latest rain radar (RainViewer) over
+     * them. Fetched once on a background thread; until it arrives, or if the network fails, the sketch is drawn.
+     */
+    public void loadMap(final double lat, final double lon) {
+        if (loading || mapBmp != null) return;
+        loading = true;
+        new Thread(() -> {
+            try {
+                final int z = 7, n = 1 << z;
+                double latRad = Math.toRadians(lat);
+                double fx = (lon + 180.0) / 360.0 * n;
+                double fy = (1.0 - Math.log(Math.tan(latRad) + 1.0 / Math.cos(latRad)) / Math.PI) / 2.0 * n;
+                int tx = (int) Math.floor(fx), ty = (int) Math.floor(fy);
+                android.graphics.Bitmap out = android.graphics.Bitmap.createBitmap(768, 768, android.graphics.Bitmap.Config.ARGB_8888);
+                Canvas c = new Canvas(out);
+                String host = null, path = null;
+                try {
+                    org.json.JSONObject j = new org.json.JSONObject(fetchText("https://api.rainviewer.com/public/weather-maps.json"));
+                    host = j.optString("host", "https://tilecache.rainviewer.com");
+                    org.json.JSONArray past = j.getJSONObject("radar").getJSONArray("past");
+                    path = past.getJSONObject(past.length() - 1).getString("path");
+                } catch (Exception ignored) { }
+                Paint pp = new Paint(Paint.FILTER_BITMAP_FLAG);
+                for (int dx = -1; dx <= 1; dx++) {
+                    for (int dy = -1; dy <= 1; dy++) {
+                        int x = tx + dx, y = ty + dy;
+                        android.graphics.Bitmap base = fetchTile("https://basemaps.cartocdn.com/dark_all/" + z + "/" + x + "/" + y + ".png");
+                        if (base != null) c.drawBitmap(base, (dx + 1) * 256, (dy + 1) * 256, pp);
+                        if (path != null) {
+                            android.graphics.Bitmap rad = fetchTile(host + path + "/256/" + z + "/" + x + "/" + y + "/2/1_1.png");
+                            if (rad != null) { pp.setAlpha(210); c.drawBitmap(rad, (dx + 1) * 256, (dy + 1) * 256, pp); pp.setAlpha(255); }
+                        }
+                    }
+                }
+                final float mx = (float) ((fx - tx + 1) * 256), my = (float) ((fy - ty + 1) * 256);
+                post(() -> { mapBmp = out; markerX = mx; markerY = my; invalidate(); });
+            } catch (Exception e) {
+                android.util.Log.w("TvHome.Radar", "map failed: " + e);
+            } finally {
+                loading = false;
+            }
+        }, "radar-map").start();
+    }
+
+    private static String fetchText(String url) throws Exception {
+        java.net.HttpURLConnection h = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
+        h.setConnectTimeout(8000); h.setReadTimeout(8000);
+        h.setRequestProperty("User-Agent", "GlassTV-Home");
+        try (java.io.InputStream in = h.getInputStream(); java.io.ByteArrayOutputStream bo = new java.io.ByteArrayOutputStream()) {
+            byte[] b = new byte[8192]; int r;
+            while ((r = in.read(b)) > 0) bo.write(b, 0, r);
+            return bo.toString("UTF-8");
+        } finally { h.disconnect(); }
+    }
+
+    private static android.graphics.Bitmap fetchTile(String url) {
+        try {
+            java.net.HttpURLConnection h = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
+            h.setConnectTimeout(8000); h.setReadTimeout(8000);
+            h.setRequestProperty("User-Agent", "GlassTV-Home");
+            try (java.io.InputStream in = h.getInputStream()) {
+                return android.graphics.BitmapFactory.decodeStream(in);
+            } finally { h.disconnect(); }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public void setDetails(int temp, String loc) {
         this.temp = temp;
         this.locationName = loc;
@@ -73,6 +146,25 @@ public class RadarMapView extends View {
         Path clipPath = new Path();
         clipPath.addRoundRect(new RectF(0, 0, w, h), 14f * density, 14f * density, Path.Direction.CW);
         canvas.clipPath(clipPath);
+
+        if (mapBmp != null) {
+            // Real map: the part of the 768 px picture that fits the view, centred on the place.
+            float scale = Math.max(w / 512f, h / 512f);
+            float srcW = w / scale, srcH = h / scale;
+            float l = Math.max(0, Math.min(768 - srcW, markerX - srcW / 2)), t = Math.max(0, Math.min(768 - srcH, markerY - srcH / 2));
+            canvas.drawBitmap(mapBmp, new android.graphics.Rect((int) l, (int) t, (int) (l + srcW), (int) (t + srcH)),
+                    new RectF(0, 0, w, h), null);
+            float px = (markerX - l) * scale, py = (markerY - t) * scale;
+            badgePaint.setColor(0xFF0A84FF);
+            canvas.drawCircle(px, py, 6f * density, badgePaint);
+            canvas.drawCircle(px, py, 6f * density, badgeStroke);
+            textPaint.setTextAlign(Paint.Align.LEFT);
+            textPaint.setTextSize(11f * density);
+            textPaint.setColor(0xFFFFFFFF);
+            textPaint.setFakeBoldText(true);
+            canvas.drawText(locationName + "  " + temp + "\u00B0", px + 10f * density, py + 4f * density, textPaint);
+            return;
+        }
 
         // 1. Sea / Ocean background (Straits of Malacca)
         canvas.drawRect(0, 0, w, h, bgPaint);

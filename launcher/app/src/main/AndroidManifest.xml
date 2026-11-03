@@ -43,6 +43,7 @@
         </intent>
         <!-- China-market MIUI TV firmware: the Settings and Wi-Fi pills fall back to Xiaomi's settings app. -->
         <package android:name="com.xiaomi.mitv.settings" />
+        <package android:name="com.google.android.apps.chromecast.app" />
     </queries>
 
     <application
@@ -75,6 +76,12 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".PrayerActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.TvHome" />
 
         <activity
             android:name=".WeatherActivity"
@@ -117,6 +124,28 @@
                 <action android:name="com.gathin.tvhome.SET_WEATHER" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".KeyMapReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.gathin.tvhome.MAP_KEY" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".CalendarLinkReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.gathin.tvhome.SET_CALENDAR" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".CalendarActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.TvHome" />
 
         <!-- The azan: prayer-time alarm and full-screen / floating azan card -->
         <receiver

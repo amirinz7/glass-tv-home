@@ -30,7 +30,7 @@ public class AvatarThemeManager {
 
     // Character expression definitions (each runs 576 frames at 60fps)
     public static final String[] FACE_NAMES = new String[]{
-            "Semua (Kitaran)", // 0: Frames 0-4608
+            "All (Cycle)", // 0: Frames 0-4608
             "1: Senyum",        // 1: Frames 0-576
             "2: Kenyit",        // 2: Frames 576-1152
             "3: Bersiul",       // 3: Frames 1152-1728

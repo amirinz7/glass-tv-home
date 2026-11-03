@@ -85,7 +85,7 @@
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="40dp"
         android:fontFamily="@font/inter"
-        android:text="Press ▲ on an app to close it"
+        android:text="Press  on an app to close it"
         android:textColor="#90FFFFFF"
         android:textSize="14sp" />
 

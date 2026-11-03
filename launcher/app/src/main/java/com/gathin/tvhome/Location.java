@@ -83,7 +83,7 @@ final class Location {
         {"SWK07", "Sarawak", "Serian", "Serian, Simunjan, Samarahan, Sebuyau, Meludam", "1.1667", "110.5667"},
         {"SWK08", "Sarawak", "Kuching", "Kuching, Bau, Lundu, Sematan", "1.55", "110.3333"},
         {"SWK09", "Sarawak", "Kampung Patarikan", "Zon Khas (Kampung Patarikan)", "4.8604", "115.409"},
-        {"SGR01", "Selangor", "Shah Alam", "Gombak, Petaling, Sepang, Hulu Langat, Hulu Selangor, Shah Alam", "3.0851", "101.5328"},
+        {"SGR01", "Selangor", "Puchong", "Puchong, Gombak, Petaling, Sepang, Hulu Langat, Hulu Selangor, Shah Alam", "3.0213", "101.6165"},
         {"SGR02", "Selangor", "Kuala Selangor", "Kuala Selangor, Sabak Bernam", "3.35", "101.25"},
         {"SGR03", "Selangor", "Klang", "Klang, Kuala Langat", "3.0367", "101.4433"},
         {"TRG01", "Terengganu", "Kuala Terengganu", "Kuala Terengganu, Marang, Kuala Nerus", "5.3302", "103.1408"},
@@ -94,10 +94,10 @@ final class Location {
         {"WLY01_PJ", "Wilayah Persekutuan", "Putrajaya", "Pusat Pentadbiran Kerajaan Persekutuan", "2.9158", "101.6909"},
         {"WLY02", "Wilayah Persekutuan", "Labuan", "Labuan", "5.2803", "115.2475"},
 
-        // --- 🇸🇬 SINGAPURA (MUIS) ---
+        // ---  SINGAPURA (MUIS) ---
         {"SGP01", "Singapura (Singapore)", "Singapura", "Seluruh Negara Singapura (MUIS)", "1.3521", "103.8198"},
 
-        // --- 🇮🇩 INDONESIA (KEMENAG) ---
+        // ---  INDONESIA (KEMENAG) ---
         {"ID_JKT", "Indonesia: DKI Jakarta", "Jakarta", "Jakarta Pusat, Selatan, Barat, Timur, Utara", "-6.2088", "106.8456"},
         {"ID_BDG", "Indonesia: Jawa Barat", "Bandung", "Kota Bandung, Cimahi, Kab. Bandung", "-6.9175", "107.6191"},
         {"ID_BKR", "Indonesia: Jawa Barat", "Bekasi & Bogor", "Kota Bekasi, Kab. Bekasi, Kota Bogor, Depok", "-6.2383", "106.9756"},
@@ -156,7 +156,7 @@ final class Location {
 
     /** The zone chosen on the TV, or null when none has been chosen there. */
     static Zone chosen(Context ctx) {
-        return byCode(prefs(ctx).getString("zone", null));
+        return byCode(prefs(ctx).getString("zone", "SGR01"));
     }
 
     static void choose(Context ctx, Zone z) {

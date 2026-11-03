@@ -41,9 +41,19 @@ def get_signer():
 
 
 def connect(timeout=120):
-    dev = AdbDeviceTcp(HOST, PORT, default_transport_timeout_s=float(timeout))
-    dev.connect(rsa_keys=[get_signer()], transport_timeout_s=float(timeout), auth_timeout_s=timeout)
-    return dev
+    # Right after the stock launcher is disabled some TVs restart their debugging service for a few
+    # seconds ("Connection reset by peer"): wait and try again instead of giving up.
+    import time
+    last = None
+    for attempt in range(8):
+        try:
+            dev = AdbDeviceTcp(HOST, PORT, default_transport_timeout_s=float(timeout))
+            dev.connect(rsa_keys=[get_signer()], transport_timeout_s=float(timeout), auth_timeout_s=timeout)
+            return dev
+        except (ConnectionError, OSError) as e:
+            last = e
+            time.sleep(3)
+    raise last
 
 
 def main():

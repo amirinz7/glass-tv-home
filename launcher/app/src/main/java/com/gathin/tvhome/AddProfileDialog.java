@@ -35,14 +35,14 @@ public class AddProfileDialog {
 
         // Header
         TextView tvTitle = new TextView(context);
-        tvTitle.setText("＋ Tambah Profil Baharu");
+        tvTitle.setText("+ Add New Profile");
         tvTitle.setTextSize(21);
         tvTitle.setTextColor(0xFFFFFFFF);
         tvTitle.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
         root.addView(tvTitle);
 
         TextView tvSub = new TextView(context);
-        tvSub.setText("Cipta profil untuk ahli keluarga atau mod kanak-kanak");
+        tvSub.setText("Create a profile for a family member or child mode");
         tvSub.setTextSize(13);
         tvSub.setTextColor(0xFF94A3B8);
         tvSub.setPadding(0, (int) (3 * density), 0, (int) (18 * density));
@@ -50,14 +50,14 @@ public class AddProfileDialog {
 
         // Name input
         TextView tvNameLabel = new TextView(context);
-        tvNameLabel.setText("NAMA PROFIL");
+        tvNameLabel.setText("PROFILE NAME");
         tvNameLabel.setTextSize(11.5f);
         tvNameLabel.setTextColor(0xFF38BDF8);
         tvNameLabel.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
         root.addView(tvNameLabel);
 
         EditText etName = new EditText(context);
-        etName.setHint("Masukkan nama profil...");
+        etName.setHint("Enter profile name...");
         etName.setHintTextColor(0xFF64748B);
         etName.setTextColor(0xFFFFFFFF);
         etName.setTextSize(15);
@@ -77,7 +77,7 @@ public class AddProfileDialog {
 
         // Child mode checkbox
         CheckBox cbChild = new CheckBox(context);
-        cbChild.setText("Jadikan Profil Kanak-kanak (Sekat aplikasi dewasa)");
+        cbChild.setText("Make this a Child profile (blocks adult apps)");
         cbChild.setTextColor(0xFFE2E8F0);
         cbChild.setTextSize(13.5f);
         cbChild.setPadding((int) (6 * density), 0, 0, (int) (18 * density));
@@ -89,7 +89,7 @@ public class AddProfileDialog {
         actionsRow.setGravity(Gravity.END);
 
         Button btnCancel = new Button(context, null, android.R.attr.borderlessButtonStyle);
-        btnCancel.setText("Batal");
+        btnCancel.setText("Cancel");
         btnCancel.setTextColor(0xFF94A3B8);
         actionsRow.addView(btnCancel);
 
@@ -111,11 +111,11 @@ public class AddProfileDialog {
         btnAdd.setOnClickListener(v -> {
             String name = etName.getText().toString().trim();
             if (name.isEmpty()) {
-                Toast.makeText(context, "Sila masukkan nama profil", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Please enter a profile name", Toast.LENGTH_SHORT).show();
                 return;
             }
             ProfileManager.UserProfile p = ProfileManager.addProfile(context, name, cbChild.isChecked());
-            Toast.makeText(context, "✨ Profil " + name + " berjaya ditambah!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Profile " + name + " added!", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
             if (listener != null) listener.onProfileAdded(p);
         });

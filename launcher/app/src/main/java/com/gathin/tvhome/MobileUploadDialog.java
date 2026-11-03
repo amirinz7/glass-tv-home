@@ -39,7 +39,7 @@ public class MobileUploadDialog {
 
         // Header
         TextView tvTitle = new TextView(context);
-        tvTitle.setText("📲 Muat Naik Avatar Dari Telefon");
+        tvTitle.setText("Upload Avatar Dari Telefon");
         tvTitle.setTextSize(20);
         tvTitle.setTextColor(0xFFFFFFFF);
         tvTitle.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
@@ -68,7 +68,7 @@ public class MobileUploadDialog {
         urlBox.setBackground(urlBg);
 
         TextView tvUrlLabel = new TextView(context);
-        tvUrlLabel.setText("🌐 BUKA PAUTAN INI DI TELEFON ANDA:");
+        tvUrlLabel.setText("BUKA PAUTAN INI DI TELEFON ANDA:");
         tvUrlLabel.setTextSize(12);
         tvUrlLabel.setTextColor(0xFF67E8F9);
         tvUrlLabel.setTypeface(context.getResources().getFont(R.font.inter), android.graphics.Typeface.BOLD);
@@ -116,7 +116,7 @@ public class MobileUploadDialog {
         actionsRow.setPadding(0, (int) (8 * density), 0, 0);
 
         Button btnClose = new Button(context, null, android.R.attr.borderlessButtonStyle);
-        btnClose.setText("Batal");
+        btnClose.setText("Cancel");
         btnClose.setTextColor(0xFF94A3B8);
         btnClose.setFocusable(true);
         actionsRow.addView(btnClose);
@@ -131,7 +131,7 @@ public class MobileUploadDialog {
         // Start Local Upload Server
         File saveDir = new File(context.getFilesDir(), "avatars");
         LocalUploadServer.start(PORT, saveDir, uploadedFile -> {
-            Toast.makeText(context, "✨ Avatar berjaya diterima dari telefon!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Avatar berjaya diterima dari telefon!", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
             LocalUploadServer.stop();
             if (listener != null) {

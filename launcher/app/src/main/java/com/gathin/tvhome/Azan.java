@@ -15,8 +15,8 @@ import java.net.URL;
 import java.util.Calendar;
 
 /**
- * The azan at prayer time, while the TV is on. Each prayer can be switched on or off (Wallpaper menu →
- * Location, text &amp; ayat → Azan); Maghrib is on by default. One exact alarm is kept for the next prayer
+ * The azan at prayer time, while the TV is on. Each prayer can be switched on or off (Wallpaper menu 
+ * Location, text &amp; ayat  Azan); Maghrib is on by default. One exact alarm is kept for the next prayer
  * that is switched on, worked out from the stored JAKIM timetable; Home sets it again each time it comes
  * to the front, and the alarm sets the one after. Nothing runs in between.
  *
@@ -76,13 +76,13 @@ final class Azan {
     }
 
     static String soundLabel(String choice) {
-        if (SOUND_MADINAH.equals(choice)) return "🕌 Azan Masjid Nabawi Madinah";
-        if (SOUND_KLCC.equals(choice)) return "🇲🇾 Azan Masjid As-Syakirin KLCC";
-        if (SOUND_SINGAPORE.equals(choice)) return "🇸🇬 Azan Singapura (Masjid Sultan)";
-        if (SOUND_INDONESIA.equals(choice)) return "🇮🇩 Adzan Indonesia (Masjid Istiqlal / Nasional)";
-        if (SOUND_CHIME.equals(choice)) return "🔔 Nada Chime Lembut (Ringkas)";
-        if (SOUND_SILENT.equals(choice)) return "🔕 Mod Senyap (Visual Sahaja)";
-        return "🕋 Azan Masjidil Haram Makkah";
+        if (SOUND_MADINAH.equals(choice)) return "Azan Masjid Nabawi Madinah";
+        if (SOUND_KLCC.equals(choice)) return "Azan Masjid As-Syakirin KLCC";
+        if (SOUND_SINGAPORE.equals(choice)) return "Azan Singapura (Masjid Sultan)";
+        if (SOUND_INDONESIA.equals(choice)) return "Adzan Indonesia (Masjid Istiqlal / Nasional)";
+        if (SOUND_CHIME.equals(choice)) return "Nada Chime Lembut (Ringkas)";
+        if (SOUND_SILENT.equals(choice)) return "Silent (Visual only)";
+        return "Azan Masjidil Haram Makkah";
     }
 
     /** Sets the alarm for the next prayer that is on, today or tomorrow; clears it when none is. */
@@ -135,6 +135,32 @@ final class Azan {
                 return;
             }
         }
+    }
+
+    private static PendingIntent reminderIntent(Context ctx, int prayer, int flags) {
+        Intent i = new Intent(ctx, AzanReceiver.class).putExtra("prayer", prayer).putExtra("at", System.currentTimeMillis())
+                .putExtra("reminder", true);
+        return PendingIntent.getBroadcast(ctx, 77, i, flags | PendingIntent.FLAG_IMMUTABLE);
+    }
+
+    /** One more card after the given minutes, asking if the prayer was done. */
+    static void remindLater(Context ctx, int prayer, int minutes) {
+        AlarmManager am = ctx.getSystemService(AlarmManager.class);
+        if (am == null) return;
+        long when = System.currentTimeMillis() + minutes * 60_000L;
+        try {
+            Intent i = new Intent(ctx, AzanReceiver.class).putExtra("prayer", prayer).putExtra("at", when).putExtra("reminder", true);
+            am.setExact(AlarmManager.RTC, when, PendingIntent.getBroadcast(ctx, 77, i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+            note(ctx, "reminder in " + minutes + " min for prayer " + prayer);
+        } catch (SecurityException e) {
+            note(ctx, "reminder not allowed: " + e.getMessage());
+        }
+    }
+
+    static void cancelReminder(Context ctx) {
+        AlarmManager am = ctx.getSystemService(AlarmManager.class);
+        PendingIntent old = reminderIntent(ctx, 0, PendingIntent.FLAG_NO_CREATE);
+        if (am != null && old != null) am.cancel(old);
     }
 
     private static PendingIntent pending(Context ctx, int prayer, long when, int flags) {
@@ -237,10 +263,10 @@ final class Azan {
             String channelId = "azan_alarm_channel";
             android.app.NotificationChannel channel = new android.app.NotificationChannel(
                     channelId,
-                    "Waktu Solat & Azan TV",
+                    "Prayer Times & Azan",
                     android.app.NotificationManager.IMPORTANCE_HIGH
             );
-            channel.setDescription("Notifikasi dan popup waktu solat / azan terapung");
+            channel.setDescription("Floating prayer time and azan notifications");
             channel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
             channel.setBypassDnd(true);
             nm.createNotificationChannel(channel);
@@ -254,8 +280,8 @@ final class Azan {
             String prayerName = (prayer >= 0 && prayer < PrayerTimes.NAMES.length) ? PrayerTimes.NAMES[prayer] : "Solat";
             android.app.Notification.Builder builder = new android.app.Notification.Builder(ctx, channelId)
                     .setSmallIcon(R.drawable.ic_azan)
-                    .setContentTitle("🕌 Masuk Waktu " + prayerName)
-                    .setContentText("Peringatan Waktu Solat")
+                    .setContentTitle("It is time for " + prayerName)
+                    .setContentText("Prayer time reminder")
                     .setCategory(android.app.Notification.CATEGORY_ALARM)
                     .setVisibility(android.app.Notification.VISIBILITY_PUBLIC)
                     .setFullScreenIntent(pi, true)

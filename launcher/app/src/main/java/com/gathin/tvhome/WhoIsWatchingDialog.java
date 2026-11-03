@@ -236,7 +236,7 @@ public final class WhoIsWatchingDialog {
                 starBadge.setBackground(starBg);
 
                 TextView tvStar = new TextView(activity);
-                tvStar.setText("★");
+                tvStar.setText("");
                 tvStar.setTextColor(0xFF000000);
                 tvStar.setTextSize(14);
                 tvStar.setGravity(Gravity.CENTER);

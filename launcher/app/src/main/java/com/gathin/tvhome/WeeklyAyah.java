@@ -37,6 +37,8 @@ final class WeeklyAyah {
     /** The day's verse: Arabic, translations, and "Al-Baqarah 2:152". */
     static final class Ayah {
         final String arabic, malay, english, indonesian, reference;
+        /** Rumi (Latin letters) reading of the Arabic; empty until fetched. */
+        String translit = "";
 
         Ayah(String arabic, String malay, String english, String indonesian, String reference) {
             this.arabic = arabic;
@@ -76,7 +78,7 @@ final class WeeklyAyah {
         prefs(ctx).edit().putBoolean("show_english", on).apply();
     }
 
-    /** Whether the owner shows the ayat on Home (Wallpaper menu → Text & ayat); shown unless hidden there. */
+    /** Whether the owner shows the ayat on Home (Wallpaper menu  Text & ayat); shown unless hidden there. */
     static boolean shown(Context ctx) {
         return !prefs(ctx).getBoolean("hidden", false);
     }
@@ -104,7 +106,8 @@ final class WeeklyAyah {
         if (!keyFor(day()).equals(p.getString("key", null))
                 || !p.contains("text_english")
                 || !p.contains("text_indonesian")
-                || p.getString("text_indonesian", "").isEmpty()) {
+                || p.getString("text_indonesian", "").isEmpty()
+                || !p.contains("translit")) {
             return null;
         }
         return read(p);
@@ -120,18 +123,22 @@ final class WeeklyAyah {
         if (p.getString("arabic", null) != null) {
             return read(p);
         }
-        return new Ayah(
+        Ayah fallback = new Ayah(
                 "فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ",
                 "Oleh itu ingatlah kamu kepada-Ku, supaya Aku membalas ingat kepada kamu; dan bersyukurlah kamu kepada-Ku dan janganlah kamu kufur.",
                 "So remember Me; I will remember you. And be grateful to Me and do not deny Me.",
                 "Maka ingatlah kepada-Ku, niscaya Aku ingat kepadamu. Bersyukurlah kepada-Ku, dan janganlah kamu ingkar kepada-Ku.",
                 "Al-Baqarah 2:152"
         );
+        fallback.translit = "Fazkuroonee azkurkum washkuroo lee wa laa takfuroon";
+        return fallback;
     }
 
     private static Ayah read(SharedPreferences p) {
-        return new Ayah(p.getString("arabic", ""), p.getString("translation", ""), p.getString("text_english", ""),
+        Ayah a = new Ayah(p.getString("arabic", ""), p.getString("translation", ""), p.getString("text_english", ""),
                 p.getString("text_indonesian", ""), p.getString("reference", ""));
+        a.translit = p.getString("translit", "");
+        return a;
     }
 
     /** Fetches today's verse. Network; never on the UI thread. */
@@ -152,7 +159,13 @@ final class WeeklyAyah {
             String chapter = key.substring(0, key.indexOf(':'));
             String name = new JSONObject(get(API + "chapters/" + chapter + "?language=ms")).getJSONObject("chapter").optString("name_simple");
             Ayah a = new Ayah(v.optString("text_uthmani"), malay, english, indonesian, name + " " + key);
-            prefs(ctx).edit().putString("key", key).putString("arabic", a.arabic).putString("translation", a.malay)
+            try {
+                JSONObject tr = new JSONObject(get("https://api.alquran.cloud/v1/ayah/" + key + "/en.transliteration")).getJSONObject("data");
+                a.translit = tr.optString("text").trim();
+            } catch (Exception e) {
+                Log.w(TAG, "transliteration " + key + ": " + e.getMessage());
+            }
+            prefs(ctx).edit().putString("translit", a.translit).putString("key", key).putString("arabic", a.arabic).putString("translation", a.malay)
                     .putString("text_english", a.english).putString("text_indonesian", a.indonesian)
                     .putString("reference", a.reference).apply();
             return a;

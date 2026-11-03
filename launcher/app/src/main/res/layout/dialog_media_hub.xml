@@ -110,7 +110,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="▶ Sedang Dimainkan"
+        android:text="Sedang Dimainkan"
         android:textColor="#1DB954"
         android:textSize="12sp"
         android:fontFamily="@font/inter"

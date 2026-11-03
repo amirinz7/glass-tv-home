@@ -61,7 +61,7 @@ public class AppLocationManager {
     private static final List<Station> ALL_STATIONS = new ArrayList<>();
 
     static {
-        // --- 🇲🇾 Malaysia (Default) ---
+        // ---  Malaysia (Default) ---
         List<Station> myStations = new ArrayList<>();
         myStations.add(new Station("CA17W", "Putrajaya", "W.P. Putrajaya", "Malaysia", "SK Putrajaya Presint 18 (2)", 2.9158, 101.6909));
         myStations.add(new Station("CA16W", "Cheras", "W.P. Kuala Lumpur", "Malaysia", "SMK Seri Permaisuri", 3.1063, 101.7179));
@@ -107,7 +107,7 @@ public class AppLocationManager {
         REGION_STATIONS.put("Malaysia", myStations);
         ALL_STATIONS.addAll(myStations);
 
-        // --- 🇸🇬 Singapore ---
+        // ---  Singapore ---
         List<Station> sgStations = new ArrayList<>();
         sgStations.add(new Station("SG01", "Marina Bay & Central", "Central", "Singapore", "Marina Bay / Downtown Core", 1.3521, 103.8198));
         sgStations.add(new Station("SG02", "Jurong East & West", "West", "Singapore", "Jurong Gateway Hub", 1.3329, 103.7436));
@@ -116,7 +116,7 @@ public class AppLocationManager {
         REGION_STATIONS.put("Singapore", sgStations);
         ALL_STATIONS.addAll(sgStations);
 
-        // --- 🇮🇩 Indonesia ---
+        // ---  Indonesia ---
         List<Station> idStations = new ArrayList<>();
         idStations.add(new Station("ID01", "Jakarta", "DKI Jakarta", "Indonesia", "Monas / Gambir, Jakarta Pusat", -6.2088, 106.8456));
         idStations.add(new Station("ID02", "Surabaya", "Jawa Timur", "Indonesia", "Pusat Kota Surabaya", -7.2575, 112.7521));
@@ -129,7 +129,7 @@ public class AppLocationManager {
         REGION_STATIONS.put("Indonesia", idStations);
         ALL_STATIONS.addAll(idStations);
 
-        // --- 🇧🇳 Brunei Darussalam ---
+        // ---  Brunei Darussalam ---
         List<Station> bnStations = new ArrayList<>();
         bnStations.add(new Station("BN01", "Bandar Seri Begawan", "Brunei-Muara", "Brunei", "Pusat Bandar BSB", 4.9031, 114.9398));
         bnStations.add(new Station("BN02", "Kuala Belait", "Belait", "Brunei", "Pekan Kuala Belait", 4.5836, 114.2312));
@@ -137,7 +137,7 @@ public class AppLocationManager {
         REGION_STATIONS.put("Brunei", bnStations);
         ALL_STATIONS.addAll(bnStations);
 
-        // --- 🇹🇭 Thailand ---
+        // ---  Thailand ---
         List<Station> thStations = new ArrayList<>();
         thStations.add(new Station("TH01", "Bangkok", "Central", "Thailand", "Siam / Sukhumvit, Bangkok", 13.7563, 100.5018));
         thStations.add(new Station("TH02", "Phuket", "South", "Thailand", "Patong / Phuket Town", 7.8804, 98.3923));
@@ -147,7 +147,7 @@ public class AppLocationManager {
         REGION_STATIONS.put("Thailand", thStations);
         ALL_STATIONS.addAll(thStations);
 
-        // --- 🇯🇵 Jepun (Japan) ---
+        // ---  Jepun (Japan) ---
         List<Station> jpStations = new ArrayList<>();
         jpStations.add(new Station("JP01", "Tokyo", "Kanto", "Jepun", "Shinjuku / Shibuya, Tokyo", 35.6762, 139.6503));
         jpStations.add(new Station("JP02", "Osaka", "Kansai", "Jepun", "Umeda / Namba, Osaka", 34.6937, 135.5023));
@@ -157,7 +157,7 @@ public class AppLocationManager {
         REGION_STATIONS.put("Jepun (Japan)", jpStations);
         ALL_STATIONS.addAll(jpStations);
 
-        // --- 🇰🇷 Korea Selatan (South Korea) ---
+        // ---  Korea Selatan (South Korea) ---
         List<Station> krStations = new ArrayList<>();
         krStations.add(new Station("KR01", "Seoul", "Capital Region", "Korea Selatan", "Myeongdong / Gangnam, Seoul", 37.5665, 126.9780));
         krStations.add(new Station("KR02", "Busan", "Gyeongsang", "Korea Selatan", "Haeundae / Seomyeon, Busan", 35.1796, 129.0756));
@@ -166,7 +166,7 @@ public class AppLocationManager {
         REGION_STATIONS.put("Korea Selatan", krStations);
         ALL_STATIONS.addAll(krStations);
 
-        // --- 🇻🇳 Vietnam ---
+        // ---  Vietnam ---
         List<Station> vnStations = new ArrayList<>();
         vnStations.add(new Station("VN01", "Ho Chi Minh City", "South", "Vietnam", "District 1, Saigon", 10.8231, 106.6297));
         vnStations.add(new Station("VN02", "Hanoi", "North", "Vietnam", "Hoan Kiem, Hanoi", 21.0285, 105.8542));
@@ -174,7 +174,7 @@ public class AppLocationManager {
         REGION_STATIONS.put("Vietnam", vnStations);
         ALL_STATIONS.addAll(vnStations);
 
-        // --- 🇵🇭 Filipina (Philippines) ---
+        // ---  Filipina (Philippines) ---
         List<Station> phStations = new ArrayList<>();
         phStations.add(new Station("PH01", "Manila", "Metro Manila", "Filipina", "Makati / BGC, Manila", 14.5995, 120.9842));
         phStations.add(new Station("PH02", "Cebu City", "Visayas", "Filipina", "Cebu Business Park", 10.3157, 123.8854));
@@ -182,7 +182,7 @@ public class AppLocationManager {
         REGION_STATIONS.put("Filipina", phStations);
         ALL_STATIONS.addAll(phStations);
 
-        // --- 🇸🇦 Timur Tengah & Arab (West Asia) ---
+        // ---  Timur Tengah & Arab (West Asia) ---
         List<Station> waStations = new ArrayList<>();
         waStations.add(new Station("WA01", "Makkah (Mecca)", "Makkah", "Arab Saudi", "Masjidil Haram", 21.4225, 39.8262));
         waStations.add(new Station("WA02", "Madinah (Medina)", "Madinah", "Arab Saudi", "Masjid an-Nabawi", 24.5247, 39.5692));

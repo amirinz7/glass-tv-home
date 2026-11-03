@@ -71,9 +71,9 @@ public final class NowPlayingManager {
             }
             StringBuilder sb = new StringBuilder();
             if (isPlaying) {
-                sb.append("▶ ");
+                sb.append("");
             } else {
-                sb.append("⏸ ");
+                sb.append("");
             }
             if (!title.isEmpty()) {
                 sb.append(title);

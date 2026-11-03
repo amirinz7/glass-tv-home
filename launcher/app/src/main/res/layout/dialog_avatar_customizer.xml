@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
             android:fontVariationSettings="'wght' 700"
-            android:text="🎨 Kustomisasi Avatar Watak"
+            android:text="Kustomisasi Avatar Watak"
             android:textColor="#FFFFFF"
             android:textSize="21sp" />
 

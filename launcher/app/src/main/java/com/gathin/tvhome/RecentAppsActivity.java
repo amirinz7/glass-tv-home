@@ -173,7 +173,7 @@ public class RecentAppsActivity extends Activity implements RecentAppsAdapter.On
         if (item.launchIntent != null) {
             SoundEffects.playSelect();
             if (ChildModeManager.isAppLocked(this, item.packageName)) {
-                ChildModeManager.promptPin(this, "Aplikasi Dikunci", "Masukkan PIN 4-digit untuk membuka " + item.label, new ChildModeManager.PinCallback() {
+                ChildModeManager.promptPin(this, "App Locked", "Enter the 4-digit PIN to open " + item.label, new ChildModeManager.PinCallback() {
                     @Override
                     public void onSuccess() {
                         try {

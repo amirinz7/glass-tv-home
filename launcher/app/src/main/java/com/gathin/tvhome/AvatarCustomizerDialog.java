@@ -173,7 +173,7 @@ public class AvatarCustomizerDialog {
             AvatarThemeManager.setBgColor(context, state[0]);
             AvatarThemeManager.setCharColor(context, state[1]);
             AvatarThemeManager.setFaceIndex(context, state[2]);
-            Toast.makeText(context, "✨ Avatar Watak berjaya disimpan!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Avatar saved!", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
             if (listener != null) {
                 listener.onAvatarSaved();

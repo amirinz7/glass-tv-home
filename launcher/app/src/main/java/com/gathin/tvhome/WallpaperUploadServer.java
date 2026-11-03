@@ -54,31 +54,24 @@ public class WallpaperUploadServer {
     }
 
     public static String getLocalIpAddress() {
+        String fallback = null;
         try {
-            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-            Collections.sort(interfaces, (a, b) -> {
-                String an = a.getName().toLowerCase(Locale.ROOT);
-                String bn = b.getName().toLowerCase(Locale.ROOT);
-                if (an.startsWith("wlan") || an.startsWith("eth")) return -1;
-                if (bn.startsWith("wlan") || bn.startsWith("eth")) return 1;
-                return an.compareTo(bn);
-            });
-            for (NetworkInterface nif : interfaces) {
+            for (NetworkInterface nif : Collections.list(NetworkInterface.getNetworkInterfaces())) {
                 if (nif.isLoopback() || !nif.isUp()) continue;
-                List<InetAddress> addrs = Collections.list(nif.getInetAddresses());
-                for (InetAddress addr : addrs) {
-                    if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
-                        String ip = addr.getHostAddress();
-                        if (ip != null && !ip.startsWith("127.")) {
-                            return ip;
-                        }
-                    }
+                String n = nif.getName().toLowerCase(Locale.ROOT);
+                boolean main = n.startsWith("wlan") || n.startsWith("eth");
+                for (InetAddress addr : Collections.list(nif.getInetAddresses())) {
+                    if (addr.isLoopbackAddress() || !(addr instanceof Inet4Address)) continue;
+                    String ip = addr.getHostAddress();
+                    if (ip == null || ip.startsWith("127.")) continue;
+                    if (main) return ip;
+                    if (fallback == null && addr.isSiteLocalAddress() && !n.startsWith("dummy") && !n.startsWith("p2p")) fallback = ip;
                 }
             }
         } catch (Exception e) {
             Log.w(TAG, "Error resolving IP: " + e.getMessage());
         }
-        return "127.0.0.1";
+        return fallback != null ? fallback : "127.0.0.1";
     }
 
     public int getPort() {
@@ -741,18 +734,18 @@ public class WallpaperUploadServer {
                 "<body>\n" +
                 "  <div class=\"card\">\n" +
                 "    <div class=\"badge\">Glass TV OS • by @imsomangge</div>\n" +
-                "    <h1>Muat Naik Wallpaper</h1>\n" +
-                "    <p class=\"subtitle\">Pilih mana-mana foto dari galeri telefon untuk dipaparkan secara langsung pada skrin TV anda.</p>\n" +
+                "    <h1>Upload Wallpaper</h1>\n" +
+                "    <p class=\"subtitle\">Pick any photo from your phone gallery to show on your TV.</p>\n" +
                 "\n" +
                 "    <div class=\"dropzone\" id=\"dropzone\" onclick=\"document.getElementById('file-input').click()\">\n" +
-                "      <div class=\"dropzone-icon\">🖼️</div>\n" +
-                "      <div class=\"dropzone-text\">Pilih Foto dari Galeri</div>\n" +
+                "      <div class=\"dropzone-icon\"></div>\n" +
+                "      <div class=\"dropzone-text\">Choose Photo from Gallery</div>\n" +
                 "      <div class=\"dropzone-hint\">Menyokong JPG, PNG, WEBP (Resolusi 1080p / 4K)</div>\n" +
                 "    </div>\n" +
                 "\n" +
                 "    <div id=\"preview-container\">\n" +
                 "      <img id=\"preview\" alt=\"Preview\">\n" +
-                "      <button class=\"change-btn\" onclick=\"document.getElementById('file-input').click()\">Tukar Foto</button>\n" +
+                "      <button class=\"change-btn\" onclick=\"document.getElementById('file-input').click()\">Change Photo</button>\n" +
                 "    </div>\n" +
                 "\n" +
                 "    <input type=\"file\" id=\"file-input\" accept=\"image/*\">\n" +
@@ -766,15 +759,15 @@ public class WallpaperUploadServer {
                 "    </div>\n" +
                 "\n" +
                 "    <div class=\"status-msg\" id=\"status-msg\"></div>\n" +
-                "    <div class=\"watermark\">✨ Powered by <strong>@imsomangge</strong></div>\n" +
+                "    <div class=\"watermark\"> Powered by <strong>@imsomangge</strong></div>\n" +
                 "  </div>\n" +
                 "\n" +
                 "  <div class=\"gallery-card\">\n" +
                 "    <div class=\"gallery-header\">\n" +
-                "      <div class=\"gallery-title\">📱 Gambar di TV (<span id=\"photo-count\">0</span>)</div>\n" +
-                "      <button class=\"btn-slideshow\" onclick=\"setSlideshow()\">🔄 Putar Semua</button>\n" +
+                "      <div class=\"gallery-title\"> Gambar di TV (<span id=\"photo-count\">0</span>)</div>\n" +
+                "      <button class=\"btn-slideshow\" onclick=\"setSlideshow()\"> Putar Semua</button>\n" +
                 "    </div>\n" +
-                "    <div class=\"gallery-desc\">Pilih <strong>Kunci</strong> untuk kekalkan 1 gambar sahaja sebagai wallpaper, atau padam foto lama:</div>\n" +
+                "    <div class=\"gallery-desc\">Choose <strong>Pin</strong> to keep only 1 image as wallpaper, or delete foto lama:</div>\n" +
                 "    <div class=\"gallery-list\" id=\"gallery-list\">\n" +
                 "      <div style=\"color:#64748b; font-size:12.5px; padding:12px 0;\">Memuat senarai foto...</div>\n" +
                 "    </div>\n" +
@@ -808,7 +801,7 @@ public class WallpaperUploadServer {
                 "        dropzone.style.display = 'none';\n" +
                 "        previewContainer.style.display = 'block';\n" +
                 "        btnSubmit.disabled = false;\n" +
-                "        btnSubmit.innerHTML = '<span>✨ Tetapkan Sebagai Wallpaper TV</span>';\n" +
+                "        btnSubmit.innerHTML = '<span> Tetapkan Sebagai Wallpaper TV</span>';\n" +
                 "        statusMsg.style.display = 'none';\n" +
                 "      };\n" +
                 "      reader.readAsDataURL(file);\n" +
@@ -837,13 +830,13 @@ public class WallpaperUploadServer {
                 "      xhr.onload = () => {\n" +
                 "        if (xhr.status >= 200 && xhr.status < 300) {\n" +
                 "          progBar.style.width = '100%';\n" +
-                "          btnSubmit.innerText = '✅ Berjaya Dihantar!';\n" +
+                "          btnSubmit.innerText = ' Sent!';\n" +
                 "          statusMsg.className = 'status-msg success';\n" +
-                "          statusMsg.innerHTML = '🎉 Hebat! Gambar telah dipaparkan pada skrin TV anda.';\n" +
+                "          statusMsg.innerHTML = ' Hebat! Gambar telah dipaparkan pada skrin TV anda.';\n" +
                 "          statusMsg.style.display = 'block';\n" +
                 "          loadGallery();\n" +
                 "        } else {\n" +
-                "          showError('Gagal memuat naik: ' + xhr.statusText);\n" +
+                "          showError('Upload failed: ' + xhr.statusText);\n" +
                 "        }\n" +
                 "      };\n" +
                 "\n" +
@@ -858,7 +851,7 @@ public class WallpaperUploadServer {
                 "      btnSubmit.disabled = false;\n" +
                 "      btnSubmit.innerText = 'Cuba Semula';\n" +
                 "      statusMsg.className = 'status-msg error';\n" +
-                "      statusMsg.innerText = '❌ ' + msg;\n" +
+                "      statusMsg.innerText = ' ' + msg;\n" +
                 "      statusMsg.style.display = 'block';\n" +
                 "      progWrap.style.display = 'none';\n" +
                 "    }\n" +
@@ -880,14 +873,14 @@ public class WallpaperUploadServer {
                 "            html += '<div class=\"photo-row' + (item.active ? ' active' : '') + '\">' +\n" +
                 "              '<img class=\"photo-thumb\" src=\"/thumb?file=' + enc + '\" alt=\"thumb\">' +\n" +
                 "              '<div class=\"photo-meta\">' +\n" +
-                "                '<div class=\"photo-name\">' + (item.active ? '✨ ' : '') + item.name + '</div>' +\n" +
+                "                '<div class=\"photo-name\">' + (item.active ? ' ' : '') + item.name + '</div>' +\n" +
                 "                '<div class=\"photo-sub\">' + item.date + ' • ' + item.size + '</div>' +\n" +
                 "              '</div>' +\n" +
                 "              '<div class=\"photo-btns\">' +\n" +
                 "                '<button class=\"btn-act' + (item.active ? ' active' : '') + '\" onclick=\"selectSingle(\\'' + enc + '\\')\">' +\n" +
-                "                  (item.active ? 'Kekal 📌' : 'Kunci 📌') +\n" +
+                "                  (item.active ? 'Pinned ' : 'Pin ') +\n" +
                 "                '</button>' +\n" +
-                "                '<button class=\"btn-act del\" onclick=\"deletePhoto(\\'' + enc + '\\')\">🗑️</button>' +\n" +
+                "                '<button class=\"btn-act del\" onclick=\"deletePhoto(\\'' + enc + '\\')\"></button>' +\n" +
                 "              '</div>' +\n" +
                 "            '</div>';\n" +
                 "          }\n" +
@@ -922,7 +915,7 @@ public class WallpaperUploadServer {
                 "        });\n" +
                 "    }\n" +
                 "\n" +
-                "    // Muat galeri gambar sebaik sahaja laman dibuka\n" +
+                "    // Load the gallery as soon as the page opens\n" +
                 "    loadGallery();\n" +
                 "  </script>\n" +
                 "</body>\n" +
