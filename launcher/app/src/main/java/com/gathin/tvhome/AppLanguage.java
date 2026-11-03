@@ -262,7 +262,7 @@ final class AppLanguage {
 
     public static String strHomeScreen(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Home Screen";
+            case LANG_EN: return "Main Screen";
             case LANG_ID: return "Layar Utama";
             case LANG_MS: default: return "Skrin Utama";
         }
@@ -278,7 +278,7 @@ final class AppLanguage {
 
     public static String strStatusBarWeather(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Status Bar & Weather";
+            case LANG_EN: return "Top Bar & Weather";
             case LANG_ID: return "Bilah Status & Cuaca";
             case LANG_MS: default: return "Bar Status & Cuaca";
         }
@@ -286,7 +286,7 @@ final class AppLanguage {
 
     public static String strStandByMode(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "StandBy Mode";
+            case LANG_EN: return "Ambient Clock";
             case LANG_ID: return "Mode StandBy";
             case LANG_MS: default: return "Mod StandBy";
         }
@@ -294,7 +294,7 @@ final class AppLanguage {
 
     public static String strRemoteAccessibility(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Remote & Accessibility";
+            case LANG_EN: return "Remote & Access";
             case LANG_ID: return "Remote & Aksesibilitas";
             case LANG_MS: default: return "Alat Kawalan & Aksesibiliti";
         }
@@ -302,7 +302,7 @@ final class AppLanguage {
 
     public static String strChildMode(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Child Mode";
+            case LANG_EN: return "Kids Mode";
             case LANG_ID: return "Mode Anak";
             case LANG_MS: default: return "Mod Kanak-kanak";
         }

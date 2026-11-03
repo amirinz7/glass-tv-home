@@ -6941,35 +6941,35 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
 
         if (isNightMode) {
-            int red = 0xFFFF453A;
+            int red = 0xFFE0762F;
             if (clock != null) clock.setTextColor(red);
-            if (ampm != null) ampm.setTextColor(0xCCFF453A);
-            if (date != null) date.setTextColor(0xE6FF453A);
-            if (hijri != null) hijri.setTextColor(0xE6FF453A);
+            if (ampm != null) ampm.setTextColor(0xCCE0762F);
+            if (date != null) date.setTextColor(0xE6E0762F);
+            if (hijri != null) hijri.setTextColor(0xE6E0762F);
             if (prayer != null) {
                 prayer.setTextColor(red);
                 android.graphics.drawable.GradientDrawable redPill = new android.graphics.drawable.GradientDrawable();
                 redPill.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-                redPill.setColor(0x26FF453A);
-                redPill.setStroke((int) (1 * density), 0x59FF453A);
+                redPill.setColor(0x26E0762F);
+                redPill.setStroke((int) (1 * density), 0x59E0762F);
                 redPill.setCornerRadius(21 * density);
                 prayer.setBackground(redPill);
             }
-            if (hint != null) hint.setTextColor(0x55FF453A);
-            if (wline != null) wline.setTextColor(0xE6FF453A);
-            if (agenda != null) agenda.setTextColor(0xE6FF453A);
+            if (hint != null) hint.setTextColor(0x55E0762F);
+            if (wline != null) wline.setTextColor(0xE6E0762F);
+            if (agenda != null) agenda.setTextColor(0xE6E0762F);
         } else {
-            if (wline != null) wline.setTextColor(0xE6FFFFFF);
-            if (agenda != null) agenda.setTextColor(0xE6FFFFFF);
-            if (clock != null) clock.setTextColor(0xFFFFFFFF);
-            if (ampm != null) ampm.setTextColor(0xB3FFFFFF);
-            if (date != null) date.setTextColor(0xE6FFFFFF);
-            if (hijri != null) hijri.setTextColor(0xD9E6E0D2);
+            if (wline != null) wline.setTextColor(0xE6F5E1BC);
+            if (agenda != null) agenda.setTextColor(0xE6F5E1BC);
+            if (clock != null) clock.setTextColor(0xFFFFC66B);
+            if (ampm != null) ampm.setTextColor(0xCCFFC66B);
+            if (date != null) date.setTextColor(0xE6F5E1BC);
+            if (hijri != null) hijri.setTextColor(0xD9E8B87A);
             if (prayer != null) {
-                prayer.setTextColor(0xFFFFFFFF);
-                prayer.setBackgroundResource(R.drawable.pill_bg);
+                prayer.setTextColor(0xFFFFC66B);
+                prayer.setBackgroundResource(R.drawable.pill_amber);
             }
-            if (hint != null) hint.setTextColor(0x4DFFFFFF);
+            if (hint != null) hint.setTextColor(0x4DFFC66B);
         }
     }
 

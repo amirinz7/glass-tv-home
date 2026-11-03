@@ -472,7 +472,7 @@ public final class ModernSettingsDialog {
 
                 // Section 1: Active Profile Avatars
                 TextView tvAvatars = new TextView(activity);
-                tvAvatars.setText("AVATAR PROFIL SEMASA (" + activeP.name.toUpperCase() + ")");
+                tvAvatars.setText("CURRENT AVATAR (" + activeP.name.toUpperCase() + ")");
                 tvAvatars.setTextSize(11.5f);
                 tvAvatars.setTextColor(0xB3FFFFFF);
                 tvAvatars.setTypeface(outfit, Typeface.BOLD);
@@ -576,7 +576,7 @@ public final class ModernSettingsDialog {
                 // Section 2: Manage All Users (Add & Delete User)
                 List<ProfileManager.UserProfile> allProfiles = ProfileManager.getAllProfiles(activity);
                 TextView tvUserList = new TextView(activity);
-                tvUserList.setText("SENARAI PENGGUNA (" + allProfiles.size() + ")");
+                tvUserList.setText("PROFILES (" + allProfiles.size() + ")");
                 tvUserList.setTextSize(11.5f);
                 tvUserList.setTextColor(0xB3FFFFFF);
                 tvUserList.setTypeface(outfit, Typeface.BOLD);
@@ -695,7 +695,7 @@ public final class ModernSettingsDialog {
                 }
 
                 // Add User Button
-                LinearLayout addUserBtn = buildCardRow(activity, density, outfit, "Add New User", "Cipta profil baharu untuk ahli keluarga atau anak", () -> {
+                LinearLayout addUserBtn = buildCardRow(activity, density, outfit, "Add New User", "Set up a new profile for a family member or a child", () -> {
                     SoundEffects.playSelect();
                     UserSwitchDialog.showAddProfileDialog(activity, density, outfit, () -> {
                         updateSidebarSelection.run();
@@ -713,7 +713,7 @@ public final class ModernSettingsDialog {
                 tvPhotos.setPadding(0, (int) (12 * density), 0, (int) (4 * density));
                 rightContent.addView(tvPhotos);
 
-                LinearLayout photoUploadRow = buildCardRow(activity, density, outfit, "Manage Pictures & Phone Upload (QR)", "Imbas kod QR untuk hantar gambar dari telefon terus ke TV", () -> {
+                LinearLayout photoUploadRow = buildCardRow(activity, density, outfit, "Manage Pictures & Phone Upload (QR)", "Scan the QR code to send pictures from your phone straight to the TV", () -> {
                     SoundEffects.playSelect();
                     activity.showCustomWallpaperManagerDialog();
                 });
@@ -721,7 +721,7 @@ public final class ModernSettingsDialog {
 
             } else if (tab == TAB_HOME_SCREEN) {
                 // === TAB 1: HOME SCREEN (CONSOLIDATING CANDY BOX SETTINGS) ===
-                addHeader(rightContent, outfit, "Home Screen");
+                addHeader(rightContent, outfit, "Main Screen");
 
                 rightContent.addView(buildSwitchRow(activity, density, outfit,
                         "Doa Harian & Prayer Times Shelf", "Show a daily doa and local prayer times",
@@ -738,7 +738,7 @@ public final class ModernSettingsDialog {
                         }));
 
                 int displayMode = MinbarManager.getDisplayMode(activity);
-                String modeLabel = displayMode == MinbarManager.MODE_MINBAR ? "Teks Minbar (Khutbah Jumaat)" : "Doa Harian (Ayat Al-Quran)";
+                String modeLabel = displayMode == MinbarManager.MODE_MINBAR ? "Friday Sermon Text (Minbar)" : "Daily Doa (Quran verse)";
                 rightContent.addView(buildCardRow(activity, density, outfit,
                         "Display: " + modeLabel,
                         "Choose between Doa Harian or Minbar (Friday sermon by location)",
@@ -761,11 +761,11 @@ public final class ModernSettingsDialog {
                         activity::showAzanSettingsDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "Gemini AI Assistant", "Bantuan pintar AI dan pembantu suara peribadi",
+                        "Gemini AI Assistant", "Smart AI help and your voice assistant",
                         activity::showGeminiAssistantDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "Kosongkan Cache TV (Clean TV Cache)", "Segarkan memori TV dan kosongkan fail sementara",
+                        "Kosongkan Cache TV (Clean TV Cache)", "Free up TV memory and clear temporary files",
                         activity::showCleanTvCacheDialog));
 
             } else if (tab == TAB_APPEARANCE) {
@@ -773,11 +773,11 @@ public final class ModernSettingsDialog {
                 addHeader(rightContent, outfit, "Appearance");
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "Koleksi Wallpaper 4K", "Malaysia 4K, Alam Semula Jadi, Bandar Raya, Luar Angkasa, dll.",
+                        "Koleksi Wallpaper 4K", "Malaysia in 4K, nature, cities, space and more",
                         activity::showWallpaperDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        " Selang Masa Shuffle Wallpaper", "Kekerapan pertukaran gambar automatik (5 min, 10 min, dll.)",
+                        " Selang Masa Shuffle Wallpaper", "How often the picture changes by itself (5 min, 10 min and so on)",
                         activity::showWallpaperIntervalDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
@@ -789,7 +789,7 @@ public final class ModernSettingsDialog {
                 if (curDark == MainActivity.DARK_MODE_ALWAYS) {
                     darkSubtitle = "Sentiasa Gelap (Obsidian Dimming 50%)";
                 } else if (curDark == MainActivity.DARK_MODE_AUTO) {
-                    darkSubtitle = "Automatik (7:00 PM – 7:00 AM)";
+                    darkSubtitle = "Auto (7 pm to 7 am)";
                 } else if (curDark == MainActivity.DARK_MODE_OLED_BLACK) {
                     darkSubtitle = "Hitam Pekat OLED (Pure Black • 0% Wallpaper)";
                 } else {
@@ -801,7 +801,7 @@ public final class ModernSettingsDialog {
 
             } else if (tab == TAB_STATUS_WEATHER) {
                 // === TAB 3: STATUS BAR & WEATHER ===
-                addHeader(rightContent, outfit, "Status Bar & Weather");
+                addHeader(rightContent, outfit, "Top Bar & Weather");
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
                         "Choose TV Location & Prayer Zone", "Supports Malaysia (JAKIM), Singapore (MUIS) & Indonesia (Kemenag) zones",
@@ -809,7 +809,7 @@ public final class ModernSettingsDialog {
 
                 boolean isWeatherFx = activity.getSharedPreferences("wallpaper_prefs", Context.MODE_PRIVATE).getBoolean("dynamic_weather_overlay", true);
                 rightContent.addView(buildSwitchRow(activity, density, outfit,
-                        "Dynamic Weather (overlay effects)", "Kesan visual zarah hujan, awan kabut dan salji pada wallpaper",
+                        "Dynamic Weather (overlay effects)", "Rain, haze and snow particles drawn over your wallpaper",
                         isWeatherFx, isChecked -> {
                             activity.getSharedPreferences("wallpaper_prefs", Context.MODE_PRIVATE).edit().putBoolean("dynamic_weather_overlay", isChecked).apply();
                             activity.testWeatherOverride = null;
@@ -819,10 +819,10 @@ public final class ModernSettingsDialog {
 
             } else if (tab == TAB_STANDBY) {
                 // === TAB 4: STANDBY MODE ===
-                addHeader(rightContent, outfit, "StandBy Mode");
+                addHeader(rightContent, outfit, "Ambient Clock");
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "Test StandBy Screensaver Now", "Aktifkan jam ambien StandBy skrin penuh",
+                        "Test StandBy Screensaver Now", "Preview the full-screen ambient clock",
                         activity::showNightstandScreensaver));
 
                 final boolean photosOn = activity.screensaverPhotos();
@@ -853,7 +853,7 @@ public final class ModernSettingsDialog {
 
             } else if (tab == TAB_REMOTE) {
                 // === TAB 5: REMOTE & ACCESSIBILITY ===
-                addHeader(rightContent, outfit, "Remote & Accessibility");
+                addHeader(rightContent, outfit, "Remote & Access");
 
                 Intent homeIntent = new Intent(Intent.ACTION_MAIN);
                 homeIntent.addCategory(Intent.CATEGORY_HOME);
@@ -883,14 +883,14 @@ public final class ModernSettingsDialog {
 
             } else if (tab == TAB_CHILD_MODE) {
                 // === TAB 6: CHILD MODE & APP LOCK ===
-                addHeader(rightContent, outfit, "Child Mode");
+                addHeader(rightContent, outfit, "Kids Mode");
 
                 boolean isChildOn = ChildModeManager.isChildModeEnabled(activity);
                 Set<String> lockedSet = ChildModeManager.getLockedApps(activity);
                 Set<String> hiddenSet = ChildModeManager.getHiddenApps(activity);
 
                 rightContent.addView(buildSwitchRow(activity, density, outfit,
-                        "Child Mode Status",
+                        "Kids Mode Status",
                         "Lock apps with a 4-digit PIN or hide apps from the home screen",
                         isChildOn, isChecked -> {
                             ChildModeManager.promptPin(activity, "Confirm Security PIN", "Enter the 4-digit PIN to change this mode", new ChildModeManager.PinCallback() {
@@ -1630,7 +1630,7 @@ public final class ModernSettingsDialog {
 
         AlertDialog[] pickerHolder = new AlertDialog[1];
         TextView btnDone = new TextView(activity);
-        btnDone.setText("SELESAI (DONE)");
+        btnDone.setText("Finished");
         btnDone.setTextSize(13.5f);
         btnDone.setTextColor(0xFFFFFFFF);
         btnDone.setTypeface(font, Typeface.BOLD);
@@ -1714,7 +1714,7 @@ public final class ModernSettingsDialog {
         TextView tvDesc = new TextView(activity);
         String desc = isDefault
                 ? "Tahniah! Glass TV Home kini merupakan pelancar lalai utama peranti anda. Setiap kali butang Home ditekan pada alat kawalan jauh, anda akan terus kembali ke Glass TV."
-                : "Current launcher: " + activePkg + "\nSila pilih salah satu kaedah di bawah untuk mengunci Glass TV sebagai pelancar utama:";
+                : "Current launcher: " + activePkg + "\nChoose one of the methods below to make Glass TV your main launcher:";
         tvDesc.setText(desc);
         tvDesc.setTextSize(12.5f);
         tvDesc.setTextColor(isDefault ? 0xFF34D399 : 0xFF94A3B8);
@@ -1740,7 +1740,7 @@ public final class ModernSettingsDialog {
         View optSettings = buildSelectionOption(
                 activity, density, font,
                 "Open TV Launcher Picker Settings",
-                "Cuba buka menu Android untuk memilih Glass TV sebagai Default Home (jika disokong oleh TV)",
+                "Try opening Android's menu so you can pick Glass TV as your home app (if your TV allows it)",
                 "Open Settings ",
                 0xFF38BDF8,
                 () -> {
@@ -1757,7 +1757,7 @@ public final class ModernSettingsDialog {
                             activity.startActivity(intent);
                             if (dialogHolder[0] != null) dialogHolder[0].dismiss();
                         } catch (Exception e2) {
-                            Toast.makeText(activity, "Menu tetapan pelancar tidak disokong pada firmware ini.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, "This firmware has no launcher settings menu.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
