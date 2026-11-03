@@ -138,6 +138,7 @@ public final class WhoIsWatchingDialog {
         if (w != null) {
             w.setBackgroundDrawable(new ColorDrawable(0xFF020706));
             w.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            w.setWindowAnimations(R.style.GlassPop);
         }
 
         dialog.show();

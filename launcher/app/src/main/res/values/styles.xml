@@ -39,10 +39,16 @@
         <item name="android:fontFamily">@font/instrument_sans</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">15sp</item>
+        <item name="android:windowAnimationStyle">@style/GlassPop</item>
         <item name="android:windowTitleStyle">@style/GlassDialogTitle</item>
         <item name="android:textAppearanceMedium">@style/GlassDialogMessage</item>
         <item name="android:buttonBarStyle">@style/GlassDialogButtonBar</item>
         <item name="android:buttonBarButtonStyle">@style/GlassDialogButton</item>
+    </style>
+
+    <style name="GlassPop">
+        <item name="android:windowEnterAnimation">@anim/glass_pop_in</item>
+        <item name="android:windowExitAnimation">@anim/glass_pop_out</item>
     </style>
 
     <style name="GlassDialogTitle" parent="android:Widget.Material.TextView">

@@ -322,6 +322,28 @@ public class WeatherActivity extends Activity {
         temp.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
         head.addView(center(temp));
         head.addView(center(text(word(w.condition) + "   |   H " + w.highTemp + "°   L " + w.lowTemp + "°   |   Feels like " + w.apparentTemp + "°C", 14f, 0xFFFFFFFF, true)));
+        // Refresh: fetches the weather again right now and redraws the sky.
+        final TextView refresh = text("Refresh", 13f, 0xFFFFFFFF, true);
+        refresh.setPadding((int) (22 * d), (int) (7 * d), (int) (22 * d), (int) (7 * d));
+        refresh.setFocusable(true);
+        refresh.setClickable(true);
+        GlassPage.glass(refresh, d, 20, false);
+        refresh.setOnFocusChangeListener((v, has) -> {
+            GlassPage.glass(v, d, 20, has);
+            GlassPage.lift(v, d, has, 1.06f);
+        });
+        refresh.setOnClickListener(v -> {
+            refresh.setText("Refreshing...");
+            // The home screen reads its own copy: clear it so Home fetches the sky again too.
+            HomeWeather.forget(WeatherActivity.this);
+            WeatherAirQuality.sync(WeatherActivity.this, () -> runOnUiThread(() -> {
+                if (!isFinishing() && !isDestroyed()) populateUi();
+            }));
+        });
+        LinearLayout.LayoutParams rfLp = new LinearLayout.LayoutParams(-2, -2);
+        rfLp.topMargin = (int) (8 * d);
+        rfLp.gravity = Gravity.CENTER_HORIZONTAL;
+        head.addView(refresh, rfLp);
         page.addView(head, new LinearLayout.LayoutParams(-1, -2));
 
         // Every hour, close together

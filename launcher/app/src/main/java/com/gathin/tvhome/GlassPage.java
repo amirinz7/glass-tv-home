@@ -58,6 +58,20 @@ final class GlassPage {
         return picture(a, bmp, false, 0x33000000);
     }
 
+    /**
+     * The look of a chosen row or tile: frosted glass under a dark smoky wash with a bright rim, so the
+     * wallpaper never shows through the white text.
+     */
+    static Drawable selected(View v, float density, float radiusDp) {
+        float r = radiusDp * density;
+        GlassDrawable g = new GlassDrawable(v, r, density, null, 0.5f).frosted();
+        Backdrop.watch(v);
+        GradientDrawable wash = new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[]{0x33FFFFFF, 0x10FFFFFF});
+        wash.setCornerRadius(r);
+        wash.setStroke((int) (1.8f * density), 0xF2FFFFFF);
+        return new android.graphics.drawable.LayerDrawable(new Drawable[]{g, veil(r, 0x8C0E1626), wash});
+    }
+
     /** A dark veil with rounded corners, laid over glass so text stays readable on bright pictures. */
     static Drawable veil(float radiusPx, int color) {
         GradientDrawable g = new GradientDrawable();
@@ -68,13 +82,17 @@ final class GlassPage {
 
     /** Frosted glass from the home screen's blurred wallpaper; a bright rim and light fill while selected. */
     static void glass(View v, float density, float radiusDp, boolean focused) {
-        GlassDrawable g = new GlassDrawable(v, radiusDp * density, density, null, 0.5f);
+        if (focused) {
+            v.setBackground(selected(v, density, radiusDp));
+            return;
+        }
+        GlassDrawable g = new GlassDrawable(v, radiusDp * density, density, null, 0.5f).frosted();
         Backdrop.watch(v);
         GradientDrawable tint = new GradientDrawable();
         tint.setCornerRadius(radiusDp * density);
-        tint.setColor(focused ? 0x33FFFFFF : 0x14FFFFFF);
-        tint.setStroke((int) ((focused ? 2f : 1f) * density), focused ? 0xE6FFFFFF : 0x4DFFFFFF);
-        v.setBackground(new LayerDrawable(new Drawable[]{g, veil(radiusDp * density, 0x70101522), tint}));
+        tint.setColor(0x12FFFFFF);
+        tint.setStroke((int) density, 0x4DFFFFFF);
+        v.setBackground(new LayerDrawable(new Drawable[]{g, veil(radiusDp * density, 0x470E1626), tint}));
     }
 
     /** Selected tiles grow and come in front of their neighbours, so nothing overlaps and crops them. */
@@ -100,6 +118,7 @@ final class GlassPage {
             final float density = d.getContext().getResources().getDisplayMetrics().density;
             w.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(0));
             w.setDimAmount(0.30f);
+            w.setWindowAnimations(R.style.GlassPop);
             View panel = null;
             int id = d.getContext().getResources().getIdentifier("parentPanel", "id", "android");
             if (id != 0) panel = w.findViewById(id);
@@ -107,7 +126,7 @@ final class GlassPage {
             if (panel == null) return;
             final float r = 26 * density;
             final View target = panel;
-            target.setBackground(new android.graphics.drawable.LayerDrawable(new Drawable[]{new GlassDrawable(target, r, density, null, 0.6f), veil(r, 0x400B1220)}));
+            target.setBackground(new android.graphics.drawable.LayerDrawable(new Drawable[]{new GlassDrawable(target, r, density, null, 0.6f).frosted(), veil(r, 0x730E1626)}));
             Backdrop.watch(target);
             target.setOutlineProvider(new android.view.ViewOutlineProvider() {
                 @Override public void getOutline(View v, android.graphics.Outline o) {

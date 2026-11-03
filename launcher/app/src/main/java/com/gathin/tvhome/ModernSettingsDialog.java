@@ -102,7 +102,7 @@ public final class ModernSettingsDialog {
         dialogBg.setCornerRadius(34 * density);
         dialogBg.setStroke((int) (1.2f * density), 0x66FFFFFF); // Soap bubble thin-film iridescent rim
         // The same glass as the home screen: it shows the blurred wallpaper behind the panel.
-        root.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{new GlassDrawable(root, 34 * density, density, null, 0.6f), GlassPage.veil(34 * density, 0x400B1220)}));
+        root.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{new GlassDrawable(root, 34 * density, density, null, 0.6f).frosted(), GlassPage.veil(34 * density, 0x660E1626)}));
         Backdrop.watch(root);
         final float panelRadius = 34 * density;
         root.setOutlineProvider(new android.view.ViewOutlineProvider() {
@@ -203,7 +203,16 @@ public final class ModernSettingsDialog {
         LinearLayout.LayoutParams sbLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (36 * density));
         sbLp.topMargin = (int) (2 * density);
         sbLp.bottomMargin = (int) (8 * density);
-        leftCol.addView(searchBox, sbLp);
+        // The search box is gone; the tabs start at the top.
+
+        // Title of the page, top left.
+        TextView settingsTitle = new TextView(activity);
+        settingsTitle.setText("Settings");
+        settingsTitle.setTextSize(24f);
+        settingsTitle.setTextColor(0xFFFFFFFF);
+        settingsTitle.setTypeface(outfit, Typeface.BOLD);
+        settingsTitle.setPadding((int) (6 * density), (int) (4 * density), 0, (int) (12 * density));
+        leftCol.addView(settingsTitle);
 
         // 2. Profile Card (User Profiles - No mention of backup)
         profileCard.setOrientation(LinearLayout.HORIZONTAL);
@@ -316,13 +325,7 @@ public final class ModernSettingsDialog {
 
         Runnable updateSidebarSelection = () -> {
             boolean isProfile = (activeTab[0] == TAB_PROFILE);
-            GradientDrawable pcBg = new GradientDrawable(
-                    GradientDrawable.Orientation.TOP_BOTTOM,
-                    isProfile ? new int[]{0x55384B66, 0x3D28354A} : new int[]{0x2A28354A, 0x1E1C2534}
-            );
-            pcBg.setCornerRadius(14 * density);
-            pcBg.setStroke((int) (1.5f * density), isProfile ? 0x99FFFFFF : 0x24FFFFFF);
-            profileCard.setBackground(pcBg);
+            rowGlass(profileCard, density, 16, isProfile);
 
             ProfileAvatarHelper.bindAvatar(profileAvatarView, ProfileManager.getActiveProfile(activity), activity);
             tvProfileName.setText(ProfileManager.getProfileName(activity));
@@ -330,13 +333,12 @@ public final class ModernSettingsDialog {
             for (NavItem item : navItems) {
                 if (item.rowView == null) continue;
                 boolean isSelected = (activeTab[0] == item.tabId);
-                GradientDrawable rbg = new GradientDrawable(
-                        GradientDrawable.Orientation.LEFT_RIGHT,
-                        isSelected ? new int[]{0x66FFB347, 0x1AFFB347} : new int[]{Color.TRANSPARENT, Color.TRANSPARENT}
-                );
-                rbg.setCornerRadius(20 * density);
-                if (isSelected) rbg.setStroke((int) (1.2f * density), 0xB3FFD08A);
-                item.rowView.setBackground(rbg);
+                if (isSelected) {
+                    // The chosen tab is smoked glass with a bright rim: the text always reads.
+                    item.rowView.setBackground(GlassPage.selected(item.rowView, density, 20));
+                } else {
+                    item.rowView.setBackground(new GradientDrawable());
+                }
             }
         };
 
@@ -417,7 +419,7 @@ public final class ModernSettingsDialog {
             TextView lbl = new TextView(activity);
             lbl.setText(item.label);
             lbl.setTextSize(13f);
-            lbl.setTextColor(0xFFF1E7D3);
+            lbl.setTextColor(0xFFFFFFFF);
             lbl.setTypeface(outfit, Typeface.NORMAL);
             row.addView(lbl);
 
@@ -511,10 +513,7 @@ public final class ModernSettingsDialog {
                 editNameCard.setFocusable(true);
                 editNameCard.setClickable(true);
 
-                GradientDrawable enBg = new GradientDrawable();
-                enBg.setColor(0xFF272A33);
-                enBg.setCornerRadius(12 * density);
-                editNameCard.setBackground(enBg);
+                rowGlass(editNameCard, density, 14, false);
 
                 // Pencil icon squircle
                 FrameLayout pencilSquircle = new FrameLayout(activity);
@@ -547,11 +546,7 @@ public final class ModernSettingsDialog {
                 editNameCard.addView(tvCurName);
 
                 editNameCard.setOnFocusChangeListener((v, hasFocus) -> {
-                    GradientDrawable g = new GradientDrawable();
-                    g.setColor(hasFocus ? 0xFF353844 : 0xFF272A33);
-                    g.setCornerRadius(12 * density);
-                    if (hasFocus) g.setStroke((int) (2f * density), 0xFFFFFFFF);
-                    v.setBackground(g);
+                    rowGlass(v, density, 14, hasFocus);
                     v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
                 });
 
@@ -599,11 +594,7 @@ public final class ModernSettingsDialog {
                     pRow.setFocusable(true);
                     pRow.setClickable(true);
 
-                    GradientDrawable pBg = new GradientDrawable();
-                    pBg.setColor(isCur ? 0xFF2D313D : 0xFF23262F);
-                    pBg.setCornerRadius(12 * density);
-                    if (isCur) pBg.setStroke((int) (1.5f * density), 0x77FFFFFF);
-                    pRow.setBackground(pBg);
+                    rowGlass(pRow, density, 14, isCur);
 
                     FrameLayout ivP = new FrameLayout(activity);
                     ProfileAvatarHelper.bindAvatar(ivP, p, activity);
@@ -635,12 +626,7 @@ public final class ModernSettingsDialog {
                     }
 
                     pRow.setOnFocusChangeListener((v, hasFocus) -> {
-                        GradientDrawable g = new GradientDrawable();
-                        g.setColor(hasFocus ? 0xFF353946 : (isCur ? 0xFF2D313D : 0xFF23262F));
-                        g.setCornerRadius(12 * density);
-                        if (hasFocus) g.setStroke((int) (2f * density), 0xFFFFFFFF);
-                        else if (isCur) g.setStroke((int) (1.5f * density), 0x77FFFFFF);
-                        v.setBackground(g);
+                        rowGlass(v, density, 14, hasFocus || isCur);
                         v.animate().scaleX(hasFocus ? 1.015f : 1.0f).scaleY(hasFocus ? 1.015f : 1.0f).setDuration(120).start();
                     });
 
@@ -775,11 +761,11 @@ public final class ModernSettingsDialog {
                 addHeader(rightContent, outfit, "Appearance");
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "Koleksi Wallpaper 4K", "Malaysia in 4K, nature, cities, space and more",
-                        activity::showWallpaperDialog));
+                        "Wallpaper Collections", "Malaysia in 4K, nature, cities, space and more",
+                        () -> { activity.wallDialogFocusKey = null; activity.showWallpaperDialog(); }));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        " Selang Masa Shuffle Wallpaper", "How often the picture changes by itself (5 min, 10 min and so on)",
+                        "Wallpaper Change Interval", "How often the picture changes by itself (5 min, 10 min and so on)",
                         activity::showWallpaperIntervalDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
@@ -788,17 +774,15 @@ public final class ModernSettingsDialog {
 
                 String darkSubtitle;
                 int curDark = activity.getSharedPreferences("appearance_prefs", Context.MODE_PRIVATE).getInt("dark_mode_style", MainActivity.DARK_MODE_OFF);
-                if (curDark == MainActivity.DARK_MODE_ALWAYS) {
-                    darkSubtitle = "Sentiasa Gelap (Obsidian Dimming 50%)";
+                if (curDark == MainActivity.DARK_MODE_ALWAYS || curDark == MainActivity.DARK_MODE_OLED_BLACK) {
+                    darkSubtitle = "On";
                 } else if (curDark == MainActivity.DARK_MODE_AUTO) {
-                    darkSubtitle = "Auto (7 pm to 7 am)";
-                } else if (curDark == MainActivity.DARK_MODE_OLED_BLACK) {
-                    darkSubtitle = "Hitam Pekat OLED (Pure Black • 0% Wallpaper)";
+                    darkSubtitle = "Follows the time of day (dark 7 pm to 7 am)";
                 } else {
-                    darkSubtitle = "Off (original wallpaper brightness)";
+                    darkSubtitle = "Off";
                 }
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "Mod Gelap & Perlindungan OLED", darkSubtitle,
+                        "Dark mode", darkSubtitle,
                         activity::showDarkModeDialog));
 
             } else if (tab == TAB_STATUS_WEATHER) {
@@ -833,6 +817,19 @@ public final class ModernSettingsDialog {
                         "Show the photos you uploaded behind the clock. Press OK to switch.",
                         () -> {
                             activity.setScreensaverPhotos(!photosOn);
+                            if (renderRightPane[0] != null) renderRightPane[0].run();
+                        }));
+                final int[] delays = {1, 2, 3, 5, 10, 15, 30, 60};
+                rightContent.addView(buildCardRow(activity, density, outfit,
+                        "Start screensaver after: " + activity.saverDelayMin() + " min",
+                        "How long the TV can sit idle before the clock appears. Press OK to change.",
+                        () -> {
+                            int cur = activity.saverDelayMin();
+                            int next = delays[0];
+                            for (int i = 0; i < delays.length; i++) {
+                                if (delays[i] > cur) { next = delays[i]; break; }
+                            }
+                            activity.setSaverDelayMin(next);
                             if (renderRightPane[0] != null) renderRightPane[0].run();
                         }));
                 addHeader(rightContent, outfit, "Show on the screensaver");
@@ -1035,6 +1032,7 @@ public final class ModernSettingsDialog {
         Window win = dialog.getWindow();
         if (win != null) {
             win.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            win.setWindowAnimations(R.style.GlassPop);
             win.addFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND);
             win.setDimAmount(0.3f);
             if (Build.VERSION.SDK_INT >= 31) {
@@ -1143,7 +1141,7 @@ public final class ModernSettingsDialog {
         ZikirList.Zikir z = DoaList.current();
         android.app.AlertDialog dlg = new android.app.AlertDialog.Builder(activity)
                 .setTitle("Doa  -  " + z.count)
-                .setMessage(z.arabic + "\n\n" + z.rumi + "\n\n" + z.meaning)
+                .setMessage(activity.richDoa(z.arabic, z.rumi, z.meaning))
                 .setPositiveButton("Close", null).create();
         glassShow(activity, dlg);
     }
@@ -1213,6 +1211,25 @@ public final class ModernSettingsDialog {
                 .setPositiveButton("Close", null).create());
     }
 
+    /** The thin outline icon for a Control Centre or Power tile, by its key letter. */
+    private static int controlIcon(String key, boolean active) {
+        switch (key) {
+            case "C": return R.drawable.ic_calendar;
+            case "W": return R.drawable.ic_screen_weather;
+            case "P": return R.drawable.ic_c_mosque;
+            case "D": return R.drawable.ic_c_book;
+            case "T": return R.drawable.ic_c_beads;
+            case "G": return R.drawable.ic_home_screen;
+            case "M": return active ? R.drawable.ic_c_mute : R.drawable.ic_c_sound;
+            case "i": return R.drawable.ic_c_info;
+            case "A": return R.drawable.ic_c_chip;
+            case "R": return R.drawable.ic_c_refresh;
+            case "O": return R.drawable.ic_power;
+            case "Z": return R.drawable.ic_c_sleep;
+            default: return R.drawable.ic_c_info;
+        }
+    }
+
     /** One Control Centre tile: its own colour, a letter badge, a title and a line under it. */
     private static LinearLayout controlTile(MainActivity activity, float density, Typeface font, String glyph,
                                             String title, String sub, int accent, boolean active, boolean big, Runnable action) {
@@ -1225,19 +1242,12 @@ public final class ModernSettingsDialog {
         tile.setPadding(pad, pad, pad, pad);
         applyControlLook(tile, density, accent, active, false);
 
-        TextView badge = new TextView(activity);
-        badge.setText(glyph);
-        badge.setGravity(Gravity.CENTER);
-        badge.setTextSize(big ? 17f : 14f);
-        badge.setTypeface(font, Typeface.BOLD);
-        badge.setTextColor(active ? 0xFF101522 : 0xFFFFFFFF);
-        GradientDrawable disc = new GradientDrawable();
-        disc.setShape(GradientDrawable.OVAL);
-        disc.setColor(active ? 0xFFFFFFFF : 0x33FFFFFF);
-        badge.setBackground(disc);
-        int bs = (int) ((big ? 38 : 30) * density);
+        android.widget.ImageView badge = new android.widget.ImageView(activity);
+        badge.setImageResource(controlIcon(glyph, active));
+        badge.setColorFilter(0xFFFFFFFF);
+        int bs = (int) ((big ? 30 : 26) * density);
         LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(bs, bs);
-        blp.bottomMargin = (int) (6 * density);
+        blp.bottomMargin = (int) (8 * density);
         tile.addView(badge, blp);
 
         TextView t1 = new TextView(activity);
@@ -1259,8 +1269,7 @@ public final class ModernSettingsDialog {
 
         tile.setOnFocusChangeListener((v, has) -> {
             applyControlLook(v, density, accent, active, has);
-            v.animate().scaleX(has ? 1.05f : 1f).scaleY(has ? 1.05f : 1f).setDuration(120).start();
-            if (has) v.bringToFront();
+
         });
         tile.setOnClickListener(v -> action.run());
         return tile;
@@ -1268,15 +1277,19 @@ public final class ModernSettingsDialog {
 
     /** Frosted glass tile with a wash of its own colour; a white rim and a stronger wash while selected. */
     private static void applyControlLook(View tile, float density, int accent, boolean active, boolean focused) {
+        if (focused) {
+            tile.setBackground(GlassPage.selected(tile, density, 18));
+            return;
+        }
         float r = 18 * density;
-        GlassDrawable glass = new GlassDrawable(tile, r, density, null, 0.4f);
+        GlassDrawable glass = new GlassDrawable(tile, r, density, null, 0.4f).frosted();
         Backdrop.watch(tile);
-        int top = active ? 0x66FFFFFF : focused ? 0x4DFFFFFF : 0x1FFFFFFF;
-        int bottom = active ? 0x33FFFFFF : focused ? 0x26FFFFFF : 0x08FFFFFF;
+        int top = active ? 0x40FFFFFF : 0x1FFFFFFF;
+        int bottom = active ? 0x1AFFFFFF : 0x08FFFFFF;
         GradientDrawable tint = new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[]{top, bottom});
         tint.setCornerRadius(r);
-        tint.setStroke((int) ((focused ? 2.5f : 1f) * density), focused ? 0xFFFFFFFF : 0x40FFFFFF);
-        tile.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{glass, tint}));
+        tint.setStroke((int) ((active ? 1.5f : 1f) * density), active ? 0x99FFFFFF : 0x40FFFFFF);
+        tile.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{glass, GlassPage.veil(r, 0x4D0E1626), tint}));
     }
 
     /** The Control Centre: coloured tiles of different sizes, stacked in a bento grid. OK on a tile runs it. */
@@ -1313,7 +1326,7 @@ public final class ModernSettingsDialog {
                 () -> { close.run(); showTasbih(activity); });
         final LinearLayout home = controlTile(activity, density, font, "G", "Google Home", "Lights, plugs and cameras", 0xFFEF5DA8, false, true,
                 () -> { close.run(); activity.openGoogleHome(); });
-        final LinearLayout mute = controlTile(activity, density, font, "M", muted ? "Unmute" : "Mute", muted ? "Sound is off" : "Sound is on", 0xFFFF5A6E, muted, false,
+        final LinearLayout mute = controlTile(activity, density, font, "M", muted ? "Unmute" : "Mute", muted ? "Sound off" : "Sound on", 0xFFFF5A6E, muted, false,
                 () -> {
                     if (am != null) am.adjustStreamVolume(android.media.AudioManager.STREAM_MUSIC,
                             muted ? android.media.AudioManager.ADJUST_UNMUTE : android.media.AudioManager.ADJUST_MUTE, 0);
@@ -1389,18 +1402,19 @@ public final class ModernSettingsDialog {
 
     /** A row on the panel: its own glass, and a brighter fill with a white rim while selected. */
     private static void applySoapBubbleCardBg(View v, float density, boolean hasFocus) {
-        GlassDrawable glass = new GlassDrawable(v, 20 * density, density, null, 0.3f);
-        Backdrop.watch(v);
-        android.graphics.drawable.Drawable dark = GlassPage.veil(20 * density, 0x1AFFFFFF);
-        if (!hasFocus) {
-            v.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{glass, dark}));
+        rowGlass(v, density, 20, hasFocus);
+    }
+
+    /** A row of the settings panel: frosted glass under a light smoky wash; smoked glass with a bright rim when chosen. */
+    private static void rowGlass(View v, float density, float radiusDp, boolean focused) {
+        if (focused) {
+            v.setBackground(GlassPage.selected(v, density, radiusDp));
             return;
         }
-        GradientDrawable tint = new GradientDrawable();
-        tint.setCornerRadius(20 * density);
-        tint.setColor(0x40FFFFFF);
-        tint.setStroke((int) (2f * density), 0xFFFFD08A);
-        v.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{glass, dark, tint}));
+        float r = radiusDp * density;
+        GlassDrawable g = new GlassDrawable(v, r, density, null, 0.3f).frosted();
+        Backdrop.watch(v);
+        v.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{g, GlassPage.veil(r, 0x4D0E1626)}));
     }
 
     private static LinearLayout buildCardRow(Context ctx, float density, Typeface font, String title, String subtitle, Runnable action) {
@@ -1536,13 +1550,13 @@ public final class ModernSettingsDialog {
         card.setGravity(Gravity.CENTER_VERTICAL);
         card.setPadding((int) (16 * density), (int) (10 * density), (int) (16 * density), (int) (10 * density));
 
-        card.setBackground(new GlassDrawable(card, 18 * density, density, null, 0.3f));
+        card.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{new GlassDrawable(card, 18 * density, density, null, 0.3f).frosted(), GlassPage.veil(18 * density, 0x4D0E1626)}));
         Backdrop.watch(card);
 
         TextView tvTitle = new TextView(ctx);
         tvTitle.setText(title);
         tvTitle.setTextSize(13.5f);
-        tvTitle.setTextColor(0xFFF1E7D3);
+        tvTitle.setTextColor(0xFFFFFFFF);
         tvTitle.setTypeface(font, Typeface.BOLD);
         card.addView(tvTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
@@ -2008,11 +2022,7 @@ public final class ModernSettingsDialog {
         int radius = Math.round(14 * density);
 
         // Idle background
-        GradientDrawable idleBg = new GradientDrawable();
-        idleBg.setColor(0x2E1E2838);
-        idleBg.setCornerRadius(radius);
-        idleBg.setStroke(Math.round(1f * density), 0x2EFFFFFF);
-        row.setBackground(idleBg);
+        rowGlass(row, density, 14, false);
 
         // Text Column (Left)
         LinearLayout textCol = new LinearLayout(ctx);
@@ -2065,11 +2075,8 @@ public final class ModernSettingsDialog {
 
         // Focus listener on row
         row.setOnFocusChangeListener((v, hasFocus) -> {
-            GradientDrawable g = new GradientDrawable();
-            g.setCornerRadius(radius);
+            rowGlass(v, density, 14, hasFocus);
             if (hasFocus) {
-                g.setColor(0x5533445C);
-                g.setStroke(Math.round(2f * density), 0xFFFFFFFF); // Luminous cyan glint
                 btnAction.setTextColor(0xFFFFFFFF);
                 GradientDrawable pGlow = new GradientDrawable();
                 pGlow.setShape(GradientDrawable.RECTANGLE);
@@ -2078,12 +2085,9 @@ public final class ModernSettingsDialog {
                 pGlow.setStroke(Math.round(1.5f * density), 0xFFFFFFFF);
                 btnAction.setBackground(pGlow);
             } else {
-                g.setColor(0x2E1E2838);
-                g.setStroke(Math.round(1f * density), 0x2EFFFFFF);
-                btnAction.setTextColor(0xFFF1E7D3);
+                btnAction.setTextColor(0xFFFFFFFF);
                 btnAction.setBackground(pillBg);
             }
-            v.setBackground(g);
         });
 
         row.setOnClickListener(v -> {

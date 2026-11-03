@@ -73,6 +73,61 @@ final class Backdrop {
     private Backdrop() {
     }
 
+    // ---- frosted copy -----------------------------------------------------------------------------
+    /**
+     * A much softer copy of the blurred wallpaper, for pages and dialogs: real frosted glass, where the
+     * home screen's own glass only softens its picture a little. Made once per picture, off the main
+     * thread; until it is ready the glass shows the ordinary blurred copy.
+     */
+    private static Bitmap frost;
+    private static int frostGen = -1;
+    private static boolean frosting;
+
+    private static Bitmap frostFor() {
+        if (frost != null && frostGen == blurGen) return frost;
+        requestFrost();
+        return null;
+    }
+
+    private static void requestFrost() {
+        final Bitmap base = blurred;
+        final Executor worker = tintWorker;
+        final Handler main = tintMain;
+        if (frosting || base == null || worker == null || main == null) return;
+        final int gen = blurGen;
+        frosting = true;
+        try {
+            worker.execute(() -> {
+                Bitmap made = null;
+                try {
+                    int w = base.getWidth(), h = base.getHeight();
+                    int[] px = new int[w * h], tmp = new int[w * h];
+                    base.getPixels(px, 0, w, 0, 0, w, h);
+                    for (int pass = 0; pass < 3; pass++) {
+                        boxBlur(px, tmp, w, h, 7, true);
+                        boxBlur(tmp, px, w, h, 7, false);
+                    }
+                    made = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+                    made.setPixels(px, 0, w, 0, 0, w, h);
+                } catch (Throwable ignored) { }
+                final Bitmap done = made;
+                main.post(() -> {
+                    frosting = false;
+                    if (done != null && gen == blurGen) {
+                        frost = done;
+                        frostGen = gen;
+                        invalidateWatchers();
+                    } else if (gen != blurGen) {
+                        requestFrost();
+                    }
+                });
+            });
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            frosting = false;
+        }
+    }
+
+
     /** Where the coloured copies are made, and where they are handed back. Main thread. */
     static void setWorker(Executor worker, Handler main) {
         tintWorker = worker;
@@ -336,6 +391,13 @@ final class Backdrop {
         private final Paint under = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         private final Paint over = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         private int oldColorOf, newColorOf;
+        private boolean frosted;
+
+        /** Paint the soft frosted copy of the wallpaper, with no glow: for pages and dialogs. */
+        Fill frosted() {
+            frosted = true;
+            return this;
+        }
 
         /**
          * Draws what lies behind {@code rect} (in {@code owner}'s coordinates), softened: the
@@ -344,6 +406,10 @@ final class Backdrop {
          */
         void draw(Canvas canvas, View owner, RectF rect, float radius, float alpha) {
             Bitmap b = blurred;
+            if (frosted) {
+                Bitmap f = frostFor();
+                if (f != null) b = f;
+            }
             if (b == null || alpha <= 0f) return;
             if (b != shaderOf) {
                 paint.setShader(new BitmapShader(b, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
@@ -354,9 +420,9 @@ final class Backdrop {
             owner.getLocationOnScreen(at);
             matrix.setScale(SCALE, SCALE);
             matrix.postTranslate(-at[0], -at[1]);
-            if (drawTinted(canvas, rect, radius, alpha)) return;
+            if (!frosted && drawTinted(canvas, rect, radius, alpha)) return;
             // Mid-change, the old picture's blur goes under the new one, which fades in on top.
-            Bitmap p = previous;
+            Bitmap p = frosted ? null : previous;
             if (p != null && blurMix < 1f) {
                 if (p != prevOf) {
                     prevPaint.setShader(new BitmapShader(p, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
@@ -370,6 +436,7 @@ final class Backdrop {
             paint.setAlpha(Math.round(255 * alpha * (p != null ? blurMix : 1f)));
             canvas.drawRoundRect(rect, radius, radius, paint);
 
+            if (frosted) return;
             Bitmap g = glowShape;
             android.util.DisplayMetrics dm = owner.getResources().getDisplayMetrics();
             if (g == null || glowAlpha <= 0f || dm.widthPixels == 0) return;

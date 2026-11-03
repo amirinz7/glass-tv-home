@@ -87,11 +87,12 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         }
     }
 
-    static final float FOCUS_SCALE = 1.07f;
+    static final float FOCUS_SCALE = 1.45f;
     /** Shared by every tile's zoom, so a focus move makes no new objects. */
     private static final DecelerateInterpolator ZOOM_REDUCED = new DecelerateInterpolator();
     private static final OvershootInterpolator ZOOM_IN = new OvershootInterpolator(1.6f);
     private static final OvershootInterpolator ZOOM_OUT = new OvershootInterpolator(0f);
+    private static final android.view.animation.PathInterpolator ZOOM_SMOOTH = new android.view.animation.PathInterpolator(0.22f, 1f, 0.36f, 1f);
     /** Design size of a tile (dp); tiles shrink from here when the columns don't fit, see tileWidthPx. */
     static final float DESIGN_W_DP = 180f, DESIGN_H_DP = 101f;
 
@@ -99,8 +100,17 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
      * Tile width for a grid of this inner width: the cell minus room for the focus zoom and the glass
      * highlight, capped at the design size so 4 columns on a 1080p TV look exactly as before.
      */
+    /** Passed as the column count when every app sits in one row: tiles keep their full size. */
+    static final int ROW_MARK = 1_000_000;
+    /** Position in the endless row of the app that has focus now (the row repeats, so this is not its place in the list). */
+    int focusedVirtual = -1;
+
+    /** In a single row the apps repeat this many times, so the row has no end in either direction. */
+    static final int LOOP = 400;
+
     static int tileWidthPx(int innerWidthPx, int columns, float density) {
         int design = Math.round(DESIGN_W_DP * density);
+        if (columns >= ROW_MARK) return Math.round(138 * density);
         if (innerWidthPx <= 0 || columns <= 0) return design;
         int cell = innerWidthPx / columns;
         int fit = (int) ((cell - 18 * density) / FOCUS_SCALE);
@@ -296,6 +306,10 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         int width = parent.getWidth() > 0 ? parent.getWidth() : parent.getMeasuredWidth();
         int inner = width - parent.getPaddingLeft() - parent.getPaddingRight();
         int w = tileWidthPx(inner, dockSize, density), h = tileHeightPx(w);
+        if (dockSize >= ROW_MARK) {
+            ViewGroup.LayoutParams rootLp = v.getLayoutParams();
+            if (rootLp != null) rootLp.width = w + Math.round(80 * density);
+        }
         View card = v.findViewById(R.id.card);
         ViewGroup.LayoutParams cardLp = card.getLayoutParams();
         cardLp.width = w;
@@ -306,18 +320,19 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         nameLp.width = w;
         nameLp.topMargin = h + Math.round(7 * density);
         name.setLayoutParams(nameLp);
-        return new Holder(v, listener, reducedMotion);
+        return new Holder(v, listener, reducedMotion, this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull Holder h, int position) {
-        Entry e = items.get(position);
+        Entry e = items.get(real(position));
         h.name.setText(e.name);
         h.name.setVisibility(position < dockSize ? View.INVISIBLE : View.VISIBLE);   // the dock has no labels
         boolean focused = h.card.isFocused();   // a rebind after reload() can hit the focused tile
         h.name.setAlpha(focused ? 1f : 0f);
         h.card.setScaleX(focused ? FOCUS_SCALE : 1f);
         h.card.setScaleY(focused ? FOCUS_SCALE : 1f);
+        h.itemView.setTranslationZ(focused ? 20 * h.itemView.getResources().getDisplayMetrics().density : 0f);
         if (e.banner != null) {
             h.banner.setImageDrawable(e.banner);
             h.banner.setVisibility(View.VISIBLE);
@@ -334,7 +349,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         h.card.setOnClickListener(v -> launch(e));
         h.card.setOnLongClickListener(v -> {
             int pos = h.getBindingAdapterPosition();
-            if (listener != null && pos != RecyclerView.NO_POSITION && listener.onTileHeld(pos, v)) return true;
+            if (listener != null && pos != RecyclerView.NO_POSITION && listener.onTileHeld(real(pos), v)) return true;
             openAppInfo(e);
             return true;
         });
@@ -351,6 +366,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
 
     /** Android's page for the app at {@code position}: storage, permissions, uninstall. */
     void openAppInfo(int position) {
+        position = real(position);
         if (position >= 0 && position < items.size()) openAppInfo(items.get(position));
     }
 
@@ -365,6 +381,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
 
     /** Whether the tile at {@code position} can be moved: every app can, the Default home tile cannot. */
     boolean canMove(int position) {
+        if (looping()) return false;   // the looping row cannot be rearranged
         return position >= 0 && position < items.size() && items.get(position).kind != Entry.HOME_SETTINGS;
     }
 
@@ -430,18 +447,35 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         }
     }
 
-    @Override
-    public int getItemCount() {
+    private boolean looping() {
+        return dockSize >= ROW_MARK && items.size() > 1;
+    }
+
+    /** The app a (possibly repeated) row position stands for. */
+    int real(int position) {
+        int n = items.size();
+        return looping() ? ((position % n) + n) % n : position;
+    }
+
+    /** Number of different apps, however many times the row repeats them. */
+    int realCount() {
         return items.size();
     }
 
     @Override
+    public int getItemCount() {
+        return looping() ? items.size() * LOOP : items.size();
+    }
+
+    @Override
     public long getItemId(int position) {
-        return items.get(position).component.flattenToShortString().hashCode();
+        long id = items.get(real(position)).component.flattenToShortString().hashCode() & 0xffffffffL;
+        return looping() ? id + ((long) (position / items.size()) << 32) : id;
     }
 
     /** Stable key for the app at a position (its component), or null. */
     String keyAt(int position) {
+        position = real(position);
         return position >= 0 && position < items.size() ? items.get(position).component.flattenToShortString() : null;
     }
 
@@ -455,11 +489,13 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
     }
 
     String labelAt(int position) {
+        position = real(position);
         return position >= 0 && position < items.size() ? items.get(position).label : "";
     }
 
     /** A vivid colour sampled from the app's banner (or icon), cached per entry; a card's accent when it set one. */
     int ambientColorAt(int position) {
+        position = real(position);
         if (position < 0 || position >= items.size()) return 0xFF444444;
         Entry e = items.get(position);
         if (e.ambient == 0) e.ambient = vividColor(e.banner != null ? e.banner : e.icon);
@@ -522,8 +558,11 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         final DockBreathingBorderView breathingBorder;
         final boolean reducedMotion;
 
-        Holder(View v, TileListener listener, boolean reducedMotion) {
+        private final AppAdapter owner;
+
+        Holder(View v, TileListener listener, boolean reducedMotion, AppAdapter owner) {
             super(v);
+            this.owner = owner;
             card = v.findViewById(R.id.card);
             banner = v.findViewById(R.id.banner);
             icon = v.findViewById(R.id.icon);
@@ -547,7 +586,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
                 if (keyCode != KeyEvent.KEYCODE_DPAD_UP && keyCode != KeyEvent.KEYCODE_DPAD_DOWN
                         && keyCode != KeyEvent.KEYCODE_DPAD_LEFT && keyCode != KeyEvent.KEYCODE_DPAD_RIGHT) return false;
                 int pos = getBindingAdapterPosition();
-                return listener != null && pos != RecyclerView.NO_POSITION && listener.onTileVerticalKey(pos, keyCode);
+                return listener != null && pos != RecyclerView.NO_POSITION && listener.onTileVerticalKey(owner.real(pos), keyCode);
             });
 
             card.setOnFocusChangeListener((view, focused) -> {
@@ -573,8 +612,8 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
                     name.animate().alpha(focused ? 1f : 0f).setDuration(100).start();
                 } else {
                     view.animate().scaleX(s).scaleY(s)
-                            .setDuration(focused ? 260 : 180)
-                            .setInterpolator(focused ? ZOOM_IN : ZOOM_OUT)
+                            .setDuration(focused ? 420 : 320)
+                            .setInterpolator(ZOOM_SMOOTH)
                             .withLayer()
                             .start();
                     name.animate().alpha(focused ? 1f : 0f)
@@ -582,8 +621,11 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
                             .setDuration(220).start();
                 }
                 int pos = getBindingAdapterPosition();
+                // The selected app comes in front of its neighbours, so nothing paints over its grown edges.
+                if (view.getParent() instanceof View) ((View) view.getParent()).setTranslationZ(focused ? 20 * density : 0f);
                 if (focused && listener != null && pos != RecyclerView.NO_POSITION) {
-                    listener.onTileFocused(pos, view);
+                    owner.focusedVirtual = pos;
+                    listener.onTileFocused(owner.real(pos), view);
                 }
             });
         }

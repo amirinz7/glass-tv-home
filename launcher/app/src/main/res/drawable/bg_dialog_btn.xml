@@ -6,10 +6,10 @@
             <gradient
                 android:type="linear"
                 android:angle="270"
-                android:startColor="#FFFFFFFF"
-                android:endColor="#E6F0FDFF" />
+                android:startColor="#66FFFFFF"
+                android:endColor="#33FFFFFF" />
             <corners android:radius="14dp" />
-            <stroke android:width="2.5dp" android:color="#FFFFC66B" />
+            <stroke android:width="2.5dp" android:color="#FFFFFFFF" />
         </shape>
     </item>
     <item>
@@ -20,7 +20,7 @@
                 android:startColor="#33FFFFFF"
                 android:endColor="#1F152233" />
             <corners android:radius="14dp" />
-            <stroke android:width="1.2dp" android:color="#4DFFC66B" />
+            <stroke android:width="1.2dp" android:color="#4DFFFFFF" />
         </shape>
     </item>
 </selector>

@@ -115,7 +115,7 @@ final class Glider extends View {
                 springs[i].setSpring(new SpringForce().setStiffness(1400f).setDampingRatio(0.95f));
                 springs[i].setMinimumVisibleChange(1.5f);
             } else {
-                springs[i].setSpring(new SpringForce().setStiffness(900f).setDampingRatio(1.0f));
+                springs[i].setSpring(new SpringForce().setStiffness(320f).setDampingRatio(1.0f));
             }
             springs[i].addEndListener((anim, canceled, value, velocity) -> {
                 if (!canceled) arriveIfResting();

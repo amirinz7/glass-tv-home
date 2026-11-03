@@ -54,6 +54,12 @@ final class GlassDrawable extends Drawable {
         rim = new GlassRim(1.5f * density, 0xD9FFFFFF, 0x1AFFFFFF, reach);
     }
 
+    /** Frosted: a much softer copy of the wallpaper behind it, for pages and dialogs. */
+    GlassDrawable frosted() {
+        fill.frosted();
+        return this;
+    }
+
     @Override
     public void draw(@NonNull Canvas canvas) {
         rect.set(getBounds());

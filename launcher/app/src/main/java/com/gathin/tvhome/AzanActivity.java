@@ -33,8 +33,8 @@ import java.util.Date;
  * Back or OK closes it and the app underneath is where it was.
  */
 public class AzanActivity extends Activity {
-    private static final int AMBER = 0xFFFFC66B;
-    private static final int CREAM = 0xFFF5E1BC;
+    private static final int AMBER = 0xFFFFFFFF;
+    private static final int CREAM = 0xFFFFFFFF;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private MediaPlayer player;
@@ -79,24 +79,24 @@ public class AzanActivity extends Activity {
         w.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         w.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
         WindowManager.LayoutParams lp = w.getAttributes();
-        lp.y = dp(36);
+        lp.y = dp(30);
         w.setAttributes(lp);
 
         LinearLayout panel = new LinearLayout(this);
         panel.setOrientation(LinearLayout.VERTICAL);
         GradientDrawable bg = new GradientDrawable();
-        bg.setColor(0xF01A1410);
-        bg.setCornerRadius(dp(10));
-        bg.setStroke(Math.max(1, dp(1)), 0x55FFC66B);
+        bg.setColor(0x990B1220);
+        bg.setCornerRadius(dp(22));
+        bg.setStroke(Math.max(1, dp(1)), 0x55FFFFFF);
         panel.setBackground(bg);
         panel.setClipToOutline(true);
         panel.setElevation(dp(14));
-        panel.setMinimumWidth(dp(760));
+        panel.setMinimumWidth(dp(520));
 
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setPadding(dp(28), dp(20), dp(24), dp(16));
+        row.setPadding(dp(22), dp(14), dp(18), dp(10));
 
         // Left: what time it is for.
         LinearLayout left = new LinearLayout(this);
@@ -110,12 +110,12 @@ public class AzanActivity extends Activity {
         String[] pNames = AppLanguage.getPrayerNames(this);
         int validPrayerIdx = Math.max(0, Math.min(prayer, pNames.length - 1));
         prayerIdx = validPrayerIdx;
-        TextView name = text(pNames[validPrayerIdx], display, 46, CREAM);
+        TextView name = text(pNames[validPrayerIdx], display, 32, CREAM);
         name.setSingleLine(true);
         left.addView(name);
 
         String when = DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date());
-        TextView time = text(when, body, 18, 0xB3F5E1BC);
+        TextView time = text(when, body, 15, 0xB3FFFFFF);
         left.addView(time);
         row.addView(left, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
@@ -134,8 +134,8 @@ public class AzanActivity extends Activity {
             android.widget.Toast.makeText(this, "I will remind you in 10 minutes", android.widget.Toast.LENGTH_SHORT).show();
             finish();
         });
-        answers.addView(done, new LinearLayout.LayoutParams(dp(210), ViewGroup.LayoutParams.WRAP_CONTENT));
-        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(dp(210), ViewGroup.LayoutParams.WRAP_CONTENT);
+        answers.addView(done, new LinearLayout.LayoutParams(dp(170), ViewGroup.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(dp(170), ViewGroup.LayoutParams.WRAP_CONTENT);
         llp.topMargin = dp(8);
         answers.addView(later, llp);
         row.addView(answers);
@@ -148,8 +148,8 @@ public class AzanActivity extends Activity {
         progress.setProgressDrawable(progressLook());
         panel.addView(progress, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(4)));
 
-        hint = text(AppLanguage.strAzanPopupHint(this), body, 12, 0x99F5E1BC);
-        hint.setPadding(dp(28), dp(8), dp(28), dp(10));
+        hint = text(AppLanguage.strAzanPopupHint(this), body, 12, 0x99FFFFFF);
+        hint.setPadding(dp(22), dp(6), dp(22), dp(8));
         hint.setGravity(Gravity.START);
         panel.addView(hint);
 
@@ -169,7 +169,7 @@ public class AzanActivity extends Activity {
                 WindowManager wm = getSystemService(WindowManager.class);
                 if (wm != null && wm.isCrossWindowBlurEnabled() && w.getDecorView() != null) {
                     w.setBackgroundBlurRadius(dp(26));
-                    bg.setColor(0xCC1A1410);
+                    bg.setColor(0x800B1220);
                 }
             } catch (Throwable t) {
                 android.util.Log.w("TvHome.Azan", "Window blur unavailable or failed: " + t.getMessage());
@@ -202,7 +202,7 @@ public class AzanActivity extends Activity {
 
     private android.graphics.drawable.Drawable progressLook() {
         GradientDrawable track = new GradientDrawable();
-        track.setColor(0x22FFC66B);
+        track.setColor(0x22FFFFFF);
         GradientDrawable fill = new GradientDrawable();
         fill.setColor(AMBER);
         android.graphics.drawable.ClipDrawable clip = new android.graphics.drawable.ClipDrawable(
@@ -219,7 +219,7 @@ public class AzanActivity extends Activity {
         final TextView b = text(label, font, 14, CREAM);
         b.setSingleLine(true);
         b.setGravity(Gravity.CENTER);
-        b.setPadding(dp(16), dp(10), dp(16), dp(10));
+        b.setPadding(dp(14), dp(8), dp(14), dp(8));
         b.setFocusable(true);
         b.setClickable(true);
         setButtonLook(b, primary, false);
@@ -229,10 +229,10 @@ public class AzanActivity extends Activity {
 
     private void setButtonLook(TextView b, boolean primary, boolean focused) {
         GradientDrawable g = new GradientDrawable();
-        g.setCornerRadius(dp(6));
-        g.setColor(focused ? AMBER : primary ? 0x33FFC66B : 0x00000000);
-        g.setStroke(Math.max(1, dp(1)), focused ? AMBER : 0x88FFC66B);
-        b.setTextColor(focused ? 0xFF1A1410 : CREAM);
+        g.setCornerRadius(dp(16));
+        g.setColor(focused ? 0x66FFFFFF : primary ? 0x33FFFFFF : 0x14FFFFFF);
+        g.setStroke(Math.max(1, dp(1)), focused ? AMBER : 0x88FFFFFF);
+        b.setTextColor(focused ? 0xFFFFFFFF : CREAM);
         b.setBackground(g);
     }
 
