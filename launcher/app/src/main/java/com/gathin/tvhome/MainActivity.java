@@ -3494,7 +3494,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
 
         int usable = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
-        int islamicMaxWidth = Math.round(usable * 0.38f);
+        int islamicMaxWidth = Math.round(usable * 0.30f);
         boolean is4K = (getResources().getDisplayMetrics().widthPixels >= 3840 || getResources().getDisplayMetrics().heightPixels >= 2160);
 
         final int turn = ZikirList.turn(this);
@@ -3502,7 +3502,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             ZikirList.Zikir z = turn == 1 ? DoaList.current() : ZikirList.current();
             if (ayahLabel != null) {
                 ayahLabel.setText(turn == 1 ? "DOA HARIAN  •  " + z.count : "ZIKIR  •  " + z.count);
-                ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 12f : 10f);
+                ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 10.5f : 9f);
             }
             if (ayahArabic != null) {
                 ayahArabic.setMaxWidth(islamicMaxWidth);
@@ -3514,7 +3514,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     ayahArabic.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(this, R.font.amiri_quran), Typeface.NORMAL);
                 } catch (Exception ignored) {}
                 ayahArabic.setTextColor(0xFFFFC56B);
-                ayahArabic.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 18f : 14.5f);
+                ayahArabic.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 15.5f : 12.5f);
                 ayahArabic.setText(z.arabic);
             }
             if (ayahRumi != null) {
@@ -3525,7 +3525,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (ayahText != null) {
                 ayahText.setMaxWidth(islamicMaxWidth);
                 ayahText.setText(z.meaning);
-                ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 12.5f : 10.5f);
+                ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 11f : 9.5f);
                 ayahText.setVisibility(View.VISIBLE);
             }
             ayahBlock.setVisibility(View.VISIBLE);
@@ -3534,7 +3534,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         if (ayahLabel != null) {
             ayahLabel.setText(AppLanguage.getAyahLabel(this, a.reference));
-            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 12f : 10f);
+            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 10.5f : 9f);
         }
         if (ayahArabic != null) {
             String text = a.arabic.trim();
@@ -3549,7 +3549,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             } catch (Exception ignored) {}
             ayahArabic.setTextColor(0xFFFFC56B);
 
-            float baseSp = is4K ? 18f : 14.5f;
+            float baseSp = is4K ? 15.5f : 12.5f;
             android.text.TextPaint paint = new android.text.TextPaint(ayahArabic.getPaint());
             paint.setTextSize(baseSp * getResources().getDisplayMetrics().scaledDensity);
             float textWidth = paint.measureText(text);
@@ -3574,7 +3574,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             // Doa harian stays in Malay whatever the app language is.
             String tr = (a.malay != null && !a.malay.isEmpty()) ? a.malay : a.english;
             ayahText.setText(tr != null ? tr.trim() : "");
-            ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 12.5f : 10.5f);
+            ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 11f : 9.5f);
             ayahText.setVisibility(tr != null && !tr.trim().isEmpty() ? View.VISIBLE : View.GONE);
         }
         ayahBlock.setVisibility(View.VISIBLE);
@@ -3592,13 +3592,13 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
 
         int usable = getResources().getDisplayMetrics().widthPixels - (int) ((55 + 56) * density);
-        int islamicMaxWidth = Math.round(usable * 0.38f);
+        int islamicMaxWidth = Math.round(usable * 0.30f);
         boolean is4K = (getResources().getDisplayMetrics().widthPixels >= 3840 || getResources().getDisplayMetrics().heightPixels >= 2160);
 
         if (ayahLabel != null) {
             String datePart = (k.date != null && !k.date.isEmpty()) ? "  •  " + k.date.toUpperCase(Locale.ROOT) : "";
             ayahLabel.setText("KHUTBAH MINBAR • " + k.authority.toUpperCase(Locale.ROOT) + datePart);
-            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 11.5f : 9.5f);
+            ayahLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 10.5f : 9f);
         }
         if (ayahArabic != null) {
             String text = k.title.trim();
@@ -3615,7 +3615,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             }
             ayahArabic.setTextColor(0xFFFFC56B);
 
-            float baseSp = is4K ? 16f : 13.5f;
+            float baseSp = is4K ? 14f : 12f;
             android.text.TextPaint paint = new android.text.TextPaint(ayahArabic.getPaint());
             paint.setTextSize(baseSp * getResources().getDisplayMetrics().scaledDensity);
             float textWidth = paint.measureText(text);
@@ -3635,7 +3635,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (ayahRumi != null) ayahRumi.setVisibility(View.GONE);
             String summary = (k.subtitle != null && !k.subtitle.isEmpty()) ? k.subtitle + " — " + k.excerpt : k.excerpt;
             ayahText.setText(summary != null ? summary.trim() : "");
-            ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 12.5f : 10.5f);
+            ayahText.setTextSize(TypedValue.COMPLEX_UNIT_SP, is4K ? 11f : 9.5f);
             ayahText.setVisibility(summary != null && !summary.trim().isEmpty() ? View.VISIBLE : View.GONE);
         }
         ayahBlock.setVisibility(View.VISIBLE);
@@ -3651,11 +3651,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     + (k.subtitle != null && !k.subtitle.isEmpty() ? "" + k.subtitle + "\n\n" : "")
                     + k.excerpt;
             builder.setMessage(message);
-            builder.setPositiveButton("Switch to Daily Doa", (d, w) -> {
+            builder.setPositiveButton("Choose what to show", (d, w) -> showDisplayModeChoiceDialog());
+            builder.setNeutralButton("Back to Doa", (d, w) -> {
                 MinbarManager.setDisplayMode(MainActivity.this, MinbarManager.MODE_DOA);
-                SoundEffects.playSelect();
                 updateIslamicShelf();
-                Toast.makeText(MainActivity.this, "Display changed to Daily Doa", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Showing Daily Doa", Toast.LENGTH_SHORT).show();
             });
         } else {
             int turn = ZikirList.turn(this);
@@ -3670,11 +3670,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 builder.setTitle("" + a.reference);
                 builder.setMessage(a.arabic + "\n\n" + a.translation(AppLanguage.LANG_MS));
             }
-            builder.setPositiveButton("Switch to Minbar Text", (d, w) -> {
+            builder.setPositiveButton("Choose what to show", (d, w) -> showDisplayModeChoiceDialog());
+            builder.setNeutralButton("Minbar text", (d, w) -> {
                 MinbarManager.setDisplayMode(MainActivity.this, MinbarManager.MODE_MINBAR);
-                SoundEffects.playSelect();
                 updateIslamicShelf();
-                Toast.makeText(MainActivity.this, "Display changed to Minbar Text", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Showing Minbar text", Toast.LENGTH_SHORT).show();
             });
         }
         builder.setNegativeButton("Close", (d, w) -> d.dismiss());
@@ -3794,6 +3794,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (!online) {
                 text = getString(R.string.offline);
                 vpn = false;
+                icon = R.drawable.ic_wifi_0;
             } else if (ethernet) {
                 text = getString(R.string.ethernet);
                 icon = R.drawable.ic_ethernet;
@@ -3801,6 +3802,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 WifiInfo info = wm != null ? wm.getConnectionInfo() : null;
                 String ssid = info != null ? info.getSSID() : null;
+                if (info != null) {
+                    int bars = WifiManager.calculateSignalLevel(info.getRssi(), 5);
+                    icon = bars >= 4 ? R.drawable.ic_wifi_4 : bars == 3 ? R.drawable.ic_wifi_3 : bars == 2 ? R.drawable.ic_wifi_2 : R.drawable.ic_wifi_1;
+                }
                 if (ssid != null) {
                     ssid = ssid.replace("\"", "").trim();
                     if (!ssid.isEmpty() && !ssid.contains("unknown") && !ssid.equals("0x")) text = ssid;
@@ -4445,6 +4450,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     /** Power button, far right: restart, power off or sleep. */
     void showPowerMenu() {
+        if (true) { ModernSettingsDialog.showPower(this); return; }
         SoundEffects.playSelect();
         final String[] items = {"Restart", "Power off", "Sleep"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_TvHome_GlassDialog);
@@ -5810,7 +5816,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (panel == null) return;
             final float r = 26 * density;
             final View target = panel;
-            target.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{new GlassDrawable(target, r, density, null, 0.6f), GlassPage.veil(r, 0x8C0B1220)}));
+            target.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{new GlassDrawable(target, r, density, null, 0.6f), GlassPage.veil(r, 0x400B1220)}));
             Backdrop.watch(target);
             target.setOutlineProvider(new android.view.ViewOutlineProvider() {
                 @Override public void getOutline(View v, android.graphics.Outline o) {

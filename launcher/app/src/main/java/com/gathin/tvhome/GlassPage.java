@@ -91,4 +91,30 @@ final class GlassPage {
         float s = 1f;
         v.animate().scaleX(focused ? s : 1f).scaleY(focused ? s : 1f).setDuration(140).start();
     }
+
+    /** Gives any dialog the same frosted glass as the rest of the launcher; call it right after show(). */
+    static void glassDialog(android.app.Dialog d) {
+        try {
+            android.view.Window w = d.getWindow();
+            if (w == null) return;
+            final float density = d.getContext().getResources().getDisplayMetrics().density;
+            w.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(0));
+            w.setDimAmount(0.30f);
+            View panel = null;
+            int id = d.getContext().getResources().getIdentifier("parentPanel", "id", "android");
+            if (id != 0) panel = w.findViewById(id);
+            if (panel == null) panel = w.findViewById(android.R.id.content);
+            if (panel == null) return;
+            final float r = 26 * density;
+            final View target = panel;
+            target.setBackground(new android.graphics.drawable.LayerDrawable(new Drawable[]{new GlassDrawable(target, r, density, null, 0.6f), veil(r, 0x400B1220)}));
+            Backdrop.watch(target);
+            target.setOutlineProvider(new android.view.ViewOutlineProvider() {
+                @Override public void getOutline(View v, android.graphics.Outline o) {
+                    o.setRoundRect(0, 0, v.getWidth(), v.getHeight(), r);
+                }
+            });
+            target.setClipToOutline(true);
+        } catch (Throwable ignored) { }
+    }
 }

@@ -120,7 +120,7 @@ public class AddProfileDialog {
             if (listener != null) listener.onProfileAdded(p);
         });
 
-        dialog.show();
+        dialog.show(); GlassPage.glassDialog(dialog);
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.getWindow().setLayout(Math.round(560 * density), ViewGroup.LayoutParams.WRAP_CONTENT);

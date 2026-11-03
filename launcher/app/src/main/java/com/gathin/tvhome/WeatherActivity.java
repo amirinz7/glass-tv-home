@@ -184,7 +184,7 @@ public class WeatherActivity extends Activity {
         pl.gravity = Gravity.CENTER;
         shell.addView(panel, pl);
         dlg.setContentView(shell);
-        dlg.show();
+        dlg.show(); GlassPage.glassDialog(dlg);
         if (dlg.getWindow() != null) {
             dlg.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }

@@ -247,7 +247,7 @@ public class ProfileSettingsDialog {
             if (listener != null) listener.onProfileSaved();
         });
 
-        dialog.show();
+        dialog.show(); GlassPage.glassDialog(dialog);
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.getWindow().setLayout(Math.round(680 * density), ViewGroup.LayoutParams.WRAP_CONTENT);

@@ -32,7 +32,7 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
         this.dockSize = dockSize;
         this.density = density;
         // Same glass as the top-bar pills (GlassDrawable): an even veil and a shining edge.
-        band.setColor(0x12FFFFFF);
+        band.setColor(0x24FFFFFF);
         trayShadowPaint.setColor(0x38000000);
         trayShadowPaint.setMaskFilter(new android.graphics.BlurMaskFilter(14f * density, android.graphics.BlurMaskFilter.Blur.NORMAL));
         edge = new GlassRim(1.5f * density, 0xD9FFFFFF, 0x1AFFFFFF, 0.5f);
@@ -74,10 +74,10 @@ public class DockDecoration extends RecyclerView.ItemDecoration {
             }
         }
         if (!any) return;
-        float pad = 14 * density;
+        float pad = 20 * density;
         rect.inset(-pad, -pad);
         area.set(rect);
-        float radius = 26 * density;
+        float radius = 46 * density;
         // Soft drop shadow under the glass dock tray
         RectF trayShadow = new RectF(rect);
         trayShadow.offset(0, 4f * density);

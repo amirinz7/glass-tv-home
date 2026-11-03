@@ -304,7 +304,7 @@ public final class ChildModeManager {
         dialog.setOnCancelListener(d -> {
             if (callback != null) callback.onCancelled();
         });
-        dialog.show();
+        dialog.show(); GlassPage.glassDialog(dialog);
 
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

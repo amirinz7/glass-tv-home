@@ -30,7 +30,7 @@ public class DockBreathingBorderView extends View {
     private final RectF sheenBounds = new RectF();
 
     private float density = 1f;
-    private float cornerRadius = 16f;
+    private float cornerRadius = 22f;
 
     private float breathProgress = 0f;
     private ValueAnimator breathAnimator;
@@ -52,7 +52,7 @@ public class DockBreathingBorderView extends View {
 
     private void init(Context context) {
         density = context.getResources().getDisplayMetrics().density;
-        cornerRadius = 16f * density;
+        cornerRadius = 22f * density;
 
         rimPaint.setStyle(Paint.Style.STROKE);
         rimPaint.setStrokeCap(Paint.Cap.ROUND);

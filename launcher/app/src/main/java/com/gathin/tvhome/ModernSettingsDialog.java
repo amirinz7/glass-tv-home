@@ -102,7 +102,7 @@ public final class ModernSettingsDialog {
         dialogBg.setCornerRadius(34 * density);
         dialogBg.setStroke((int) (1.2f * density), 0x66FFFFFF); // Soap bubble thin-film iridescent rim
         // The same glass as the home screen: it shows the blurred wallpaper behind the panel.
-        root.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{new GlassDrawable(root, 34 * density, density, null, 0.6f), GlassPage.veil(34 * density, 0x8C0B1220)}));
+        root.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{new GlassDrawable(root, 34 * density, density, null, 0.6f), GlassPage.veil(34 * density, 0x400B1220)}));
         Backdrop.watch(root);
         final float panelRadius = 34 * density;
         root.setOutlineProvider(new android.view.ViewOutlineProvider() {
@@ -691,7 +691,7 @@ public final class ModernSettingsDialog {
                                     Toast.makeText(activity, "Profil dipadam", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                            ob.show();
+                            GlassPage.glassDialog(ob.show());
                         }
                     });
 
@@ -1090,6 +1090,47 @@ public final class ModernSettingsDialog {
         if (first instanceof View) ((View) first).requestFocus();
     }
 
+    /** The Power menu as three frosted tiles: reboot, switch off, sleep. */
+    static void showPower(MainActivity activity) {
+        if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+        float density = activity.getResources().getDisplayMetrics().density;
+        Typeface font = activity.getResources().getFont(R.font.instrument_sans);
+        final AlertDialog[] holder = new AlertDialog[1];
+        LinearLayout panel = new LinearLayout(activity);
+        panel.setOrientation(LinearLayout.VERTICAL);
+        panel.setClipChildren(false);
+        panel.setPadding((int) (22 * density), (int) (22 * density), (int) (22 * density), (int) (20 * density));
+        TextView head = new TextView(activity);
+        head.setText("Power");
+        head.setTextSize(24);
+        head.setTextColor(0xFFFFFFFF);
+        head.setTypeface(font, Typeface.BOLD);
+        head.setPadding(0, 0, 0, (int) (14 * density));
+        panel.addView(head);
+        LinearLayout row = bentoRow(activity, density);
+        LinearLayout t1 = controlTile(activity, density, font, "R", "Reboot", "Restart the TV", 0, false, true,
+                () -> { holder[0].dismiss(); activity.showRestartDialog(); });
+        LinearLayout t2 = controlTile(activity, density, font, "O", "Switch off", "Turn the TV off", 0, false, true,
+                () -> { holder[0].dismiss(); activity.showTurnOffDialog(); });
+        LinearLayout t3 = controlTile(activity, density, font, "Z", "Sleep", "Screen off", 0, false, true,
+                () -> { holder[0].dismiss(); HomeKeyService.sleepScreen(); });
+        addTile(row, t1, 1f, 110, density);
+        addTile(row, t2, 1f, 110, density);
+        addTile(row, t3, 1f, 110, density);
+        panel.addView(row);
+        AlertDialog dlg = new AlertDialog.Builder(activity, R.style.Theme_TvHome_GlassDialog).setView(panel).create();
+        holder[0] = dlg;
+        dlg.show();
+        try { activity.glassify(dlg); } catch (Throwable ignored) { }
+        android.view.Window win = dlg.getWindow();
+        if (win != null) {
+            DisplayMetrics dm = activity.getResources().getDisplayMetrics();
+            win.setLayout(Math.min((int) (560 * density), (int) (dm.widthPixels * 0.6f)), ViewGroup.LayoutParams.WRAP_CONTENT);
+            win.setGravity(Gravity.CENTER);
+        }
+        t1.requestFocus();
+    }
+
     private static void glassShow(MainActivity activity, android.app.AlertDialog dlg) {
         // Closing one of the Control Centre's own dialogs lands back on the Control Centre.
         dlg.setOnDismissListener(x -> showControl(activity));
@@ -1189,10 +1230,10 @@ public final class ModernSettingsDialog {
         badge.setGravity(Gravity.CENTER);
         badge.setTextSize(big ? 17f : 14f);
         badge.setTypeface(font, Typeface.BOLD);
-        badge.setTextColor(active ? accent : 0xFF101522);
+        badge.setTextColor(active ? 0xFF101522 : 0xFFFFFFFF);
         GradientDrawable disc = new GradientDrawable();
         disc.setShape(GradientDrawable.OVAL);
-        disc.setColor(active ? 0xFFFFFFFF : (accent & 0xFFFFFF) | 0xCC000000);
+        disc.setColor(active ? 0xFFFFFFFF : 0x33FFFFFF);
         badge.setBackground(disc);
         int bs = (int) ((big ? 38 : 30) * density);
         LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(bs, bs);
@@ -1227,17 +1268,15 @@ public final class ModernSettingsDialog {
 
     /** Frosted glass tile with a wash of its own colour; a white rim and a stronger wash while selected. */
     private static void applyControlLook(View tile, float density, int accent, boolean active, boolean focused) {
-        float r = 16 * density;
+        float r = 18 * density;
         GlassDrawable glass = new GlassDrawable(tile, r, density, null, 0.4f);
         Backdrop.watch(tile);
-        int rgb = accent & 0xFFFFFF;
-        int top = rgb | (active ? 0xCC000000 : focused ? 0x78000000 : 0x47000000);
-        int bottom = rgb | (active ? 0xA6000000 : focused ? 0x40000000 : 0x14000000);
+        int top = active ? 0x66FFFFFF : focused ? 0x4DFFFFFF : 0x1FFFFFFF;
+        int bottom = active ? 0x33FFFFFF : focused ? 0x26FFFFFF : 0x08FFFFFF;
         GradientDrawable tint = new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[]{top, bottom});
         tint.setCornerRadius(r);
-        tint.setStroke((int) ((focused ? 2.5f : 1f) * density), focused ? 0xFFFFFFFF : (rgb | 0x66000000));
-        tile.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{
-                glass, GlassPage.veil(r, 0x4D101522), tint}));
+        tint.setStroke((int) ((focused ? 2.5f : 1f) * density), focused ? 0xFFFFFFFF : 0x40FFFFFF);
+        tile.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{glass, tint}));
     }
 
     /** The Control Centre: coloured tiles of different sizes, stacked in a bento grid. OK on a tile runs it. */
@@ -1352,7 +1391,7 @@ public final class ModernSettingsDialog {
     private static void applySoapBubbleCardBg(View v, float density, boolean hasFocus) {
         GlassDrawable glass = new GlassDrawable(v, 20 * density, density, null, 0.3f);
         Backdrop.watch(v);
-        android.graphics.drawable.Drawable dark = GlassPage.veil(20 * density, 0x66101522);
+        android.graphics.drawable.Drawable dark = GlassPage.veil(20 * density, 0x1AFFFFFF);
         if (!hasFocus) {
             v.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{glass, dark}));
             return;
@@ -1550,7 +1589,7 @@ public final class ModernSettingsDialog {
                 })
                 .setNegativeButton(AppLanguage.strCancel(activity), (d, which) -> d.dismiss())
                 .create();
-        dialog.show();
+        dialog.show(); GlassPage.glassDialog(dialog);
     }
 
     private static void showChangePinDialog(MainActivity activity, float density, Typeface font) {
@@ -1736,7 +1775,7 @@ public final class ModernSettingsDialog {
         pb.setView(pickerLayout);
         AlertDialog d = pb.create();
         pickerHolder[0] = d;
-        d.show();
+        d.show(); GlassPage.glassDialog(d);
 
         Window win = d.getWindow();
         if (win != null) {
@@ -1928,7 +1967,7 @@ public final class ModernSettingsDialog {
         pb.setView(dialogWrap);
         AlertDialog d = pb.create();
         dialogHolder[0] = d;
-        d.show();
+        d.show(); GlassPage.glassDialog(d);
 
         Window win = d.getWindow();
         if (win != null) {

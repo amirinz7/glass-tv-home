@@ -254,7 +254,7 @@ public final class AppUpdateManager {
         });
 
         AlertDialog dialog = builder.create();
-        dialog.show();
+        dialog.show(); GlassPage.glassDialog(dialog);
     }
 
     @SuppressWarnings("deprecation")
@@ -275,7 +275,7 @@ public final class AppUpdateManager {
                     }
                 });
                 permDialog.setNegativeButton("Cancel", (d, w) -> d.dismiss());
-                permDialog.show();
+                GlassPage.glassDialog(permDialog.show());
                 return;
             }
         }
@@ -288,7 +288,7 @@ public final class AppUpdateManager {
         progressDialog.setMax(100);
         progressDialog.setProgress(0);
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog.show(); GlassPage.glassDialog(progressDialog);
 
         executor.execute(() -> {
             File cacheDir = activity.getExternalCacheDir() != null ? activity.getExternalCacheDir() : activity.getCacheDir();

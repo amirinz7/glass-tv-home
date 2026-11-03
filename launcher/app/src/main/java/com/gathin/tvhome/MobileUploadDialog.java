@@ -139,7 +139,7 @@ public class MobileUploadDialog {
             }
         });
 
-        dialog.show();
+        dialog.show(); GlassPage.glassDialog(dialog);
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.getWindow().setLayout(Math.round(640 * density), ViewGroup.LayoutParams.WRAP_CONTENT);

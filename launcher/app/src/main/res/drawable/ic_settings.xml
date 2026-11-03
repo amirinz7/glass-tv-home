@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Outline icon: thin rounded strokes. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
@@ -11,5 +10,5 @@
         android:strokeWidth="1.7"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:pathData="M12,9a3,3 0 1 0 0,6a3,3 0 0 0 0,-6z M12,2.5v3 M12,18.5v3 M2.5,12h3 M18.5,12h3 M5.3,5.3l2.1,2.1 M16.6,16.6l2.1,2.1 M5.3,18.7l2.1,-2.1 M16.6,7.4l2.1,-2.1" />
+        android:pathData="M10.53,4.75 L10.85,2.47 L13.15,2.47 L13.47,4.75 L16.09,5.83 L17.93,4.45 L19.55,6.07 L18.17,7.91 L19.25,10.53 L21.53,10.85 L21.53,13.15 L19.25,13.47 L18.17,16.09 L19.55,17.93 L17.93,19.55 L16.09,18.17 L13.47,19.25 L13.15,21.53 L10.85,21.53 L10.53,19.25 L7.91,18.17 L6.07,19.55 L4.45,17.93 L5.83,16.09 L4.75,13.47 L2.47,13.15 L2.47,10.85 L4.75,10.53 L5.83,7.91 L4.45,6.07 L6.07,4.45 L7.91,5.83 Z M12,9a3,3 0 1 0 0,6a3,3 0 0 0 0,-6z" />
 </vector>
