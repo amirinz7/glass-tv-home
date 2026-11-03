@@ -113,6 +113,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/glass_card"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:paddingTop="14dp"
+                android:paddingBottom="16dp"
                 android:gravity="end"
                 android:orientation="vertical">
 
@@ -333,7 +339,12 @@
         <com.gathin.tvhome.HourlyWeatherGraphView
             android:id="@+id/hourlyGraphView"
             android:layout_width="match_parent"
-            android:layout_height="82dp" />
+            android:layout_height="104dp"
+            android:background="@drawable/glass_card"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
 
         <!-- Dynamic vertical spacer distributing space before bottom forecast cards -->
         <Space

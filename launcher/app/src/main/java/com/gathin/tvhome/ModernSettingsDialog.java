@@ -123,7 +123,13 @@ public final class ModernSettingsDialog {
         leftCol.setClipChildren(false);
         leftCol.setClipToPadding(false);
 
-        // Subtle dark translucent background for left pane
+        // The tab list floats as its own frosted card, set apart from the content.
+        LinearLayout.LayoutParams leftLpCard = (LinearLayout.LayoutParams) leftCol.getLayoutParams();
+        leftLpCard.setMargins((int) (14 * density), (int) (14 * density), (int) (6 * density), (int) (14 * density));
+        GradientDrawable leftCard = new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[]{0x2EFFFFFF, 0x0DFFFFFF});
+        leftCard.setCornerRadius(26 * density);
+        leftCard.setStroke((int) (1f * density), 0x40FFFFFF);
+        leftCol.setBackground(leftCard);
 
 
         final View[] firstNav = new View[1];
@@ -326,10 +332,10 @@ public final class ModernSettingsDialog {
                 boolean isSelected = (activeTab[0] == item.tabId);
                 GradientDrawable rbg = new GradientDrawable(
                         GradientDrawable.Orientation.LEFT_RIGHT,
-                        isSelected ? new int[]{0x4DFFFFFF, 0x33FFFFFF} : new int[]{Color.TRANSPARENT, Color.TRANSPARENT}
+                        isSelected ? new int[]{0x66FFB347, 0x1AFFB347} : new int[]{Color.TRANSPARENT, Color.TRANSPARENT}
                 );
-                rbg.setCornerRadius(12 * density);
-                if (isSelected) rbg.setStroke((int) (1.2f * density), 0x99FFFFFF);
+                rbg.setCornerRadius(20 * density);
+                if (isSelected) rbg.setStroke((int) (1.2f * density), 0xB3FFD08A);
                 item.rowView.setBackground(rbg);
             }
         };
@@ -925,11 +931,11 @@ public final class ModernSettingsDialog {
                 addHeader(rightContent, outfit, "General");
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "Restart TV", "Restart the Android TV system",
+                        "Reboot TV", "Restart the Android TV system",
                         activity::showRestartDialog));
 
                 rightContent.addView(buildCardRow(activity, density, outfit,
-                        "Turn Off TV", "Put the Android TV into sleep / off mode",
+                        "Switch Off TV", "Put the Android TV into sleep / off mode",
                         activity::showTurnOffDialog));
 
                 long freeBytes = CacheCleaner.getFreeStorageBytes();
@@ -1065,22 +1071,19 @@ public final class ModernSettingsDialog {
         panel.setClipChildren(false);
         panel.setPadding((int) (14 * density), (int) (14 * density), (int) (14 * density), (int) (10 * density));
         buildControlTiles(activity, density, font, panel, holder);
-        GradientDrawable drawer = new GradientDrawable();
-        drawer.setColor(0xFA1A1410);
-        drawer.setCornerRadii(new float[]{18 * density, 18 * density, 0, 0, 0, 0, 18 * density, 18 * density});
-        panel.setBackground(drawer);
-        panel.setPadding((int) (18 * density), (int) (22 * density), (int) (18 * density), (int) (16 * density));
+        panel.setPadding((int) (18 * density), (int) (20 * density), (int) (18 * density), (int) (14 * density));
         AlertDialog dlg = new AlertDialog.Builder(activity, R.style.Theme_TvHome_GlassDialog).setView(panel).create();
         holder[0] = dlg;
         dlg.show();
+        try { activity.glassify(dlg); } catch (Throwable ignored) { }
         android.view.Window win = dlg.getWindow();
         if (win != null) {
-            win.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
             DisplayMetrics dm = activity.getResources().getDisplayMetrics();
-            win.setLayout(Math.min((int) (470 * density), (int) (dm.widthPixels * 0.5f)), ViewGroup.LayoutParams.MATCH_PARENT);
+            win.setLayout(Math.min((int) (470 * density), (int) (dm.widthPixels * 0.5f)), ViewGroup.LayoutParams.WRAP_CONTENT);
             win.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
             android.view.WindowManager.LayoutParams wl = win.getAttributes();
-            wl.dimAmount = 0.45f;
+            wl.x = (int) (24 * density);
+            wl.dimAmount = 0.15f;
             win.setAttributes(wl);
         }
         Object first = panel.getTag();
@@ -1186,10 +1189,10 @@ public final class ModernSettingsDialog {
         badge.setGravity(Gravity.CENTER);
         badge.setTextSize(big ? 17f : 14f);
         badge.setTypeface(font, Typeface.BOLD);
-        badge.setTextColor(active ? accent : 0xFFFFFFFF);
+        badge.setTextColor(active ? accent : 0xFF101522);
         GradientDrawable disc = new GradientDrawable();
         disc.setShape(GradientDrawable.OVAL);
-        disc.setColor(active ? 0xFFFFFFFF : 0x40FFFFFF);
+        disc.setColor(active ? 0xFFFFFFFF : (accent & 0xFFFFFF) | 0xCC000000);
         badge.setBackground(disc);
         int bs = (int) ((big ? 38 : 30) * density);
         LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(bs, bs);
@@ -1222,27 +1225,33 @@ public final class ModernSettingsDialog {
         return tile;
     }
 
+    /** Frosted glass tile with a wash of its own colour; a white rim and a stronger wash while selected. */
     private static void applyControlLook(View tile, float density, int accent, boolean active, boolean focused) {
-        int dark = Color.rgb((int) (Color.red(accent) * 0.45f), (int) (Color.green(accent) * 0.45f), (int) (Color.blue(accent) * 0.45f));
-        GradientDrawable g = new GradientDrawable(GradientDrawable.Orientation.TL_BR,
-                active ? new int[]{accent, accent} : new int[]{accent, dark});
-        g.setCornerRadius(11 * density);
-        g.setStroke((int) ((focused ? 3f : 0f) * density), 0xFFFFFFFF);
-        tile.setBackground(g);
+        float r = 16 * density;
+        GlassDrawable glass = new GlassDrawable(tile, r, density, null, 0.4f);
+        Backdrop.watch(tile);
+        int rgb = accent & 0xFFFFFF;
+        int top = rgb | (active ? 0xCC000000 : focused ? 0x78000000 : 0x47000000);
+        int bottom = rgb | (active ? 0xA6000000 : focused ? 0x40000000 : 0x14000000);
+        GradientDrawable tint = new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[]{top, bottom});
+        tint.setCornerRadius(r);
+        tint.setStroke((int) ((focused ? 2.5f : 1f) * density), focused ? 0xFFFFFFFF : (rgb | 0x66000000));
+        tile.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{
+                glass, GlassPage.veil(r, 0x4D101522), tint}));
     }
 
     /** The Control Centre: coloured tiles of different sizes, stacked in a bento grid. OK on a tile runs it. */
     private static void buildControlTiles(MainActivity activity, float density, Typeface font, LinearLayout out, AlertDialog[] holder) {
         TextView head = new TextView(activity);
-        head.setText("Quick Panel");
+        head.setText("Control Centre");
         head.setTextSize(26);
-        head.setTextColor(0xFFF5E1BC);
+        head.setTextColor(0xFFFFFFFF);
         head.setTypeface(font, Typeface.BOLD);
         out.addView(head);
         TextView sub = new TextView(activity);
         sub.setText(new java.text.SimpleDateFormat("EEEE, d MMMM", java.util.Locale.getDefault()).format(new java.util.Date()));
         sub.setTextSize(12);
-        sub.setTextColor(0x99F5E1BC);
+        sub.setTextColor(0xB3FFFFFF);
         sub.setTypeface(font, Typeface.NORMAL);
         sub.setPadding(0, 0, 0, (int) (14 * density));
         out.addView(sub);
@@ -1351,7 +1360,7 @@ public final class ModernSettingsDialog {
         GradientDrawable tint = new GradientDrawable();
         tint.setCornerRadius(20 * density);
         tint.setColor(0x40FFFFFF);
-        tint.setStroke((int) (2f * density), 0xFFFFFFFF);
+        tint.setStroke((int) (2f * density), 0xFFFFD08A);
         v.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{glass, dark, tint}));
     }
 

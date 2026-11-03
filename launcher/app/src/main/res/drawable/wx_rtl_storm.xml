@@ -28,7 +28,7 @@
     <!-- Electric Yellow Lightning Bolt striking down -->
     <path
         android:pathData="M22,27 L18,34 L21,34 L17,43 L25,33 L21.5,33 Z"
-        android:fillColor="#FACC15" />
+        android:fillColor="#FFB347" />
 
     <!-- Rain Drops -->
     <path

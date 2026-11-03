@@ -153,7 +153,7 @@ final class AppLanguage {
 
     public static String strRestart(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Restart TV";
+            case LANG_EN: return "Reboot TV";
             case LANG_ID: return "Mulai Ulang TV";
             case LANG_MS: default: return "Mula Semula TV";
         }
@@ -161,7 +161,7 @@ final class AppLanguage {
 
     public static String strTurnOff(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Turn Off TV";
+            case LANG_EN: return "Switch Off TV";
             case LANG_ID: return "Matikan TV";
             case LANG_MS: default: return "Matikan TV";
         }
@@ -169,7 +169,7 @@ final class AppLanguage {
 
     public static String strCleanCache(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Clean TV Cache";
+            case LANG_EN: return "Free Up TV Memory";
             case LANG_ID: return "Bersihkan Cache TV";
             case LANG_MS: default: return "Bersihkan Cache TV";
         }
@@ -181,7 +181,7 @@ final class AppLanguage {
 
     public static String strLanguage(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Language Selection";
+            case LANG_EN: return "Pick a Language";
             case LANG_ID: return "Pilihan Bahasa";
             case LANG_MS: default: return "Pilihan Bahasa";
         }
@@ -189,7 +189,7 @@ final class AppLanguage {
 
     public static String strAllSettings(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "All Android Settings";
+            case LANG_EN: return "Full Android Settings";
             case LANG_ID: return "Semua Pengaturan Android";
             case LANG_MS: default: return "Semua Tetapan Android";
         }
@@ -222,7 +222,7 @@ final class AppLanguage {
 
     public static String strProfileSubtitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "User Profiles";
+            case LANG_EN: return "Who's Watching";
             case LANG_ID: return "Profil Pengguna";
             case LANG_MS: default: return "Profil Pengguna";
         }
@@ -238,7 +238,7 @@ final class AppLanguage {
 
     public static String strYourPhotos(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Your Photos";
+            case LANG_EN: return "My Photos";
             case LANG_ID: return "Foto Anda";
             case LANG_MS: default: return "Gambar Anda";
         }
@@ -246,7 +246,7 @@ final class AppLanguage {
 
     public static String strYourPhotosDesc(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Add photos to the TV's Pictures or Download folder.";
+            case LANG_EN: return "Drop your pictures into the TV's Pictures or Download folder.";
             case LANG_ID: return "Tambahkan foto ke folder Gambar atau Unduhan TV.";
             case LANG_MS: default: return "Tambah gambar ke folder Pictures atau Download di TV.";
         }
@@ -254,7 +254,7 @@ final class AppLanguage {
 
     public static String strEditName(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Edit Name";
+            case LANG_EN: return "Rename";
             case LANG_ID: return "Ubah Nama";
             case LANG_MS: default: return "Tukar Nama";
         }
@@ -355,7 +355,7 @@ final class AppLanguage {
     public static String strDynamicWeather(Context ctx, boolean on) {
         String state = on ? "ON" : "OFF";
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Dynamic Weather: " + state;
+            case LANG_EN: return "Live Weather Scenes: " + state;
             case LANG_ID: return "Cuaca Dinamis: " + state;
             case LANG_MS: default: return "Cuaca Dinamik: " + state;
         }
@@ -364,7 +364,7 @@ final class AppLanguage {
     public static String strAzanRow(Context ctx, boolean on) {
         String state = on ? "ON" : "OFF";
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Adhan Settings: " + state;
+            case LANG_EN: return "Azan Setup: " + state;
             case LANG_ID: return "Pengaturan Adzan: " + state;
             case LANG_MS: default: return "Tetapan Azan: " + state;
         }
@@ -373,7 +373,7 @@ final class AppLanguage {
     public static String strDailyDoaRow(Context ctx, boolean on) {
         String state = on ? "ON" : "OFF";
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Daily Prayer: " + state;
+            case LANG_EN: return "Prayer of the Day: " + state;
             case LANG_ID: return "Doa Harian: " + state;
             case LANG_MS: default: return "Doa Harian: " + state;
         }
@@ -381,7 +381,7 @@ final class AppLanguage {
 
     public static String strSoundRow(Context ctx, String themeName) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Sound: " + themeName;
+            case LANG_EN: return "Audio: " + themeName;
             case LANG_ID: return "Efek Suara: " + themeName;
             case LANG_MS: default: return "Kesan Bunyi: " + themeName;
         }
@@ -390,7 +390,7 @@ final class AppLanguage {
     public static String strAutoUpdateRow(Context ctx, boolean on, String version) {
         String state = on ? "ON" : "OFF";
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Auto-Update: " + state + " (v" + version + ")";
+            case LANG_EN: return "Self-Update: " + state + " (v" + version + ")";
             case LANG_ID: return "Pembaruan Otomatis: " + state + " (v" + version + ")";
             case LANG_MS: default: return "Kemas Kini Automatik: " + state + " (v" + version + ")";
         }
@@ -398,7 +398,7 @@ final class AppLanguage {
 
     public static String strScreensaver(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Nightstand Screensaver";
+            case LANG_EN: return "Bedside Screensaver";
             case LANG_ID: return "Screensaver Meja Tidur";
             case LANG_MS: default: return "Screensaver Meja Tidur";
         }
@@ -406,7 +406,7 @@ final class AppLanguage {
 
     public static String strAzanSettings(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Adhan Settings";
+            case LANG_EN: return "Azan Setup";
             case LANG_ID: return "Pengaturan Adzan";
             case LANG_MS: default: return "Tetapan Azan";
         }
@@ -451,7 +451,7 @@ final class AppLanguage {
     // --- Restart Dialog ---
     public static String strRestartTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Restart TV";
+            case LANG_EN: return "Reboot TV";
             case LANG_ID: return "Mulai Ulang TV";
             case LANG_MS: default: return "Mulakan Semula TV (Restart)";
         }
@@ -459,7 +459,7 @@ final class AppLanguage {
 
     public static String strRestartMsg(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Are you sure you want to restart this TV?";
+            case LANG_EN: return "Restart the TV now?";
             case LANG_ID: return "Apakah Anda yakin ingin memulai ulang (restart) TV ini?";
             case LANG_MS: default: return "Adakah anda pasti ingin memulakan semula (restart) TV ini?";
         }
@@ -467,7 +467,7 @@ final class AppLanguage {
 
     public static String strRestartConfirm(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Yes, Restart";
+            case LANG_EN: return "Yes, reboot";
             case LANG_ID: return "Ya, Restart";
             case LANG_MS: default: return "Ya, Restart";
         }
@@ -475,7 +475,7 @@ final class AppLanguage {
 
     public static String strRestartToast(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Restarting TV...";
+            case LANG_EN: return "Rebooting...";
             case LANG_ID: return "Memulai ulang TV...";
             case LANG_MS: default: return "Memulakan semula TV...";
         }
@@ -484,7 +484,7 @@ final class AppLanguage {
     // --- Turn Off Dialog ---
     public static String strTurnOffTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Turn Off TV";
+            case LANG_EN: return "Switch Off TV";
             case LANG_ID: return "Matikan TV";
             case LANG_MS: default: return "Padamkan TV (Turn Off)";
         }
@@ -492,7 +492,7 @@ final class AppLanguage {
 
     public static String strTurnOffMsg(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Would you like to turn off or put the TV into sleep mode?";
+            case LANG_EN: return "Switch the TV off, or let it sleep?";
             case LANG_ID: return "Apakah Anda ingin mematikan atau menidurkan TV?";
             case LANG_MS: default: return "Adakah anda ingin memadamkan / meletakkan TV dalam mod rehat?";
         }
@@ -509,7 +509,7 @@ final class AppLanguage {
     // --- Clean Cache Dialog ---
     public static String strCleanCacheTitle(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Clean TV Cache";
+            case LANG_EN: return "Free Up TV Memory";
             case LANG_ID: return "Bersihkan Cache TV";
             case LANG_MS: default: return "Bersihkan Cache TV";
         }
@@ -546,7 +546,7 @@ final class AppLanguage {
 
     public static String strCleanCacheToast(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Cleaning TV cache...";
+            case LANG_EN: return "Freeing up memory...";
             case LANG_ID: return "Sedang membersihkan cache TV...";
             case LANG_MS: default: return "Sedang membersihkan cache TV...";
         }
@@ -770,7 +770,7 @@ final class AppLanguage {
 
     public static String strWallpaperDialogSub(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Pexels & Unsplash CDN • Ultra HD 3840×2160 Resolution";
+            case LANG_EN: return "Pexels & Unsplash • 4K (3840×2160)";
             case LANG_ID: return "Pexels & Unsplash CDN • Resolusi Ultra HD 3840×2160";
             case LANG_MS: default: return "Pexels & Unsplash CDN • Resolusi Ultra HD 3840×2160";
         }
@@ -786,7 +786,7 @@ final class AppLanguage {
 
     public static String strWallpaperIntervalSub(Context ctx) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Select how often wallpaper changes automatically";
+            case LANG_EN: return "How often the wallpaper rotates by itself";
             case LANG_ID: return "Pilih frekuensi wallpaper berganti otomatis";
             case LANG_MS: default: return "Pilih kekerapan wallpaper bertukar secara automatik";
         }
@@ -796,19 +796,19 @@ final class AppLanguage {
         String lang = getLanguage(ctx);
         if (curInterval == -30) return "Every 30 Seconds";
         if (curInterval == 1) {
-            return LANG_EN.equals(lang) ? "Every 1 Minute" : (LANG_ID.equals(lang) ? "Setiap 1 Menit" : "Setiap 1 Minit");
+            return LANG_EN.equals(lang) ? "Each minute" : (LANG_ID.equals(lang) ? "Setiap 1 Menit" : "Setiap 1 Minit");
         } else if (curInterval == 5) {
-            return LANG_EN.equals(lang) ? "Every 5 Minutes (Recommended)" : (LANG_ID.equals(lang) ? "Setiap 5 Menit (Disarankan)" : "Setiap 5 Minit (Disyorkan)");
+            return LANG_EN.equals(lang) ? "Each 5 minutes (best)" : (LANG_ID.equals(lang) ? "Setiap 5 Menit (Disarankan)" : "Setiap 5 Minit (Disyorkan)");
         } else if (curInterval == 10) {
-            return LANG_EN.equals(lang) ? "Every 10 Minutes (Recommended)" : (LANG_ID.equals(lang) ? "Setiap 10 Menit (Disarankan)" : "Setiap 10 Minit (Disyorkan)");
+            return LANG_EN.equals(lang) ? "Each 10 minutes (best)" : (LANG_ID.equals(lang) ? "Setiap 10 Menit (Disarankan)" : "Setiap 10 Minit (Disyorkan)");
         } else if (curInterval == 15) {
-            return LANG_EN.equals(lang) ? "Every 15 Minutes" : (LANG_ID.equals(lang) ? "Setiap 15 Menit" : "Setiap 15 Minit");
+            return LANG_EN.equals(lang) ? "Each 15 minutes" : (LANG_ID.equals(lang) ? "Setiap 15 Menit" : "Setiap 15 Minit");
         } else if (curInterval == 30) {
-            return LANG_EN.equals(lang) ? "Every 30 Minutes" : (LANG_ID.equals(lang) ? "Setiap 30 Menit" : "Setiap 30 Minit");
+            return LANG_EN.equals(lang) ? "Each 30 minutes" : (LANG_ID.equals(lang) ? "Setiap 30 Menit" : "Setiap 30 Minit");
         } else if (curInterval == 60) {
-            return LANG_EN.equals(lang) ? "Every 1 Hour" : (LANG_ID.equals(lang) ? "Setiap 1 Jam" : "Setiap 1 Jam");
+            return LANG_EN.equals(lang) ? "Hourly" : (LANG_ID.equals(lang) ? "Setiap 1 Jam" : "Setiap 1 Jam");
         } else if (curInterval == 0) {
-            return LANG_EN.equals(lang) ? "Manual Only (Off)" : (LANG_ID.equals(lang) ? "Manual Saja (Mati)" : "Manual Sahaja (Mati)");
+            return LANG_EN.equals(lang) ? "Only when I choose (Off)" : (LANG_ID.equals(lang) ? "Manual Saja (Mati)" : "Manual Sahaja (Mati)");
         } else {
             return LANG_EN.equals(lang) ? "Every " + curInterval + " Minutes" : (LANG_ID.equals(lang) ? "Setiap " + curInterval + " Menit" : "Setiap " + curInterval + " Minit");
         }
@@ -849,7 +849,7 @@ final class AppLanguage {
 
     public static String strAzanPopupDownloadingHint(Context ctx, String soundLabel) {
         switch (getLanguage(ctx)) {
-            case LANG_EN: return "Downloading audio " + soundLabel + "...";
+            case LANG_EN: return "Fetching audio " + soundLabel + "...";
             case LANG_ID: return "Mengunduh audio " + soundLabel + "...";
             case LANG_MS: default: return "Memuat turun audio " + soundLabel + "...";
         }

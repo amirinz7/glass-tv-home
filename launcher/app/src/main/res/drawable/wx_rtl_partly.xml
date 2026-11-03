@@ -6,7 +6,7 @@
     <!-- Golden Sun Disc peaking at top-right -->
     <path
         android:pathData="M34,22m-11,0a11,11 0 1,0 22,0a11,11 0 1,0 -22,0"
-        android:fillColor="#FACC15" />
+        android:fillColor="#FFB347" />
     <!-- White Puffy Cloud in front -->
     <!-- Pill base: from x=8 to 36, y=26 to 38, radius 6 -->
     <path

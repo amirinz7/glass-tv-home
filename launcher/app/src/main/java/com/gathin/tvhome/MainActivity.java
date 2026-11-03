@@ -805,6 +805,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 if (has) moveTopHighlight(v);
             });
         }
+        // The clock sits on its own glass card instead of floating on the wallpaper.
+        View clockCard = findViewById(R.id.leftBlock);
+        if (clockCard != null) {
+            clockCard.setBackground(new GlassDrawable(clockCard, 26f * density, density, null, 0.5f));
+            Backdrop.watch(clockCard);
+        }
         if (prayerTimesView != null) {
             prayerTimesView.setOnFocusChangeListener((v, has) -> {
                 if (has) {
@@ -5050,7 +5056,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 : (AppLanguage.LANG_EN.equals(curLang) ? "Hide the text for a cleaner screen" : (AppLanguage.LANG_ID.equals(curLang) ? "Sembunyikan teks untuk tampilan layar bersih" : "Sembunyikan teks untuk paparan skrin bersih (Clean Look)"));
         options.add(new WallpaperOption("TOGGLE_DESC", tDsc, sDsc));
 
-        String tWtr = (AppLanguage.LANG_EN.equals(curLang) ? "Dynamic Weather: " : (AppLanguage.LANG_ID.equals(curLang) ? "Cuaca Dinamis: " : "Dynamic Weather: ")) + (isWeatherFxOn ? (AppLanguage.LANG_EN.equals(curLang) ? "ON" : (AppLanguage.LANG_ID.equals(curLang) ? "Aktif (ON)" : "Dihidupkan (ON)")) : (AppLanguage.LANG_EN.equals(curLang) ? "OFF" : (AppLanguage.LANG_ID.equals(curLang) ? "Mati (OFF)" : "Dimatikan (OFF)")));
+        String tWtr = (AppLanguage.LANG_EN.equals(curLang) ? "Live Weather Scenes: " : (AppLanguage.LANG_ID.equals(curLang) ? "Cuaca Dinamis: " : "Live Weather Scenes: ")) + (isWeatherFxOn ? (AppLanguage.LANG_EN.equals(curLang) ? "ON" : (AppLanguage.LANG_ID.equals(curLang) ? "Aktif (ON)" : "Dihidupkan (ON)")) : (AppLanguage.LANG_EN.equals(curLang) ? "OFF" : (AppLanguage.LANG_ID.equals(curLang) ? "Mati (OFF)" : "Dimatikan (OFF)")));
         String sWtr = isWeatherFxOn
                 ? (AppLanguage.LANG_EN.equals(curLang) ? "Rain and lightning play over your picture when it rains" : (AppLanguage.LANG_ID.equals(curLang) ? "Animasi rintik hujan & kilat di atas wallpaper saat hujan" : "Animasi rintik hujan & kilat di atas wallpaper bila cuaca hujan"))
                 : (AppLanguage.LANG_EN.equals(curLang) ? "Still picture, no weather effects" : (AppLanguage.LANG_ID.equals(curLang) ? "Hanya wallpaper statis tanpa animasi cuaca" : "Hanya wallpaper pegun tanpa animasi cuaca"));
