@@ -93,6 +93,24 @@
             android:shadowRadius="5"
             android:includeFontPadding="false" />
 
+        <!-- Weather line (temperature and sky) -->
+        <TextView
+            android:id="@+id/nightstandWeather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:textColor="#E6FFFFFF"
+            android:textSize="18sp"
+            android:fontFamily="@font/inter"
+            android:fontVariationSettings="'wght' 500"
+            android:letterSpacing="0.04"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="5"
+            android:includeFontPadding="false" />
+
         <!-- Next Prayer Time Capsule -->
         <TextView
             android:id="@+id/nightstandPrayer"
@@ -115,13 +133,32 @@
             android:shadowRadius="4"
             android:includeFontPadding="false" />
 
+        <!-- Today's calendar -->
+        <TextView
+            android:id="@+id/nightstandAgenda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:visibility="gone"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:textColor="#E6FFFFFF"
+            android:textSize="16sp"
+            android:fontFamily="@font/inter"
+            android:fontVariationSettings="'wght' 450"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="5"
+            android:includeFontPadding="false" />
+
         <!-- Dim return hint -->
         <TextView
             android:id="@+id/nightstandHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
-            android:text="Tekan mana-mana butang untuk kembali"
+            android:text="Press any button to return"
             android:textColor="#4DFFFFFF"
             android:textSize="12sp"
             android:fontFamily="@font/inter"

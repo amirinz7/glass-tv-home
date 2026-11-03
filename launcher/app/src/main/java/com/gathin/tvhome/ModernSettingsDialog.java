@@ -833,6 +833,19 @@ public final class ModernSettingsDialog {
                             activity.setScreensaverPhotos(!photosOn);
                             if (renderRightPane[0] != null) renderRightPane[0].run();
                         }));
+                addHeader(rightContent, outfit, "Show on the screensaver");
+                final String[][] saverItems = {
+                        {"clock", "Clock", "1"}, {"date", "Date", "1"}, {"hijri", "Hijri date", "1"},
+                        {"prayer", "Next prayer", "1"},
+                        {"weather", "Live weather sky (sun, stars, rain, lightning)", "0"},
+                        {"temp", "Temperature and sky text", "0"},
+                        {"agenda", "Today's calendar events", "0"},
+                        {"red", "Red night clock from 10 pm to 6 am", "1"}};
+                for (final String[] it : saverItems) {
+                    rightContent.addView(buildSwitchRow(activity, density, outfit, it[1], "",
+                            activity.saverOpt(it[0], "1".equals(it[2])),
+                            isChecked -> activity.setSaverOpt(it[0], isChecked)));
+                }
                 rightContent.addView(buildCardRow(activity, density, outfit,
                         "Upload my photos from the phone (QR)",
                         "Scan the code on the TV, pick any pictures. They are also used as wallpapers.",

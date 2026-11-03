@@ -3265,6 +3265,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             return;
         }
 
+        applyWeatherText(weatherOverlayView, weatherSkyText(line));
+    }
+
+    /** The sky part of the weather line, lower case: no "next hour" part, or the test word when one is set. */
+    private String weatherSkyText(HomeWeather.Line line) {
         String wText = "";
         if (testWeatherOverride != null && !testWeatherOverride.isEmpty()) {
             wText = testWeatherOverride.toLowerCase(Locale.ROOT);
@@ -3274,7 +3279,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             int cut = wText.indexOf('\u00B7');
             if (cut > 0) wText = wText.substring(0, cut);
         }
+        return wText;
+    }
 
+    /** Sets a weather view (home overlay or screensaver sky) from the sky text. */
+    private void applyWeatherText(WeatherBackgroundView v, String wText) {
         WeatherBackgroundView.ConditionType cond = WeatherBackgroundView.ConditionType.NONE;
         boolean heavy = false;
         if (wText.contains("thunder") || wText.contains("storm") || wText.contains("ribut") || wText.contains("petir")) {
@@ -3327,17 +3336,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             cond = day ? WeatherBackgroundView.ConditionType.SUNNY : WeatherBackgroundView.ConditionType.NIGHT;
         }
 
-        weatherOverlayView.setWind(wind);
-        weatherOverlayView.setHot(hot && day);
-        weatherOverlayView.setHeavyRain(heavy);
+        v.setWind(wind);
+        v.setHot(hot && day);
+        v.setHeavyRain(heavy);
         if (cond == WeatherBackgroundView.ConditionType.NONE) {
-            weatherOverlayView.setCondition(WeatherBackgroundView.ConditionType.NONE);
-            weatherOverlayView.stopAnimation();
-            weatherOverlayView.setVisibility(View.GONE);
+            v.setCondition(WeatherBackgroundView.ConditionType.NONE);
+            v.stopAnimation();
+            v.setVisibility(View.GONE);
         } else {
-            weatherOverlayView.setVisibility(View.VISIBLE);
-            weatherOverlayView.setCondition(cond);
-            weatherOverlayView.startAnimation();
+            v.setVisibility(View.VISIBLE);
+            v.setCondition(cond);
+            v.startAnimation();
         }
     }
 
@@ -6786,11 +6795,62 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
         updateNightstandScreensaver();
         applyScreensaverPhoto();
+        applySaverSky();
 
         screensaverView.setVisibility(View.VISIBLE);
         screensaverView.setAlpha(0f);
         screensaverView.animate().alpha(1f).setDuration(500).start();
         android.util.Log.i("TvHome", "Nightstand screensaver activated");
+    }
+
+    /** Screensaver options (Settings, StandBy): what to show on it. */
+    boolean saverOpt(String key, boolean def) {
+        return getSharedPreferences("screensaver_prefs", MODE_PRIVATE).getBoolean(key, def);
+    }
+
+    void setSaverOpt(String key, boolean on) {
+        getSharedPreferences("screensaver_prefs", MODE_PRIVATE).edit().putBoolean(key, on).apply();
+    }
+
+    /** Today's events on the switched-on calendars, up to three lines. */
+    private String saverAgendaText() {
+        try {
+            java.time.LocalDate today = java.time.LocalDate.now(java.time.ZoneId.of("Asia/Kuala_Lumpur"));
+            List<CalendarData.Item> list = CalendarData.items(this, today, today);
+            if (list.isEmpty()) return "No events today";
+            StringBuilder sb = new StringBuilder("Today");
+            int shown = 0;
+            for (CalendarData.Item it : list) {
+                if (shown == 3) break;
+                sb.append('\n');
+                if (!it.time.isEmpty()) sb.append(it.time).append("  ");
+                sb.append(it.title);
+                shown++;
+            }
+            if (list.size() > shown) sb.append("\n+").append(list.size() - shown).append(" more");
+            return sb.toString();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    /** The animated sky behind the screensaver clock, when switched on. */
+    private void applySaverSky() {
+        if (!(screensaverView instanceof FrameLayout)) return;
+        FrameLayout fl = (FrameLayout) screensaverView;
+        WeatherBackgroundView sky = fl.findViewWithTag("saverSky");
+        if (!saverOpt("weather", false)) {
+            if (sky != null) { sky.stopAnimation(); sky.setVisibility(View.GONE); }
+            return;
+        }
+        if (sky == null) {
+            sky = new WeatherBackgroundView(this);
+            sky.setTag("saverSky");
+            sky.setOverlayMode(false);
+            fl.addView(sky, 0, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+        applyWeatherText(sky, weatherSkyText(HomeWeather.last(this)));
+        if (sky.getCondition() == WeatherBackgroundView.ConditionType.NONE) sky.setVisibility(View.GONE);
     }
 
     /** Screensaver option: the owner's own uploaded photos behind the clock (set in Settings, StandBy). */
@@ -6807,7 +6867,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         FrameLayout fl = (FrameLayout) screensaverView;
         android.widget.ImageView pic = fl.findViewWithTag("saverPhoto");
         File[] files = new File(getFilesDir(), "custom_wallpapers").listFiles();
-        if (!screensaverPhotos() || files == null || files.length == 0) {
+        if (!screensaverPhotos() || saverOpt("weather", false) || files == null || files.length == 0) {
             if (pic != null) pic.setVisibility(View.GONE);
             return;
         }
@@ -6846,12 +6906,39 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // iPhone StandBy Wind Down Mode: 10:00 PM (22:00) to 6:00 AM (06:00) -> Red Monochrome
         java.util.Calendar cal = java.util.Calendar.getInstance();
         int hour = cal.get(java.util.Calendar.HOUR_OF_DAY);
-        boolean isNightMode = (hour >= 22 || hour < 6);
+        boolean isNightMode = saverOpt("red", true) && (hour >= 22 || hour < 6);
 
         TextView clock = screensaverView.findViewById(R.id.nightstandClock);
         TextView ampm = screensaverView.findViewById(R.id.nightstandAmPm);
         TextView date = screensaverView.findViewById(R.id.nightstandDate);
         TextView hint = screensaverView.findViewById(R.id.nightstandHint);
+        TextView wline = screensaverView.findViewById(R.id.nightstandWeather);
+        TextView agenda = screensaverView.findViewById(R.id.nightstandAgenda);
+
+        // What the owner ticked in Settings > StandBy.
+        if (clock != null) clock.setVisibility(saverOpt("clock", true) ? View.VISIBLE : View.GONE);
+        if (ampm != null) ampm.setVisibility(saverOpt("clock", true) ? View.VISIBLE : View.GONE);
+        if (date != null) date.setVisibility(saverOpt("date", true) ? View.VISIBLE : View.GONE);
+        if (hijri != null) hijri.setVisibility(saverOpt("hijri", true) ? View.VISIBLE : View.GONE);
+        if (prayer != null) prayer.setVisibility(saverOpt("prayer", true) ? View.VISIBLE : View.GONE);
+        if (wline != null) {
+            String w = "";
+            if (saverOpt("temp", false)) {
+                HomeWeather.Line ln = HomeWeather.last(this);
+                if (ln != null && ln.weather != null) {
+                    w = ln.weather;
+                    int cut = w.indexOf('\u00B7');
+                    if (cut > 0) w = w.substring(0, cut).trim();
+                }
+            }
+            wline.setText(w);
+            wline.setVisibility(w.isEmpty() ? View.GONE : View.VISIBLE);
+        }
+        if (agenda != null) {
+            String t = saverOpt("agenda", false) ? saverAgendaText() : "";
+            agenda.setText(t);
+            agenda.setVisibility(t.isEmpty() ? View.GONE : View.VISIBLE);
+        }
 
         if (isNightMode) {
             int red = 0xFFFF453A;
@@ -6869,7 +6956,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 prayer.setBackground(redPill);
             }
             if (hint != null) hint.setTextColor(0x55FF453A);
+            if (wline != null) wline.setTextColor(0xE6FF453A);
+            if (agenda != null) agenda.setTextColor(0xE6FF453A);
         } else {
+            if (wline != null) wline.setTextColor(0xE6FFFFFF);
+            if (agenda != null) agenda.setTextColor(0xE6FFFFFF);
             if (clock != null) clock.setTextColor(0xFFFFFFFF);
             if (ampm != null) ampm.setTextColor(0xB3FFFFFF);
             if (date != null) date.setTextColor(0xE6FFFFFF);
@@ -6889,6 +6980,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         screensaverView.animate().alpha(0f).setDuration(350).withEndAction(() -> {
             if (!screensaverActive && screensaverView != null) {
                 screensaverView.setVisibility(View.GONE);
+                if (screensaverView instanceof FrameLayout) {
+                    WeatherBackgroundView sky = ((FrameLayout) screensaverView).findViewWithTag("saverSky");
+                    if (sky != null) sky.stopAnimation();
+                }
             }
         }).start();
         android.util.Log.i("TvHome", "Nightstand screensaver dismissed");
